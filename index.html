@@ -196,6 +196,9 @@
 
     <div id="voting-area" style="margin-top: 20px;">
         <p data-i18n="vote_desc"><strong>Zdecyduj: Czy sens Waszych kartek jest taki sam?</strong> (Gdy obaj zagłosują, czas mija szybciej)</p>
+        
+        <button id="btn-ai" onclick="requestAI()" class="hidden" style="background:#0ff; color:#000; margin-bottom:15px; width:100%; border-color:#0ff;" data-i18n="btn_ai_request">[ 🤖 ZDAJ SIĘ NA AI (Tylko 1 runda) ]</button>
+        
         <button id="vote-yes" onclick="submitVote(true)" data-i18n="btn_vote_yes">[ TAK, ZGADZAMY SIĘ ]</button>
         <button id="vote-no" onclick="submitVote(false)" data-i18n="btn_vote_no">[ NIE, INNY SENS ]</button>
         <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0; font-weight:bold;" data-i18n="vote_wait">Czekam na głos przeciwnika...</div>
@@ -248,6 +251,11 @@
             btn_vote_no: "[ NIE, INNY SENS ]",
             vote_wait: "Czekam na głos przeciwnika...",
             
+            // AI JUDGE
+            btn_ai_request: "[ 🤖 ZDAJ SIĘ NA AI (Tylko 1 runda) ]",
+            ai_waiting: "Czekam na zgodę przeciwnika...",
+            ai_analyzing: "🤖 AI analizuje sensy kartek...",
+
             // Komunikaty dynamiczne
             search_network: "Przeszukuję sieć (Ranga {rank})",
             search_found: "Przeciwnik znaleziony! Nawiązywanie...",
@@ -334,6 +342,11 @@
             btn_vote_yes: "[ YES, WE AGREE ]",
             btn_vote_no: "[ NO, DIFFERENT MEANING ]",
             vote_wait: "Waiting for opponent's vote...",
+
+            // AI JUDGE
+            btn_ai_request: "[ 🤖 USE AI JUDGE (Only Round 1) ]",
+            ai_waiting: "Waiting for opponent's agreement...",
+            ai_analyzing: "🤖 AI is analyzing the notes...",
             
             // Dynamic messages
             search_network: "Searching network (Rank {rank})",
@@ -381,7 +394,6 @@
         }
     };
 
-    // Detekcja języka
     const userLang = navigator.language || navigator.userLanguage;
     const lang = userLang.startsWith('pl') ? 'pl' : 'en';
 
@@ -391,12 +403,10 @@
         return str;
     }
 
-    // Tłumaczenie statycznego HTML po załadowaniu
     window.addEventListener('DOMContentLoaded', () => {
         document.title = t('page_title');
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            // Zabezpieczenie dla elementów z zagnieżdżonym HTML (jak vote_desc)
             if (el.innerHTML.includes('<') && !el.getAttribute('data-i18n').includes('desc')) {
                  el.innerText = t(key);
             } else {
@@ -410,8 +420,6 @@
         ui.status.innerText = t('status_ready');
     });
 
-   // --- KONFIGURACJA SERWERA ---
-    // TUTAJ WPISZ SWÓJ ADRES Z RENDERA (musi zaczynać się od wss:// lub https://)
     const SERVER_URL = 'https://stinky-baka-test-server.onrender.com'; 
     
     let socket;
@@ -422,7 +430,8 @@
         myScore: 0, opScore: 0,
         myRole: '',
         myAction: null, opAction: null,
-        myVote: null, opVote: null
+        myVote: null, opVote: null,
+        aiMode: false
     };
 
     let timerInterval, chatTimerInterval;
@@ -445,7 +454,6 @@
         serverDots: document.getElementById('server-dots')
     };
 
-    // --- INICJALIZACJA POŁĄCZENIA Z SERWEREM ---
     function connectToServer() {
         socket = io(SERVER_URL);
 
@@ -463,7 +471,6 @@
             ui.status.innerText = t('status_offline');
         });
 
-        // Eventy gry
         socket.on('set_role', (data) => {
             isHost = data.isHost;
         });
@@ -487,6 +494,33 @@
             state.opVote = vote; 
             checkVotes(); 
         });
+
+        socket.on('ai_mode_active', () => {
+            state.aiMode = true;
+            let btnAi = document.getElementById('btn-ai');
+            if (btnAi) btnAi.classList.add('hidden');
+            
+            if (!ui.vote.classList.contains('hidden') && state.myVote === null) {
+                 ui.voteYes.classList.add('hidden');
+                 ui.voteNo.classList.add('hidden');
+                 ui.voteWait.classList.remove('hidden');
+                 ui.voteWait.innerText = t('ai_analyzing');
+                 ui.voteWait.style.color = "#0ff";
+                 
+                 let pAction = state.myRole === 'poisoner' ? state.myAction : state.opAction;
+                 let dAction = state.myRole === 'drinker' ? state.myAction : state.opAction;
+                 
+                 if (isHost) {
+                     socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason });
+                 }
+            }
+        });
+
+        socket.on('ai_evaluation_result', (isAgree) => {
+             state.myVote = isAgree;
+             state.opVote = isAgree;
+             checkVotes(); 
+        });
         
         socket.on('next_round', () => { 
             state.round++; 
@@ -504,7 +538,6 @@
 
     window.addEventListener('load', connectToServer);
 
-    // --- MATCHMAKING & POKOJE ---
     function searchRank(rank) {
         ui.disconnectMsg.classList.add('hidden');
         ui.queueStatus.classList.remove('hidden');
@@ -532,11 +565,8 @@
         socket.emit('join_room', pin);
     }
 
-    // --- LOGIKA GRY ---
     function kickPlayer(reason) {
-        // Zamiast rozłączać z serwerem, po prostu pokazujemy błąd i wracamy do lobby
         handleKick(reason);
-        // Opcjonalnie: można wymusić rozłączenie z pokojem wysyłając socket.emit('leave_room')
     }
 
     function handleKick(reason) {
@@ -545,8 +575,7 @@
         ui.disconnectMsg.innerText = `${t('error_prefix')} ${reason}`;
         ui.disconnectMsg.classList.remove('hidden');
         ui.status.innerText = t('status_ready');
-        state.myScore = 0; state.opScore = 0; state.round = 1;
-        // Reset połączenia, aby wyjść z pokoju zepsutego meczu
+        state.myScore = 0; state.opScore = 0; state.round = 1; state.aiMode = false;
         socket.disconnect();
         socket.connect();
     }
@@ -639,6 +668,14 @@
         }
     }
 
+    function requestAI() {
+        if(state.myVote !== null) return;
+        let btnAi = document.getElementById('btn-ai');
+        btnAi.disabled = true;
+        btnAi.innerText = t('ai_waiting');
+        socket.emit('request_ai');
+    }
+
     function showRevealPhase() {
         hideAll(); ui.vote.classList.remove('hidden');
 
@@ -657,7 +694,35 @@
 
         ui.revealArea.innerHTML = resHtml;
         updateStatus(); ui.voteWait.innerText = t('vote_wait');
+        ui.voteWait.style.color = "#ff0";
         
+        let btnAi = document.getElementById('btn-ai');
+        
+        if (state.aiMode) {
+            ui.voteYes.classList.add('hidden');
+            ui.voteNo.classList.add('hidden');
+            btnAi.classList.add('hidden');
+            ui.voteWait.classList.remove('hidden');
+            ui.voteWait.innerText = t('ai_analyzing');
+            ui.voteWait.style.color = "#0ff";
+            
+            if (isHost) {
+                socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason });
+            }
+        } else {
+            ui.voteYes.classList.remove('hidden');
+            ui.voteNo.classList.remove('hidden');
+            ui.voteWait.classList.add('hidden');
+            
+            if (state.round === 1) {
+                btnAi.classList.remove('hidden');
+                btnAi.disabled = false;
+                btnAi.innerText = t('btn_ai_request');
+            } else {
+                btnAi.classList.add('hidden');
+            }
+        }
+
         chatTimeLeft = 180; ui.chatTimer.innerText = chatTimeLeft;
         clearInterval(chatTimerInterval);
         
@@ -665,7 +730,7 @@
             chatTimeLeft--; ui.chatTimer.innerText = chatTimeLeft;
             if(chatTimeLeft <= 0) {
                 clearInterval(chatTimerInterval);
-                if(state.myVote === null) submitVote(false);
+                if(state.myVote === null && !state.aiMode) submitVote(false);
             }
         }, 1000);
     }
@@ -692,6 +757,7 @@
     function submitVote(isYes) {
         state.myVote = isYes;
         ui.voteYes.classList.add('hidden'); ui.voteNo.classList.add('hidden');
+        document.getElementById('btn-ai').classList.add('hidden');
         ui.voteWait.classList.remove('hidden');
         socket.emit('vote_action', isYes);
         checkVotes();
@@ -742,12 +808,10 @@
 
         ui.disconnectMsg.innerHTML = resHtml;
         ui.disconnectMsg.classList.remove('hidden', 'error');
-        // Reset statusu pokoju
+        state.aiMode = false;
         socket.disconnect();
         socket.connect();
     }
-
-    window.addEventListener('load', checkServerStatus);
 </script>
 </body>
 </html>
