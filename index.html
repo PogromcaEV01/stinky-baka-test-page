@@ -874,6 +874,16 @@
         errDiv.innerText = "> BŁĄD POŁĄCZENIA Z SERWEREM.";
         errDiv.style.display = 'block';
     }
+      function toggleRegistration() {
+    const regSection = document.getElementById('registration-section');
+    // Przełączanie widoczności
+    regSection.classList.toggle('hidden');
+    
+    // Opcjonalne: automatyczne przewinięcie do formularza, gdy się pojawi
+    if (!regSection.classList.contains('hidden')) {
+        regSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 }
    async function attemptRegister() {
     const code = document.getElementById('reg-code').value.trim();
