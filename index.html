@@ -21,398 +21,165 @@
             --orange-glow: rgba(212, 100, 30, 0.6);
             --border-color: #2a221b;
             
-            /* Kolory rang */
             --rank-spark: #d45c2f;
             --rank-flame: #d4a35c;
             --rank-bonfire: #5c8ed4;
             --rank-star: #a35cd4;
 
-            /* Powiadomienia */
             --success: #4caf50;
             --error: #d45c2f;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Lato', sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
+            margin: 0; padding: 0; overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, .serif {
-            font-family: 'Cinzel', serif;
-            font-weight: 600;
-        }
-
+        h1, h2, h3, h4, .serif { font-family: 'Cinzel', serif; font-weight: 600; }
         .hidden { display: none !important; }
 
         /* --- SIDEBAR --- */
         .sidebar {
-            width: 100px;
-            background-color: #050506;
-            border-right: 1px solid #1a1a1a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            z-index: 10;
-            overflow-y: auto;
+            width: 100px; background-color: #050506; border-right: 1px solid #1a1a1a;
+            display: flex; flex-direction: column; align-items: center; padding-top: 20px;
+            position: fixed; left: 0; top: 0; height: 100vh; z-index: 10; overflow-y: auto;
         }
 
-        .sidebar .logo {
-            color: var(--gold);
-            font-size: 32px;
-            margin-bottom: 30px;
-            text-shadow: 0 0 15px var(--orange-glow);
-        }
-
-        .nav-menu {
-            list-style: none;
-            width: 100%;
-        }
-
+        .sidebar .logo { color: var(--gold); font-size: 32px; margin-bottom: 30px; text-shadow: 0 0 15px var(--orange-glow); }
+        .nav-menu { list-style: none; width: 100%; }
         .nav-item {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center; /* Wyśrodkowanie wielolinijkowych tekstów */
-            padding: 15px 5px;
-            color: #555;
-            text-decoration: none;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            cursor: pointer;
-            border-left: 2px solid transparent;
+            width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 15px 5px; color: #555; text-decoration: none; font-size: 10px;
+            text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; cursor: pointer; border-left: 2px solid transparent;
         }
-
-        .nav-item i {
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            color: var(--gold);
-            background: linear-gradient(90deg, rgba(212, 163, 92, 0.1) 0%, transparent 100%);
-            border-left-color: var(--gold);
-        }
+        .nav-item i { font-size: 20px; margin-bottom: 5px; }
+        .nav-item:hover, .nav-item.active { color: var(--gold); background: linear-gradient(90deg, rgba(212, 163, 92, 0.1) 0%, transparent 100%); border-left-color: var(--gold); }
 
         /* --- MAIN CONTENT LAYOUT --- */
         .main-wrapper {
-            margin-left: 100px;
-            width: calc(100% - 100px); /* Wymuszenie szerokości obok sidebara */
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Zapobiega rozciąganiu na całą wysokość */
+            margin-left: 100px; width: calc(100% - 100px); min-height: 100vh;
+            display: flex; justify-content: center; align-items: flex-start;
         }
 
         .main-content {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto; /* Twarde centrowanie obszaru roboczego */
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
+            width: 100%; max-width: 900px; margin: 0 auto; padding: 40px 20px;
+            display: flex; flex-direction: column; position: relative;
         }
+
+        /* --- VIEWS / TABS --- */
+        .view-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- HERO SECTION --- */
         .hero {
-            text-align: center;
-            padding: 50px 20px;
-            position: relative;
+            text-align: center; padding: 50px 20px; position: relative;
             background: radial-gradient(circle at top right, rgba(212, 100, 30, 0.15), transparent 50%);
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 30px;
-            border-radius: 8px;
+            border-bottom: 1px solid var(--border-color); margin-bottom: 30px; border-radius: 8px;
         }
+        .hero h1 { font-size: 48px; color: var(--gold); letter-spacing: 5px; text-shadow: 0 0 20px rgba(212, 163, 92, 0.3); margin-bottom: 10px; }
+        .hero .subtitle { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 30px; }
+        .hero blockquote { font-style: italic; color: #999; max-width: 500px; margin: 0 auto; line-height: 1.6; font-family: 'Cinzel', serif; }
 
+        /* SERVER STATUS (Global Float) */
         .server-status {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            border: 1px solid var(--border-color);
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 10px;
-            text-align: right;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
+            position: absolute; top: 10px; right: 20px; border: 1px solid var(--border-color);
+            padding: 10px 15px; border-radius: 5px; font-size: 10px; text-align: right; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100;
         }
-
-        .server-status .title {
-            color: var(--text-light);
-            letter-spacing: 1px;
-        }
-
-        .server-status .status {
-            color: var(--success);
-            margin-top: 3px;
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            color: var(--gold);
-            letter-spacing: 5px;
-            text-shadow: 0 0 20px rgba(212, 163, 92, 0.3);
-            margin-bottom: 10px;
-        }
-
-        .hero .subtitle {
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--gold-dark);
-            margin-bottom: 30px;
-        }
-
-        .hero blockquote {
-            font-style: italic;
-            color: #999;
-            max-width: 500px;
-            margin: 0 auto;
-            line-height: 1.6;
-            font-family: 'Cinzel', serif;
-        }
+        .server-status .title { color: var(--text-light); letter-spacing: 1px; }
+        .server-status .status { color: var(--success); margin-top: 3px; }
 
         /* --- BUTTONS --- */
         .btn {
-            background: linear-gradient(to bottom, #3a1c0d, #140804);
-            border: 1px solid var(--gold-dark);
-            color: var(--gold);
-            font-family: 'Cinzel', serif;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 12px 30px;
-            cursor: pointer;
-            border-radius: 4px;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(212, 100, 30, 0.2);
-            display: inline-block;
-            text-align: center;
+            background: linear-gradient(to bottom, #3a1c0d, #140804); border: 1px solid var(--gold-dark);
+            color: var(--gold); font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600; padding: 12px 30px;
+            cursor: pointer; border-radius: 4px; letter-spacing: 1px; transition: all 0.3s; text-transform: uppercase; box-shadow: 0 0 15px rgba(212, 100, 30, 0.2); display: inline-block; text-align: center;
         }
-
         .btn i { margin-right: 8px; color: #ff7b00; }
-        .btn:hover:not(:disabled) {
-            box-shadow: 0 0 25px rgba(212, 100, 30, 0.5);
-            border-color: var(--gold);
-        }
-        .btn:disabled {
-            background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
-            border-color: #333;
-            color: #555;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+        .btn:hover:not(:disabled) { box-shadow: 0 0 25px rgba(212, 100, 30, 0.5); border-color: var(--gold); }
+        .btn:disabled { background: linear-gradient(to bottom, #1a1a1a, #0a0a0a); border-color: #333; color: #555; cursor: not-allowed; box-shadow: none; }
         .btn.full-width { width: 100%; margin-bottom: 10px; }
 
         /* --- SECTIONS --- */
         .section-box {
-            background: rgba(10, 11, 15, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
-            width: 100%;
+            background: rgba(10, 11, 15, 0.6); border: 1px solid var(--border-color); border-radius: 8px;
+            padding: 30px; margin-bottom: 30px; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); width: 100%;
         }
-
-        .section-header {
-            margin-bottom: 20px;
-        }
-
-        .section-header h2 {
-            font-size: 22px;
-            color: var(--text-light);
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
-
-        .section-header h2 span {
-            font-family: 'Lato', sans-serif;
-            font-size: 12px;
-            color: var(--gold-dark);
-            letter-spacing: 1px;
-            font-weight: normal;
-        }
+        .section-header { margin-bottom: 20px; }
+        .section-header h2 { font-size: 22px; color: var(--text-light); letter-spacing: 2px; margin-bottom: 5px; }
+        .section-header h2 span { font-family: 'Lato', sans-serif; font-size: 12px; color: var(--gold-dark); letter-spacing: 1px; font-weight: normal; }
 
         /* --- MATCHMAKING TIERS --- */
         .tier-card {
-            display: flex;
-            align-items: center;
-            background: linear-gradient(to right, rgba(20,20,20,0.8), rgba(10,10,10,0.4));
-            border: 1px solid #1f1f1f;
-            border-radius: 6px;
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            transition: all 0.3s;
-            cursor: pointer;
+            display: flex; align-items: center; background: linear-gradient(to right, rgba(20,20,20,0.8), rgba(10,10,10,0.4));
+            border: 1px solid #1f1f1f; border-radius: 6px; padding: 15px 20px; margin-bottom: 12px; transition: all 0.3s; cursor: pointer;
         }
-
-        .tier-card:hover {
-            background: linear-gradient(to right, rgba(30,30,30,0.9), rgba(15,15,15,0.6));
-            transform: translateX(5px);
-        }
-
-        .tier-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            margin-right: 20px;
-            border: 1px solid transparent;
-            flex-shrink: 0;
-        }
-
+        .tier-card:hover { background: linear-gradient(to right, rgba(30,30,30,0.9), rgba(15,15,15,0.6)); transform: translateX(5px); }
+        .tier-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; margin-right: 20px; border: 1px solid transparent; flex-shrink: 0; }
         .tier-info { flex: 1; }
         .tier-info h3 { font-size: 16px; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
         .tier-info p { font-size: 12px; line-height: 1.4; color: #888; margin: 0; }
-        
-        .tier-badge {
-            text-align: center;
-            border: 1px solid #333;
-            padding: 10px 20px;
-            border-radius: 4px;
-            background: rgba(0,0,0,0.5);
-            min-width: 120px;
-        }
+        .tier-badge { text-align: center; border: 1px solid #333; padding: 10px 20px; border-radius: 4px; background: rgba(0,0,0,0.5); min-width: 120px; }
         .tier-badge .rank { font-family: 'Cinzel', serif; font-size: 14px; margin-bottom: 2px; }
         .tier-badge .diff { font-size: 11px; color: #777; }
 
-        .tier-spark { border-color: rgba(212, 92, 47, 0.2); }
-        .tier-spark .tier-icon { border-color: var(--rank-spark); color: var(--rank-spark); box-shadow: 0 0 15px rgba(212, 92, 47, 0.2) inset; }
-        .tier-spark h3, .tier-spark .rank { color: var(--rank-spark); }
-
-        .tier-flame { border-color: rgba(212, 163, 92, 0.2); }
-        .tier-flame .tier-icon { border-color: var(--rank-flame); color: var(--rank-flame); box-shadow: 0 0 15px rgba(212, 163, 92, 0.2) inset; }
-        .tier-flame h3, .tier-flame .rank { color: var(--rank-flame); }
-
-        .tier-bonfire { border-color: rgba(92, 142, 212, 0.2); }
-        .tier-bonfire .tier-icon { border-color: var(--rank-bonfire); color: var(--rank-bonfire); box-shadow: 0 0 15px rgba(92, 142, 212, 0.2) inset; }
-        .tier-bonfire h3, .tier-bonfire .rank { color: var(--rank-bonfire); }
-
-        .tier-star { border-color: rgba(163, 92, 212, 0.2); }
-        .tier-star .tier-icon { border-color: var(--rank-star); color: var(--rank-star); box-shadow: 0 0 15px rgba(163, 92, 212, 0.2) inset; }
-        .tier-star h3, .tier-star .rank { color: var(--rank-star); }
+        .tier-spark { border-color: rgba(212, 92, 47, 0.2); } .tier-spark .tier-icon { border-color: var(--rank-spark); color: var(--rank-spark); box-shadow: 0 0 15px rgba(212, 92, 47, 0.2) inset; } .tier-spark h3, .tier-spark .rank { color: var(--rank-spark); }
+        .tier-flame { border-color: rgba(212, 163, 92, 0.2); } .tier-flame .tier-icon { border-color: var(--rank-flame); color: var(--rank-flame); box-shadow: 0 0 15px rgba(212, 163, 92, 0.2) inset; } .tier-flame h3, .tier-flame .rank { color: var(--rank-flame); }
+        .tier-bonfire { border-color: rgba(92, 142, 212, 0.2); } .tier-bonfire .tier-icon { border-color: var(--rank-bonfire); color: var(--rank-bonfire); box-shadow: 0 0 15px rgba(92, 142, 212, 0.2) inset; } .tier-bonfire h3, .tier-bonfire .rank { color: var(--rank-bonfire); }
+        .tier-star { border-color: rgba(163, 92, 212, 0.2); } .tier-star .tier-icon { border-color: var(--rank-star); color: var(--rank-star); box-shadow: 0 0 15px rgba(163, 92, 212, 0.2) inset; } .tier-star h3, .tier-star .rank { color: var(--rank-star); }
 
         /* --- SYSTEM ALERTS --- */
-        .system-alert {
-            background: rgba(212, 92, 47, 0.1);
-            border-left: 4px solid var(--error);
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 4px 4px 0;
-            color: var(--text-light);
-            width: 100%;
-        }
-        .system-alert.info {
-            background: rgba(212, 163, 92, 0.1);
-            border-left-color: var(--gold);
-        }
+        .system-alert { background: rgba(212, 92, 47, 0.1); border-left: 4px solid var(--error); padding: 15px; margin-bottom: 20px; border-radius: 0 4px 4px 0; color: var(--text-light); width: 100%; }
+        .system-alert.info { background: rgba(212, 163, 92, 0.1); border-left-color: var(--gold); }
 
-        /* --- INPUTS --- */
-        .input-group {
-            display: flex;
-            background: #050505;
-            border: 1px solid #222;
-            border-radius: 4px;
-            padding: 5px;
-            margin-bottom: 15px;
-            width: 100%;
-        }
-
-        .input-group input, input[type="text"] {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-light);
-            padding: 10px 15px;
-            font-family: 'Lato', sans-serif;
-            outline: none;
-            width: 100%;
-        }
-
-        .input-group input:focus, input[type="text"]:focus {
-            background: rgba(212, 163, 92, 0.05);
-        }
-        
-        .standalone-input {
-            background: #050505;
-            border: 1px solid #222;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            padding: 15px;
-            width: 100%;
-        }
-
+        /* --- INPUTS & FORMS --- */
+        .input-group { display: flex; background: #050505; border: 1px solid #222; border-radius: 4px; padding: 5px; margin-bottom: 15px; width: 100%; }
+        .input-group input, input[type="text"], select { flex: 1; background: transparent; border: none; color: var(--text-light); padding: 10px 15px; font-family: 'Lato', sans-serif; outline: none; width: 100%; }
+        .input-group input:focus, input[type="text"]:focus, select:focus { background: rgba(212, 163, 92, 0.05); }
+        .standalone-input { background: #050505; border: 1px solid #222; border-radius: 4px; margin-bottom: 15px; padding: 15px; width: 100%; }
         .input-group .btn { margin: 0; flex-shrink: 0; }
+        select { background-color: #0d0e12; border: 1px solid #222; border-radius: 4px; cursor: pointer; }
+
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1a1a1a; }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-label { font-size: 14px; color: var(--text-light); }
+        .setting-control { width: 150px; }
 
         /* --- GAME UI SPECIFICS --- */
         .flex-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
-        
         .timer { font-family: 'Cinzel', serif; font-size: 1.5em; color: var(--error); }
         #start-timer { font-family: 'Cinzel', serif; font-size: 4em; color: var(--gold); text-shadow: 0 0 20px var(--orange-glow); margin: 20px 0; }
         
         .cups-container { display: flex; gap: 15px; margin: 20px 0; width: 100%; }
-        .cup-option {
-            flex: 1;
-            border: 1px solid #222;
-            background: rgba(10, 11, 15, 0.8);
-            padding: 25px 15px;
-            text-align: center;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Cinzel', serif;
-            color: #888;
-        }
+        .cup-option { flex: 1; border: 1px solid #222; background: rgba(10, 11, 15, 0.8); padding: 25px 15px; text-align: center; border-radius: 6px; cursor: pointer; transition: all 0.3s; font-family: 'Cinzel', serif; color: #888; }
         .cup-option:hover { border-color: var(--gold-dark); color: var(--text-light); background: rgba(20, 20, 25, 0.9); }
-        .cup-option.selected {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(212, 163, 92, 0.1);
-            box-shadow: inset 0 0 15px rgba(212, 163, 92, 0.2);
-            font-weight: 600;
-        }
+        .cup-option.selected { border-color: var(--gold); color: var(--gold); background: rgba(212, 163, 92, 0.1); box-shadow: inset 0 0 15px rgba(212, 163, 92, 0.2); font-weight: 600; }
 
         /* --- CHAT --- */
-        #chat-history {
-            height: 200px;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            background: #050505;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            font-size: 14px;
-            line-height: 1.5;
-            width: 100%;
-        }
+        #chat-history { height: 200px; overflow-y: auto; border: 1px solid var(--border-color); background: #050505; padding: 15px; margin-bottom: 15px; border-radius: 4px; font-size: 14px; line-height: 1.5; width: 100%; }
         #chat-history p { margin-bottom: 8px; }
         .msg-me { color: var(--gold); font-weight: bold; }
         .msg-op { color: var(--rank-spark); font-weight: bold; }
         .msg-sys { color: #ff5555; font-weight: bold; font-family: 'Cinzel', serif; }
+
+        /* --- TABLES (MASTERS) --- */
+        .leaderboard { width: 100%; border-collapse: collapse; text-align: left; }
+        .leaderboard th { padding: 15px; font-family: 'Cinzel', serif; color: var(--gold-dark); border-bottom: 2px solid var(--border-color); }
+        .leaderboard td { padding: 15px; border-bottom: 1px solid #1a1a1a; color: var(--text-light); }
+        .leaderboard tr:hover td { background: rgba(212, 163, 92, 0.05); }
+        .leaderboard td.rank-num { font-weight: bold; color: var(--gold); font-family: 'Cinzel', serif; }
+
+        /* --- PROFILE --- */
+        .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .avatar-box { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 32px; background: #050505; color: var(--gold); box-shadow: 0 0 15px rgba(212, 163, 92, 0.2); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .stat-box { background: rgba(0,0,0,0.4); border: 1px solid #1a1a1a; padding: 20px; border-radius: 6px; text-align: center; }
+        .stat-box h4 { font-size: 12px; color: #888; margin-bottom: 5px; letter-spacing: 1px; }
+        .stat-box .val { font-size: 24px; color: var(--gold); font-family: 'Cinzel', serif; }
 
         .loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
         @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
@@ -429,17 +196,23 @@
         footer { text-align: center; padding-bottom: 30px; font-family: 'Cinzel', serif; color: #666; font-size: 14px; letter-spacing: 2px; width: 100%; margin-top: auto; }
         footer span { font-family: 'Lato', sans-serif; font-size: 10px; color: #444; }
 
+        /* Przełączniki (Toggle Switch) */
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: #888; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--gold-dark); }
+        input:checked + .slider:before { transform: translateX(26px); background-color: var(--gold); }
+
         @media (max-width: 768px) {
             .sidebar { width: 70px; }
             .sidebar .logo { font-size: 24px; }
             .nav-item span { display: none; }
-            .main-wrapper { 
-                margin-left: 70px; 
-                width: calc(100% - 70px);
-            }
+            .main-wrapper { margin-left: 70px; width: calc(100% - 70px); }
             .cups-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
             .tier-badge { min-width: 80px; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -448,138 +221,63 @@
     <aside class="sidebar">
         <div class="logo"><i class="fa-solid fa-fire"></i></div>
         <ul class="nav-menu" id="navigation-menu">
-            <a class="nav-item" onclick="switchNav(this)">
+            <a class="nav-item active" id="nav-home" onclick="switchNav('panel-home', this)">
                 <i class="fa-solid fa-house"></i>
                 <span data-i18n="nav_home"></span>
             </a>
-            <a class="nav-item" onclick="switchNav(this)">
+            <a class="nav-item" id="nav-open-space" onclick="switchNav('panel-open-space', this)">
                 <i class="fa-regular fa-compass"></i>
                 <span data-i18n="nav_open_space"></span>
             </a>
-            <a class="nav-item active" onclick="switchNav(this)">
+            <a class="nav-item" id="nav-trial" onclick="switchNav('panel-trial', this)">
                 <i class="fa-solid fa-scale-balanced"></i>
                 <span data-i18n="nav_trial"></span>
             </a>
-            <a class="nav-item" onclick="switchNav(this)">
+            <a class="nav-item" onclick="switchNav('panel-lore', this)">
                 <i class="fa-solid fa-book-skull"></i>
                 <span data-i18n="nav_lore"></span>
             </a>
-            <a class="nav-item" onclick="switchNav(this)">
+            <a class="nav-item" onclick="switchNav('panel-masters', this)">
                 <i class="fa-solid fa-trophy"></i>
                 <span data-i18n="nav_masters"></span>
             </a>
-            <a class="nav-item" onclick="switchNav(this)">
+            <a class="nav-item" onclick="switchNav('panel-profile', this)">
                 <i class="fa-solid fa-user"></i>
                 <span data-i18n="nav_profile"></span>
             </a>
-            <a class="nav-item" onclick="switchNav(this)">
+            <a class="nav-item" onclick="switchNav('panel-settings', this)">
                 <i class="fa-solid fa-gear"></i>
                 <span data-i18n="nav_settings"></span>
             </a>
         </ul>
     </aside>
 
+    <div id="server-status" class="server-status">
+        <div class="title" data-i18n="server_comms"></div>
+        <div class="title" style="color:var(--text-light); margin-top:2px;">
+            <span id="server-msg" data-i18n="server_checking"></span><span class="loading-dots" id="server-dots"></span>
+        </div>
+        <div class="status" id="status" data-i18n="status_init"></div>
+    </div>
+
     <div class="main-wrapper">
         <main class="main-content">
             
-            <div class="hero">
-                <div id="server-status" class="server-status">
-                    <div class="title" data-i18n="server_comms"></div>
-                    <div class="title" style="color:var(--text-light); margin-top:2px;">
-                        <span id="server-msg" data-i18n="server_checking"></span><span class="loading-dots" id="server-dots"></span>
-                    </div>
-                    <div class="status" id="status" data-i18n="status_init"></div>
-                </div>
-                
-                <h1 data-i18n="h1_title"></h1>
-                <div class="subtitle" data-i18n="subtitle_desc"></div>
-                
-                <blockquote data-i18n="quote_text"></blockquote>
-            </div>
-
             <div id="disconnect-msg" class="system-alert hidden"></div>
 
-            <div id="lobby-panel">
-                <div class="section-box">
-                    <div class="section-header">
-                        <h2 data-i18n="lobby_h3_1"></h2>
-                        <p style="color:#888; font-size:14px; margin-top:5px;" data-i18n="lobby_p_1"></p>
-                    </div>
-
-                    <div class="tier-card tier-spark" onclick="searchRank(1)">
-                        <div class="tier-icon"><i class="fa-solid fa-fire"></i></div>
-                        <div class="tier-info">
-                            <h3 data-i18n="rank_1"></h3>
-                            <p data-i18n="rank_1_desc"></p>
-                        </div>
-                        <div class="tier-badge">
-                            <div class="rank" data-i18n="rank_1_badge"></div><div class="diff" data-i18n="rank_1_diff"></div>
-                        </div>
-                    </div>
-
-                    <div class="tier-card tier-flame" onclick="searchRank(2)">
-                        <div class="tier-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
-                        <div class="tier-info">
-                            <h3 data-i18n="rank_2"></h3>
-                            <p data-i18n="rank_2_desc"></p>
-                        </div>
-                        <div class="tier-badge">
-                            <div class="rank" data-i18n="rank_2_badge"></div><div class="diff" data-i18n="rank_2_diff"></div>
-                        </div>
-                    </div>
-
-                    <div class="tier-card tier-bonfire" onclick="searchRank(3)">
-                        <div class="tier-icon"><i class="fa-solid fa-fire-burner"></i></div>
-                        <div class="tier-info">
-                            <h3 data-i18n="rank_3"></h3>
-                            <p data-i18n="rank_3_desc"></p>
-                        </div>
-                        <div class="tier-badge">
-                            <div class="rank" data-i18n="rank_3_badge"></div><div class="diff" data-i18n="rank_3_diff"></div>
-                        </div>
-                    </div>
-
-                    <div class="tier-card tier-star" onclick="searchRank(4)">
-                        <div class="tier-icon"><i class="fa-solid fa-chess-queen"></i></div>
-                        <div class="tier-info">
-                            <h3 data-i18n="rank_4"></h3>
-                            <p data-i18n="rank_4_desc"></p>
-                        </div>
-                        <div class="tier-badge">
-                            <div class="rank" data-i18n="rank_4_badge"></div><div class="diff" data-i18n="rank_4_diff"></div>
-                        </div>
-                    </div>
-
-                    <div id="queue-status" class="system-alert info hidden" style="margin-top:20px; text-align:center;">
-                        <span id="queue-text" data-i18n="queue_text"></span><span class="loading-dots"></span><br>
-                        <button class="btn" onclick="cancelSearch()" style="margin-top:15px; border-color:var(--error); color:var(--error);" data-i18n="btn_cancel"></button>
-                    </div>
-                </div>
-
-                <div class="section-box private-fire">
-                    <div class="section-header">
-                        <h2 data-i18n="lobby_h3_2"></h2>
-                        <p style="color:#888; font-size:14px; margin-top:5px;" data-i18n="lobby_p_2"></p>
-                    </div>
-                    
-                    <button class="btn" onclick="createRoom()" data-i18n="btn_create_room" style="margin-bottom: 20px;"></button>
-                    
-                    <div id="host-info" class="system-alert info hidden">
-                        <span data-i18n="host_info_code"></span> <strong id="room-id" style="font-size: 1.5em; color: var(--gold); letter-spacing: 2px;"></strong><br>
-                        <span data-i18n="host_info_waiting"></span>
-                    </div>
-                    
-                    <div class="input-group">
-                        <input type="text" id="join-id" data-i18n-placeholder="placeholder_join">
-                        <button class="btn" onclick="joinRoom()" data-i18n="btn_join"></button>
-                    </div>
+            <div id="panel-home" class="view-panel active">
+                <div class="hero">
+                    <h1 data-i18n="h1_title"></h1>
+                    <div class="subtitle" data-i18n="subtitle_desc"></div>
+                    <blockquote data-i18n="quote_text"></blockquote>
+                    <button class="btn" style="margin-top: 30px;" onclick="document.getElementById('nav-open-space').click();" data-i18n="btn_enter_space"><i class="fa-solid fa-rocket"></i> ROZPOCZNIJ PODRÓŻ</button>
                 </div>
                 
                 <div class="info-cards">
                     <div class="info-card">
                         <h4 data-i18n="info_1_title"></h4>
                         <p data-i18n="info_1_desc"></p>
-                        <a href="#" data-i18n="info_1_link"></a>
+                        <a href="#" onclick="document.getElementById('nav-lore').click(); return false;" data-i18n="info_1_link"></a>
                     </div>
                     <div class="info-card">
                         <h4 data-i18n="info_2_title"></h4>
@@ -594,57 +292,222 @@
                 </div>
             </div>
 
-            <div id="countdown-panel" class="section-box hidden" style="text-align: center; padding: 60px 20px;">
-                <h2 style="color:var(--gold); font-size:32px; letter-spacing:4px;" data-i18n="countdown_h2"></h2>
-                <p style="color:#888; font-size:14px; margin-top:10px;" data-i18n="countdown_p"></p>
-                <div id="start-timer">5</div>
-            </div>
+            <div id="panel-open-space" class="view-panel">
+                <div class="section-box">
+                    <div class="section-header">
+                        <h2 data-i18n="lobby_h3_1"></h2>
+                        <p style="color:#888; font-size:14px; margin-top:5px;" data-i18n="lobby_p_1"></p>
+                    </div>
 
-            <div id="game-panel" class="section-box hidden">
-                <div class="flex-row">
-                    <h3 id="role-title" style="color:var(--text-light); letter-spacing:1px;" data-i18n="role_title"></h3>
-                    <div class="timer"><i class="fa-regular fa-clock"></i> <span id="round-timer">120</span>s</div>
+                    <div class="tier-card tier-spark" onclick="searchRank(1)">
+                        <div class="tier-icon"><i class="fa-solid fa-fire"></i></div>
+                        <div class="tier-info"><h3 data-i18n="rank_1"></h3><p data-i18n="rank_1_desc"></p></div>
+                        <div class="tier-badge"><div class="rank" data-i18n="rank_1_badge"></div><div class="diff" data-i18n="rank_1_diff"></div></div>
+                    </div>
+
+                    <div class="tier-card tier-flame" onclick="searchRank(2)">
+                        <div class="tier-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <div class="tier-info"><h3 data-i18n="rank_2"></h3><p data-i18n="rank_2_desc"></p></div>
+                        <div class="tier-badge"><div class="rank" data-i18n="rank_2_badge"></div><div class="diff" data-i18n="rank_2_diff"></div></div>
+                    </div>
+
+                    <div class="tier-card tier-bonfire" onclick="searchRank(3)">
+                        <div class="tier-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                        <div class="tier-info"><h3 data-i18n="rank_3"></h3><p data-i18n="rank_3_desc"></p></div>
+                        <div class="tier-badge"><div class="rank" data-i18n="rank_3_badge"></div><div class="diff" data-i18n="rank_3_diff"></div></div>
+                    </div>
+
+                    <div class="tier-card tier-star" onclick="searchRank(4)">
+                        <div class="tier-icon"><i class="fa-solid fa-chess-queen"></i></div>
+                        <div class="tier-info"><h3 data-i18n="rank_4"></h3><p data-i18n="rank_4_desc"></p></div>
+                        <div class="tier-badge"><div class="rank" data-i18n="rank_4_badge"></div><div class="diff" data-i18n="rank_4_diff"></div></div>
+                    </div>
+
+                    <div id="queue-status" class="system-alert info hidden" style="margin-top:20px; text-align:center;">
+                        <span id="queue-text" data-i18n="queue_text"></span><span class="loading-dots"></span><br>
+                        <button class="btn" onclick="cancelSearch()" style="margin-top:15px; border-color:var(--error); color:var(--error);" data-i18n="btn_cancel"></button>
+                    </div>
                 </div>
 
-                <div id="action-area">
-                    <p id="question-text" style="font-family:'Cinzel',serif; font-size:18px; color:var(--gold); margin-bottom:10px;" data-i18n="question_text"></p>
-                    <div id="cup-options" class="cups-container"></div>
-
-                    <p style="color:#888; margin-top:10px; margin-bottom:10px; font-size:14px;" data-i18n="reason_label"></p>
-                    <input type="text" id="reason-input" class="standalone-input" data-i18n-placeholder="placeholder_reason">
-
-                    <div style="margin-top: 15px;">
-                        <button id="submit-btn" class="btn" onclick="submitAction()" data-i18n="btn_submit"></button>
-                        <div id="op-status" style="color: #555; margin-top: 15px; font-weight: 600; font-size:12px; text-transform:uppercase;" data-i18n="op_status_typing"></div>
+                <div class="section-box private-fire">
+                    <div class="section-header">
+                        <h2 data-i18n="lobby_h3_2"></h2>
+                        <p style="color:#888; font-size:14px; margin-top:5px;" data-i18n="lobby_p_2"></p>
+                    </div>
+                    <button class="btn" onclick="createRoom()" data-i18n="btn_create_room" style="margin-bottom: 20px;"></button>
+                    <div id="host-info" class="system-alert info hidden">
+                        <span data-i18n="host_info_code"></span> <strong id="room-id" style="font-size: 1.5em; color: var(--gold); letter-spacing: 2px;"></strong><br>
+                        <span data-i18n="host_info_waiting"></span>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="join-id" data-i18n-placeholder="placeholder_join">
+                        <button class="btn" onclick="joinRoom()" data-i18n="btn_join"></button>
                     </div>
                 </div>
             </div>
 
-            <div id="vote-panel" class="section-box hidden">
-                <div class="flex-row">
-                    <h3 style="color:var(--text-light); letter-spacing:1px;" data-i18n="vote_h3"></h3>
-                    <div class="timer"><i class="fa-regular fa-clock"></i> <span id="chat-timer">180</span>s</div>
-                </div>
-                
-                <div id="reveal-area" style="background:rgba(20,20,20,0.6); padding:20px; border-radius:6px; border:1px solid #333; margin-bottom:30px;"></div>
-
-                <h4 style="color:var(--gold-dark); letter-spacing:2px; margin-bottom:15px; font-size:14px;" data-i18n="vote_h4"></h4>
-                <div id="chat-history"></div>
-                <div class="input-group">
-                    <input type="text" id="chat-input" data-i18n-placeholder="placeholder_chat">
-                    <button class="btn" onclick="sendChat()" data-i18n="btn_send_chat"></button>
+            <div id="panel-trial" class="view-panel">
+                <div id="no-trial-msg" class="section-box" style="text-align:center; padding: 60px 20px;">
+                    <i class="fa-solid fa-ghost" style="font-size: 48px; color: #333; margin-bottom: 20px;"></i>
+                    <h2 data-i18n="no_trial_h2" style="color:#888;">Brak Aktywnej Próby</h2>
+                    <p data-i18n="no_trial_p" style="color:#555; margin-top:10px;">Udaj się do Otwartej Przestrzeni, aby znaleźć przeciwnika.</p>
+                    <button class="btn" style="margin-top:20px;" onclick="document.getElementById('nav-open-space').click();" data-i18n="nav_open_space"></button>
                 </div>
 
-                <div id="voting-area" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-                    <p style="color:#bbb; font-size:14px; margin-bottom:20px;" data-i18n="vote_desc"></p>
-                    
-                    <button id="btn-ai" class="btn full-width" onclick="requestAI()" style="border-color:#0ff; color:#0ff;" data-i18n="btn_ai_request"></button>
-                    
-                    <div style="display:flex; gap:15px; flex-wrap:wrap;">
-                        <button id="vote-yes" class="btn" onclick="submitVote(true)" style="flex:1; border-color:var(--success); color:var(--success);" data-i18n="btn_vote_yes"></button>
-                        <button id="vote-no" class="btn" onclick="submitVote(false)" style="flex:1; border-color:var(--error); color:var(--error);" data-i18n="btn_vote_no"></button>
+                <div id="countdown-panel" class="section-box hidden" style="text-align: center; padding: 60px 20px;">
+                    <h2 style="color:var(--gold); font-size:32px; letter-spacing:4px;" data-i18n="countdown_h2"></h2>
+                    <p style="color:#888; font-size:14px; margin-top:10px;" data-i18n="countdown_p"></p>
+                    <div id="start-timer">5</div>
+                </div>
+
+                <div id="game-panel" class="section-box hidden">
+                    <div class="flex-row">
+                        <h3 id="role-title" style="color:var(--text-light); letter-spacing:1px;" data-i18n="role_title"></h3>
+                        <div class="timer"><i class="fa-regular fa-clock"></i> <span id="round-timer">120</span>s</div>
                     </div>
-                    <div id="vote-wait" class="hidden" style="margin-top:15px; color:var(--gold); font-weight:bold; text-align:center;" data-i18n="vote_wait"></div>
+                    <div id="action-area">
+                        <p id="question-text" style="font-family:'Cinzel',serif; font-size:18px; color:var(--gold); margin-bottom:10px;" data-i18n="question_text"></p>
+                        <div id="cup-options" class="cups-container"></div>
+                        <p style="color:#888; margin-top:10px; margin-bottom:10px; font-size:14px;" data-i18n="reason_label"></p>
+                        <input type="text" id="reason-input" class="standalone-input" data-i18n-placeholder="placeholder_reason">
+                        <div style="margin-top: 15px;">
+                            <button id="submit-btn" class="btn" onclick="submitAction()" data-i18n="btn_submit"></button>
+                            <div id="op-status" style="color: #555; margin-top: 15px; font-weight: 600; font-size:12px; text-transform:uppercase;" data-i18n="op_status_typing"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="vote-panel" class="section-box hidden">
+                    <div class="flex-row">
+                        <h3 style="color:var(--text-light); letter-spacing:1px;" data-i18n="vote_h3"></h3>
+                        <div class="timer"><i class="fa-regular fa-clock"></i> <span id="chat-timer">180</span>s</div>
+                    </div>
+                    <div id="reveal-area" style="background:rgba(20,20,20,0.6); padding:20px; border-radius:6px; border:1px solid #333; margin-bottom:30px;"></div>
+                    <h4 style="color:var(--gold-dark); letter-spacing:2px; margin-bottom:15px; font-size:14px;" data-i18n="vote_h4"></h4>
+                    <div id="chat-history"></div>
+                    <div class="input-group">
+                        <input type="text" id="chat-input" data-i18n-placeholder="placeholder_chat">
+                        <button class="btn" onclick="sendChat()" data-i18n="btn_send_chat"></button>
+                    </div>
+                    <div id="voting-area" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                        <p style="color:#bbb; font-size:14px; margin-bottom:20px;" data-i18n="vote_desc"></p>
+                        <button id="btn-ai" class="btn full-width" onclick="requestAI()" style="border-color:#0ff; color:#0ff;" data-i18n="btn_ai_request"></button>
+                        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+                            <button id="vote-yes" class="btn" onclick="submitVote(true)" style="flex:1; border-color:var(--success); color:var(--success);" data-i18n="btn_vote_yes"></button>
+                            <button id="vote-no" class="btn" onclick="submitVote(false)" style="flex:1; border-color:var(--error); color:var(--error);" data-i18n="btn_vote_no"></button>
+                        </div>
+                        <div id="vote-wait" class="hidden" style="margin-top:15px; color:var(--gold); font-weight:bold; text-align:center;" data-i18n="vote_wait"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-lore" class="view-panel">
+                <div class="section-box">
+                    <h2 style="font-family:'Cinzel',serif; color:var(--gold); margin-bottom:20px;" data-i18n="lore_h2"></h2>
+                    <p style="color:#ccc; line-height:1.8; margin-bottom:15px; text-align:justify;" data-i18n="lore_p1"></p>
+                    <p style="color:#ccc; line-height:1.8; margin-bottom:15px; text-align:justify;" data-i18n="lore_p2"></p>
+                    <p style="color:#ccc; line-height:1.8; margin-bottom:15px; text-align:justify;" data-i18n="lore_p3"></p>
+                </div>
+            </div>
+
+            <div id="panel-masters" class="view-panel">
+                <div class="section-box">
+                    <h2 style="font-family:'Cinzel',serif; color:var(--gold); margin-bottom:20px;" data-i18n="masters_h2"></h2>
+                    <table class="leaderboard">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th data-i18n="table_traveler">Podróżnik</th>
+                                <th data-i18n="table_rank">Ranga</th>
+                                <th data-i18n="table_score">Wygrane Próby</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="rank-num">1</td><td>Aurelius</td><td><span style="color:var(--rank-star)">Star</span></td><td>1,240</td></tr>
+                            <tr><td class="rank-num">2</td><td>VoidWalker</td><td><span style="color:var(--rank-star)">Star</span></td><td>1,105</td></tr>
+                            <tr><td class="rank-num">3</td><td>Ignis</td><td><span style="color:var(--rank-bonfire)">Bonfire</span></td><td>892</td></tr>
+                            <tr><td class="rank-num">4</td><td>Cipher</td><td><span style="color:var(--rank-bonfire)">Bonfire</span></td><td>750</td></tr>
+                            <tr><td class="rank-num">5</td><td>Dust</td><td><span style="color:var(--rank-flame)">Flame</span></td><td>420</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="color:#555; text-align:center; margin-top:20px; font-size:12px;" data-i18n="masters_note">Ranking odświeża się wraz z cyklem słońca.</p>
+                </div>
+            </div>
+
+            <div id="panel-profile" class="view-panel">
+                <div class="section-box">
+                    <div class="profile-header">
+                        <div class="avatar-box"><i class="fa-solid fa-user-astronaut"></i></div>
+                        <div style="flex:1;">
+                            <label style="color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px;" data-i18n="profile_name_label">Identyfikator statku:</label>
+                            <div class="input-group" style="margin-bottom:0; margin-top:5px;">
+                                <input type="text" value="Wędrowiec_9021" id="profile-name">
+                                <button class="btn" data-i18n="btn_save"><i class="fa-solid fa-floppy-disk"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="color:var(--text-light); margin-bottom:15px; font-size:16px;" data-i18n="profile_stats_h3">Rekordy Przetrwania</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h4 data-i18n="stat_played">ROZEGRANE</h4>
+                            <div class="val">42</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4 data-i18n="stat_won" style="color:var(--success)">ZWYCIĘSTWA</h4>
+                            <div class="val" style="color:var(--success)">28</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4 data-i18n="stat_lost" style="color:var(--error)">ŚMIERCI</h4>
+                            <div class="val" style="color:var(--error)">14</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-settings" class="view-panel">
+                <div class="section-box">
+                    <h2 style="font-family:'Cinzel',serif; color:var(--gold); margin-bottom:20px;" data-i18n="nav_settings"></h2>
+                    
+                    <div class="setting-row">
+                        <div class="setting-label" data-i18n="set_lang">Język Interfejsu (Language)</div>
+                        <div class="setting-control">
+                            <select id="lang-select" onchange="changeLanguage(this.value)">
+                                <option value="pl">Polski</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label" data-i18n="set_music">Muzyka w tle (Ognisko)</div>
+                        <div class="setting-control" style="text-align:right;">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label" data-i18n="set_sfx">Efekty Dźwiękowe (SFX)</div>
+                        <div class="setting-control" style="text-align:right;">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                        <div class="setting-label" data-i18n="set_anim">Animacje Tła</div>
+                        <div class="setting-control" style="text-align:right;">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -653,11 +516,45 @@
     </div>
 
 <script>
-    // --- SKRYPT NA ZAKŁADKI (Wizualny efekt w menu) ---
-    function switchNav(element) {
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
-        // Tutaj można w przyszłości dodać faktyczne pokazywanie innej podstrony
+    // --- SKRYPT NA ZAKŁADKI (SPA Routing) ---
+    function switchNav(targetPanelId, navElement) {
+        // Zaktualizuj klasę aktywną w menu
+        if(navElement) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            navElement.classList.add('active');
+        }
+        
+        // Zaktualizuj widoczne panele
+        document.querySelectorAll('.view-panel').forEach(panel => {
+            panel.classList.remove('active');
+        });
+        document.getElementById(targetPanelId).classList.add('active');
+        
+        // Ukryj powiadomienie globalne przy przełączaniu, chybą że to ekran gry
+        if(targetPanelId !== 'panel-trial') {
+            document.getElementById('disconnect-msg').classList.add('hidden');
+        }
+    }
+
+    // --- ZMIANA JĘZYKA W LOCIE ---
+    function changeLanguage(newLang) {
+        lang = newLang;
+        updateTranslations();
+    }
+
+    function updateTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            el.innerHTML = t(key);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            el.placeholder = t(key);
+        });
+        // Aktualizacja specjalnych stanów
+        if(socket && socket.connected) {
+            ui.status.innerText = t('status_ready');
+        }
     }
 
     // --- SŁOWNIK JĘZYKOWY ---
@@ -667,8 +564,8 @@
             h1_title: "AELWYD.SPACE",
             subtitle_desc: "Pojedynek Umysłów. Próba Kielichów.",
             
-            nav_home: "Strona Główna",
-            nav_open_space: "Otwarta Przestrzeń",
+            nav_home: "Baza",
+            nav_open_space: "Przestrzeń",
             nav_trial: "Próba",
             nav_lore: "Wiedza",
             nav_masters: "Mistrzowie",
@@ -683,29 +580,15 @@
             server_online: "ONLINE (Gotowy)",
             server_offline_error: "BŁĄD (Serwer offline)",
             quote_text: "\"Podróżniku, usiądź przy ogniu. W bezmiarze przestrzeni tylko to ognisko daje ciepło. Ale by przetrwać, musimy poddać próbie twoje intencje...\"",
+            btn_enter_space: "<i class='fa-solid fa-rocket'></i> ROZPOCZNIJ PODRÓŻ",
 
             lobby_h3_1: "OPEN SPACE <span>(MATCHMAKING)</span>",
             lobby_p_1: "Szukaj statków na horyzoncie. System znajdzie Ci przeciwnika.",
             
-            rank_1: "Zagubieni Podróżnicy i Nowicjusze",
-            rank_1_desc: "Dla ciekawskich i nowo przybyłych. Odkryj pierwsze tajemnice.",
-            rank_1_badge: "ISKRA",
-            rank_1_diff: "Spokojny",
-            
-            rank_2: "Poszukiwacze Prawdy",
-            rank_2_desc: "Dla pragnących głębszego sensu. Zmierz się z testem bystrości.",
-            rank_2_badge: "PŁOMIEŃ",
-            rank_2_diff: "Wymagający",
-            
-            rank_3: "Strażnicy Tajemnic",
-            rank_3_desc: "Dla czujnych i mądrych. Strzeż ukrytej wiedzy.",
-            rank_3_badge: "OGNISKO",
-            rank_3_diff: "Trudny",
-            
-            rank_4: "Bezwzględni Mistrzowie",
-            rank_4_desc: "Dla tych, którzy ryzykują wszystko. Wygrają tylko najostrzejsze umysły.",
-            rank_4_badge: "GWIAZDA",
-            rank_4_diff: "Ekstremalny",
+            rank_1: "Zagubieni Podróżnicy i Nowicjusze", rank_1_desc: "Dla ciekawskich i nowo przybyłych. Odkryj pierwsze tajemnice.", rank_1_badge: "ISKRA", rank_1_diff: "Spokojny",
+            rank_2: "Poszukiwacze Prawdy", rank_2_desc: "Dla pragnących głębszego sensu. Zmierz się z testem bystrości.", rank_2_badge: "PŁOMIEŃ", rank_2_diff: "Wymagający",
+            rank_3: "Strażnicy Tajemnic", rank_3_desc: "Dla czujnych i mądrych. Strzeż ukrytej wiedzy.", rank_3_badge: "OGNISKO", rank_3_diff: "Trudny",
+            rank_4: "Bezwzględni Mistrzowie", rank_4_desc: "Dla tych, którzy ryzykują wszystko. Wygrają tylko najostrzejsze umysły.", rank_4_badge: "GWIAZDA", rank_4_diff: "Ekstremalny",
 
             queue_text: "Przeszukiwanie sygnałów",
             btn_cancel: "<i class='fa-solid fa-xmark'></i> PRZERWIJ",
@@ -718,218 +601,89 @@
             placeholder_join: "Wpisz sygnał ogniska (kod) znajomego...",
             btn_join: "<i class='fa-solid fa-user-plus'></i> USIĄDŹ PRZY OGNIU",
 
-            info_1_title: "<i class='fa-solid fa-circle-down'></i> JAK TO DZIAŁA",
-            info_1_desc: "Odpowiadaj na pytania, czytaj w umyśle oponenta i udowodnij swoje intencje przez 5 rund.",
-            info_1_link: "DOWIEDZ SIĘ WIĘCEJ &rarr;",
-            info_2_title: "<i class='fa-solid fa-fire'></i> SZANUJ OGIEŃ",
-            info_2_desc: "Wspieraj rozwój serwera i pomóż utrzymać globalną sieć przy życiu.",
-            donate_link: "DORZUĆ DRWA DO OGNIA &rarr;",
-            info_3_title: "<i class='fa-solid fa-shield-halved'></i> POTRZEBUJESZ WSPARCIA?",
-            info_3_desc: "Utracono połączenie? Zasady są niejasne? Jesteśmy tu dla Ciebie.",
-            info_3_link: "UZYSKAJ POMOC &rarr;",
+            info_1_title: "<i class='fa-solid fa-circle-down'></i> JAK TO DZIAŁA", info_1_desc: "Odpowiadaj na pytania, czytaj w umyśle oponenta i udowodnij swoje intencje przez 5 rund.", info_1_link: "DOWIEDZ SIĘ WIĘCEJ &rarr;",
+            info_2_title: "<i class='fa-solid fa-fire'></i> SZANUJ OGIEŃ", info_2_desc: "Wspieraj rozwój serwera i pomóż utrzymać globalną sieć przy życiu.", donate_link: "DORZUĆ DRWA DO OGNIA &rarr;",
+            info_3_title: "<i class='fa-solid fa-shield-halved'></i> POTRZEBUJESZ WSPARCIA?", info_3_desc: "Utracono połączenie? Zasady są niejasne? Jesteśmy tu dla Ciebie.", info_3_link: "UZYSKAJ POMOC &rarr;",
+            
             footer_text: "AELWYD.SPACE<br><span>~ W BEZMIARZE PRZESTRZENI POZOSTAJE TYLKO OGIEŃ ~</span>",
 
-            countdown_h2: "NAWIĄZANO POŁĄCZENIE",
-            countdown_p: "Przygotuj umysł. Próba rozpoczyna się za:",
-            role_title: "FAZA: ???",
-            question_text: "Wybierz kielich:",
-            reason_label: "Dlaczego to robisz? (Twoja ukryta intencja):",
-            placeholder_reason: "Wpisz swój tok myślenia...",
-            btn_submit: "<i class='fa-solid fa-check'></i> ZAPIECZĘTUJ INTENCJĘ",
-            op_status_typing: "[ ] Przeciwnik spisuje intencje...",
-
-            vote_h3: "FAZA WERYFIKACJI",
-            vote_h4: "<i class='fa-solid fa-tower-broadcast'></i> KANAŁ DYSKUSYJNY",
-            placeholder_chat: "Przemów do przeciwnika...",
-            btn_send_chat: "<i class='fa-solid fa-paper-plane'></i>",
-            vote_desc: "<strong>Osądź intencje:</strong> Czy sens Waszych zapisów jest taki sam?",
-            btn_vote_yes: "<i class='fa-solid fa-thumbs-up'></i> INTENCJE ZGODNE",
-            btn_vote_no: "<i class='fa-solid fa-thumbs-down'></i> RÓŻNY SENS",
-            vote_wait: "Oczekuję na osąd przeciwnika...",
+            no_trial_h2: "Brak Aktywnej Próby",
+            no_trial_p: "Udaj się do Otwartej Przestrzeni, aby znaleźć przeciwnika.",
             
-            btn_ai_request: "<i class='fa-solid fa-robot'></i> PRZYZWIJ ARBITRA AI (Tylko 1. runda)",
-            ai_waiting: "Oczekiwanie na zgodę drugiego podróżnika...",
-            ai_analyzing: "🤖 AI analizuje zapisane intencje...",
+            countdown_h2: "NAWIĄZANO POŁĄCZENIE", countdown_p: "Przygotuj umysł. Próba rozpoczyna się za:",
+            role_title: "FAZA: ???", question_text: "Wybierz kielich:", reason_label: "Dlaczego to robisz? (Twoja ukryta intencja):", placeholder_reason: "Wpisz swój tok myślenia...", btn_submit: "<i class='fa-solid fa-check'></i> ZAPIECZĘTUJ INTENCJĘ", op_status_typing: "[ ] Przeciwnik spisuje intencje...",
+            
+            vote_h3: "FAZA WERYFIKACJI", vote_h4: "<i class='fa-solid fa-tower-broadcast'></i> KANAŁ DYSKUSYJNY", placeholder_chat: "Przemów do przeciwnika...", btn_send_chat: "<i class='fa-solid fa-paper-plane'></i>", vote_desc: "<strong>Osądź intencje:</strong> Czy sens Waszych zapisów jest taki sam?", btn_vote_yes: "<i class='fa-solid fa-thumbs-up'></i> INTENCJE ZGODNE", btn_vote_no: "<i class='fa-solid fa-thumbs-down'></i> RÓŻNY SENS", vote_wait: "Oczekuję na osąd przeciwnika...",
+            btn_ai_request: "<i class='fa-solid fa-robot'></i> PRZYZWIJ ARBITRA AI (Tylko 1. runda)", ai_waiting: "Oczekiwanie na zgodę drugiego podróżnika...", ai_analyzing: "🤖 AI analizuje zapisane intencje...",
+            
+            search_network: "Szukam sygnału dla Rangi {rank}", search_found: "Znaleziono sygnał! Nawiązywanie...", queue_empty: "Pustka. Tworzę poczekalnię...", queue_joined: "Ktoś odpowiedział! Budowanie wizji...", alert_no_code: "Musisz podać sygnał (kod)!", op_status_done: "<i class='fa-solid fa-check-double'></i> Przeciwnik zapieczętował intencję!", kick_disconnect: "Połączenie zerwane. Przeciwnik uciekł w nicość.", kick_idle: "Przeciwnik pochłonięty przez pustkę za brak aktywności.", error_prefix: "<i class='fa-solid fa-triangle-exclamation'></i> BŁĄD:", status_offline: "Połączenie utracone", kick_timeout: "Czas próby minął! Brak reakcji.",
+            role_poisoner: "RUNDA {round}/5 | ROZLEWASZ TRUCIZNĘ", question_poisoner: "Do którego kielicha wlewasz truciznę?", role_drinker: "RUNDA {round}/5 | WYBIERASZ KIELICH", question_drinker: "Który kielich wybierasz do wypicia?", cup_mine_select: "Kielich bliżej MNIE", cup_yours_select: "Kielich bliżej PRZECIWNIKA", alert_no_cup: "Ostrzeżenie: Musisz wybrać kielich!", alert_no_reason: "Ostrzeżenie: Zapisz swoją intencję!", btn_submitted: "ZAPIECZĘTOWANO",
+            res_title: "WYNIK RUNDY:", res_survived: "PRZEŻYCIE (+1)", res_died: "ŚMIERĆ", res_poison_pos: "Pozycja trucizny:", res_drunk_pos: "Wypito:", res_scroll_p: "Zapis Rozlewającego:", res_scroll_d: "Zapis Pijącego:", cup_mine_res: "Kielich bliżej Ciebie", cup_yours_res: "Kielich bliżej Przeciwnika", chat_you: "Ty", chat_op: "Oponent", chat_sys: "SYSTEM", sys_agree: "ZAPISY SĄ ZGODNE. Dodatkowy punkt uznany!", sys_disagree: "BRAK ZGODY CO DO SENSU. Próba bez bonusa.", vote_next: "Osąd zatwierdzony. Następna faza za", status_connected: "WYNIKI - Ty: {myScore} | Oponent: {opScore}",
+            end_title: "KONIEC PRÓBY", end_my_score: "Twój wynik:", end_op_score: "Wynik oponenta:", end_win: "ZWYCIĘSTWO", end_lose: "PORAŻKA", end_draw: "REMIS",
 
-            search_network: "Szukam sygnału dla Rangi {rank}",
-            search_found: "Znaleziono sygnał! Nawiązywanie...",
-            queue_empty: "Pustka. Tworzę poczekalnię...",
-            queue_joined: "Ktoś odpowiedział! Budowanie wizji...",
-            alert_no_code: "Musisz podać sygnał (kod)!",
-            op_status_done: "<i class='fa-solid fa-check-double'></i> Przeciwnik zapieczętował intencję!",
-            kick_disconnect: "Połączenie zerwane. Przeciwnik uciekł w nicość.",
-            kick_idle: "Przeciwnik pochłonięty przez pustkę za brak aktywności.",
-            error_prefix: "<i class='fa-solid fa-triangle-exclamation'></i> BŁĄD:",
-            status_offline: "Połączenie utracone",
-            kick_timeout: "Czas próby minął! Brak reakcji.",
-            role_poisoner: "RUNDA {round}/5 | ROZLEWASZ TRUCIZNĘ",
-            question_poisoner: "Do którego kielicha wlewasz truciznę?",
-            role_drinker: "RUNDA {round}/5 | WYBIERASZ KIELICH",
-            question_drinker: "Który kielich wybierasz do wypicia?",
-            cup_mine_select: "Kielich bliżej MNIE",
-            cup_yours_select: "Kielich bliżej PRZECIWNIKA",
-            alert_no_cup: "Ostrzeżenie: Musisz wybrać kielich!",
-            alert_no_reason: "Ostrzeżenie: Zapisz swoją intencję!",
-            btn_submitted: "ZAPIECZĘTOWANO",
-            res_title: "WYNIK RUNDY:",
-            res_survived: "PRZEŻYCIE (+1)",
-            res_died: "ŚMIERĆ",
-            res_poison_pos: "Pozycja trucizny:",
-            res_drunk_pos: "Wypito:",
-            res_scroll_p: "Zapis Rozlewającego:",
-            res_scroll_d: "Zapis Pijącego:",
-            cup_mine_res: "Kielich bliżej Ciebie",
-            cup_yours_res: "Kielich bliżej Przeciwnika",
-            chat_you: "Ty",
-            chat_op: "Oponent",
-            chat_sys: "SYSTEM",
-            sys_agree: "ZAPISY SĄ ZGODNE. Dodatkowy punkt uznany!",
-            sys_disagree: "BRAK ZGODY CO DO SENSU. Próba bez bonusa.",
-            vote_next: "Osąd zatwierdzony. Następna faza za",
-            status_connected: "WYNIKI - Ty: {myScore} | Oponent: {opScore}",
-            end_title: "KONIEC PRÓBY",
-            end_my_score: "Twój wynik:",
-            end_op_score: "Wynik oponenta:",
-            end_win: "ZWYCIĘSTWO",
-            end_lose: "PORAŻKA",
-            end_draw: "REMIS"
+            lore_h2: "Tajemnica Kielichów",
+            lore_p1: "Dawno temu, w czasach, o których milczą gwiazdy, starożytna rasa zwana Aelwyd przemierzała wszechświat w poszukiwaniu prawdy o świadomości. Stworzyli oni 'Próbę Kielichów' – brutalny, lecz perfekcyjny test, który miał oddzielić istoty kierowane zwierzęcym instynktem od tych zdolnych do empatii i przewidywania cudzych myśli.",
+            lore_p2: "Zasady są proste, ale konsekwencje ostateczne. Rozlewający trzyma w dłoniach truciznę i dwa kielichy. Musi zdecydować, w którym z nich ukryje zgubę. Pijący musi wybrać naczynie, z którego wypije. Jednak to nie ślepy traf decyduje o przetrwaniu, lecz 'Karta Intencji'.",
+            lore_p3: "Podróżnicy z najdalszych zakątków galaktyki spotykają się przy cyfrowych ogniskach, by sprawdzić, czy potrafią zestroić swoje umysły z nieznajomym. Wygrywa ten, kto zdoła spojrzeć na świat oczami swojego wroga.",
+
+            masters_h2: "Galaktyczni Mistrzowie",
+            table_traveler: "Podróżnik", table_rank: "Ranga", table_score: "Wygrane Próby", masters_note: "Ranking odświeża się wraz z cyklem słońca.",
+
+            profile_name_label: "Identyfikator statku:", btn_save: "<i class='fa-solid fa-floppy-disk'></i> ZAPISZ", profile_stats_h3: "Rekordy Przetrwania", stat_played: "ROZEGRANE", stat_won: "ZWYCIĘSTWA", stat_lost: "ŚMIERCI",
+
+            set_lang: "Język Interfejsu (Language)", set_music: "Muzyka w tle (Ognisko)", set_sfx: "Efekty Dźwiękowe (SFX)", set_anim: "Animacje Tła"
         },
         en: {
-            page_title: "Aelwyd.Space - Trial of Chalices",
-            h1_title: "AELWYD.SPACE",
-            subtitle_desc: "Duel of Minds. The Trial of Chalices.",
+            page_title: "Aelwyd.Space - Trial of Chalices", h1_title: "AELWYD.SPACE", subtitle_desc: "Duel of Minds. The Trial of Chalices.",
             
-            nav_home: "Home",
-            nav_open_space: "Open Space",
-            nav_trial: "Trial",
-            nav_lore: "Lore",
-            nav_masters: "Masters",
-            nav_profile: "Profile",
-            nav_settings: "Settings",
+            nav_home: "Base", nav_open_space: "Space", nav_trial: "Trial", nav_lore: "Lore", nav_masters: "Masters", nav_profile: "Profile", nav_settings: "Settings",
 
-            server_comms: "<i class='fa-solid fa-satellite-dish' style='color:var(--gold-dark);'></i> SERVER COMMS",
-            status_init: "Initializing connections...",
-            status_ready: "Ready for connection.",
-            server_checking: "WAKING UP (up to 60s)",
-            server_offline_timeout: "OFFLINE (Timeout)",
-            server_online: "ONLINE (Ready)",
-            server_offline_error: "ERROR (Offline)",
+            server_comms: "<i class='fa-solid fa-satellite-dish' style='color:var(--gold-dark);'></i> SERVER COMMS", status_init: "Initializing connections...", status_ready: "Ready for connection.", server_checking: "WAKING UP (up to 60s)", server_offline_timeout: "OFFLINE (Timeout)", server_online: "ONLINE (Ready)", server_offline_error: "ERROR (Offline)",
             quote_text: "\"Traveler, sit by the fire. In the vastness of space, only this bonfire provides warmth. But to survive, we must test your intentions...\"",
+            btn_enter_space: "<i class='fa-solid fa-rocket'></i> BEGIN THE JOURNEY",
 
-            lobby_h3_1: "OPEN SPACE <span>(MATCHMAKING)</span>",
-            lobby_p_1: "Look for ships on the horizon. The system will find an opponent.",
-            
-            rank_1: "Lost Travelers and Novices",
-            rank_1_desc: "For the curious and the newly arrived. Uncover the first secrets.",
-            rank_1_badge: "SPARK",
-            rank_1_diff: "Casual",
-            
-            rank_2: "Seekers of Truth",
-            rank_2_desc: "For those who thirst for deeper meaning. Face tests of insight.",
-            rank_2_badge: "FLAME",
-            rank_2_diff: "Challenging",
-            
-            rank_3: "Keepers of Secrets",
-            rank_3_desc: "For the watchful and the wise. Guard hidden knowledge.",
-            rank_3_badge: "BONFIRE",
-            rank_3_diff: "Hard",
-            
-            rank_4: "Ruthless Masters",
-            rank_4_desc: "For those who dare everything. Only the sharpest minds prevail.",
-            rank_4_badge: "STAR",
-            rank_4_diff: "Extreme",
+            lobby_h3_1: "OPEN SPACE <span>(MATCHMAKING)</span>", lobby_p_1: "Look for ships on the horizon. The system will find an opponent.",
+            rank_1: "Lost Travelers and Novices", rank_1_desc: "For the curious and the newly arrived. Uncover the first secrets.", rank_1_badge: "SPARK", rank_1_diff: "Casual",
+            rank_2: "Seekers of Truth", rank_2_desc: "For those who thirst for deeper meaning. Face tests of insight.", rank_2_badge: "FLAME", rank_2_diff: "Challenging",
+            rank_3: "Keepers of Secrets", rank_3_desc: "For the watchful and the wise. Guard hidden knowledge.", rank_3_badge: "BONFIRE", rank_3_diff: "Hard",
+            rank_4: "Ruthless Masters", rank_4_desc: "For those who dare everything. Only the sharpest minds prevail.", rank_4_badge: "STAR", rank_4_diff: "Extreme",
 
-            queue_text: "Searching signals",
-            btn_cancel: "<i class='fa-solid fa-xmark'></i> CANCEL",
+            queue_text: "Searching signals", btn_cancel: "<i class='fa-solid fa-xmark'></i> CANCEL",
+            lobby_h3_2: "PRIVATE BONFIRE", lobby_p_2: "Light your own fire. Invite a friend. Begin a private Trial.", btn_create_room: "<i class='fa-solid fa-fire'></i> LIGHT YOUR OWN FIRE", host_info_code: "Your signal (code):", host_info_waiting: "Waiting for companion...", placeholder_join: "Enter a friend's bonfire signal...", btn_join: "<i class='fa-solid fa-user-plus'></i> SIT BY THE FIRE",
 
-            lobby_h3_2: "PRIVATE BONFIRE",
-            lobby_p_2: "Light your own fire. Invite a friend. Begin a private Trial.",
-            btn_create_room: "<i class='fa-solid fa-fire'></i> LIGHT YOUR OWN FIRE",
-            host_info_code: "Your signal (code):",
-            host_info_waiting: "Waiting for companion...",
-            placeholder_join: "Enter a friend's bonfire signal...",
-            btn_join: "<i class='fa-solid fa-user-plus'></i> SIT BY THE FIRE",
-
-            info_1_title: "<i class='fa-solid fa-circle-down'></i> HOW IT WORKS",
-            info_1_desc: "Answer questions, read your opponent, and prove your intention through 5 rounds.",
-            info_1_link: "LEARN MORE &rarr;",
-            info_2_title: "<i class='fa-solid fa-fire'></i> HONOR THE FIRE",
-            info_2_desc: "Support the server development and keep the global network alive.",
-            donate_link: "THROW WOOD INTO THE FIRE &rarr;",
-            info_3_title: "<i class='fa-solid fa-shield-halved'></i> NEED SUPPORT?",
-            info_3_desc: "Connection lost? Rules unclear? We're here for you.",
-            info_3_link: "GET HELP &rarr;",
+            info_1_title: "<i class='fa-solid fa-circle-down'></i> HOW IT WORKS", info_1_desc: "Answer questions, read your opponent, and prove your intention through 5 rounds.", info_1_link: "LEARN MORE &rarr;",
+            info_2_title: "<i class='fa-solid fa-fire'></i> HONOR THE FIRE", info_2_desc: "Support the server development and keep the global network alive.", donate_link: "THROW WOOD INTO THE FIRE &rarr;",
+            info_3_title: "<i class='fa-solid fa-shield-halved'></i> NEED SUPPORT?", info_3_desc: "Connection lost? Rules unclear? We're here for you.", info_3_link: "GET HELP &rarr;",
             footer_text: "AELWYD.SPACE<br><span>~ IN THE VASTNESS, ONLY THE FIRE REMAINS ~</span>",
 
-            countdown_h2: "CONNECTION ESTABLISHED",
-            countdown_p: "Prepare your mind. The Trial begins in:",
-            role_title: "PHASE: ???",
-            question_text: "Choose a chalice:",
-            reason_label: "Why do you choose this? (Your hidden intention):",
-            placeholder_reason: "Write your reasoning...",
-            btn_submit: "<i class='fa-solid fa-check'></i> SEAL INTENTION",
-            op_status_typing: "[ ] Opponent is writing...",
+            no_trial_h2: "No Active Trial", no_trial_p: "Head to the Open Space to find an opponent.",
             
-            vote_h3: "VERIFICATION PHASE",
-            vote_h4: "<i class='fa-solid fa-tower-broadcast'></i> DISCUSSION CHANNEL",
-            placeholder_chat: "Speak to your opponent...",
-            btn_send_chat: "<i class='fa-solid fa-paper-plane'></i>",
-            vote_desc: "<strong>Judge the intentions:</strong> Do the notes convey the same meaning?",
-            btn_vote_yes: "<i class='fa-solid fa-thumbs-up'></i> INTENTIONS ALIGN",
-            btn_vote_no: "<i class='fa-solid fa-thumbs-down'></i> SENSE DIFFERS",
-            vote_wait: "Waiting for opponent's judgment...",
+            countdown_h2: "CONNECTION ESTABLISHED", countdown_p: "Prepare your mind. The Trial begins in:",
+            role_title: "PHASE: ???", question_text: "Choose a chalice:", reason_label: "Why do you choose this? (Your hidden intention):", placeholder_reason: "Write your reasoning...", btn_submit: "<i class='fa-solid fa-check'></i> SEAL INTENTION", op_status_typing: "[ ] Opponent is writing...",
             
-            btn_ai_request: "<i class='fa-solid fa-robot'></i> SUMMON AI ARBITER (Round 1 Only)",
-            ai_waiting: "Waiting for companion's agreement...",
-            ai_analyzing: "🤖 AI is analyzing the recorded intentions...",
+            vote_h3: "VERIFICATION PHASE", vote_h4: "<i class='fa-solid fa-tower-broadcast'></i> DISCUSSION CHANNEL", placeholder_chat: "Speak to your opponent...", btn_send_chat: "<i class='fa-solid fa-paper-plane'></i>", vote_desc: "<strong>Judge the intentions:</strong> Do the notes convey the same meaning?", btn_vote_yes: "<i class='fa-solid fa-thumbs-up'></i> INTENTIONS ALIGN", btn_vote_no: "<i class='fa-solid fa-thumbs-down'></i> SENSE DIFFERS", vote_wait: "Waiting for opponent's judgment...",
+            btn_ai_request: "<i class='fa-solid fa-robot'></i> SUMMON AI ARBITER (Round 1 Only)", ai_waiting: "Waiting for companion's agreement...", ai_analyzing: "🤖 AI is analyzing the recorded intentions...",
             
-            search_network: "Searching signal for Rank {rank}",
-            search_found: "Signal found! Establishing...",
-            queue_empty: "Void. Creating lobby...",
-            queue_joined: "Someone answered! Building vision...",
-            alert_no_code: "You must enter a signal code!",
-            op_status_done: "<i class='fa-solid fa-check-double'></i> Opponent sealed their intention!",
-            kick_disconnect: "Connection lost. The opponent fled into the void.",
-            kick_idle: "Opponent consumed by the void for inactivity.",
-            error_prefix: "<i class='fa-solid fa-triangle-exclamation'></i> ERROR:",
-            status_offline: "Connection lost",
-            kick_timeout: "Trial time is up! No response.",
-            role_poisoner: "ROUND {round}/5 | POURING POISON",
-            question_poisoner: "Which chalice do you poison?",
-            role_drinker: "ROUND {round}/5 | CHOOSING CHALICE",
-            question_drinker: "Which chalice do you drink from?",
-            cup_mine_select: "Chalice closer to ME",
-            cup_yours_select: "Chalice closer to OPPONENT",
-            alert_no_cup: "Warning: You must choose a chalice!",
-            alert_no_reason: "Warning: Record your intention!",
-            btn_submitted: "SEALED",
-            res_title: "ROUND RESULT:",
-            res_survived: "SURVIVED (+1)",
-            res_died: "DEATH",
-            res_poison_pos: "Poison position:",
-            res_drunk_pos: "Drank from:",
-            res_scroll_p: "Pourer's Record:",
-            res_scroll_d: "Drinker's Record:",
-            cup_mine_res: "Chalice closer to You",
-            cup_yours_res: "Chalice closer to Opponent",
-            chat_you: "You",
-            chat_op: "Opponent",
-            chat_sys: "SYSTEM",
-            sys_agree: "RECORDS ALIGN. Extra point awarded!",
-            sys_disagree: "DISAGREEMENT ON MEANING. Trial without bonus.",
-            vote_next: "Judgment confirmed. Next phase in",
-            status_connected: "SCORE - You: {myScore} | Opponent: {opScore}",
-            end_title: "END OF TRIAL",
-            end_my_score: "Your score:",
-            end_op_score: "Opponent's score:",
-            end_win: "VICTORY",
-            end_lose: "DEFEAT",
-            end_draw: "DRAW"
+            search_network: "Searching signal for Rank {rank}", search_found: "Signal found! Establishing...", queue_empty: "Void. Creating lobby...", queue_joined: "Someone answered! Building vision...", alert_no_code: "You must enter a signal code!", op_status_done: "<i class='fa-solid fa-check-double'></i> Opponent sealed their intention!", kick_disconnect: "Connection lost. The opponent fled into the void.", kick_idle: "Opponent consumed by the void for inactivity.", error_prefix: "<i class='fa-solid fa-triangle-exclamation'></i> ERROR:", status_offline: "Connection lost", kick_timeout: "Trial time is up! No response.",
+            role_poisoner: "ROUND {round}/5 | POURING POISON", question_poisoner: "Which chalice do you poison?", role_drinker: "ROUND {round}/5 | CHOOSING CHALICE", question_drinker: "Which chalice do you drink from?", cup_mine_select: "Chalice closer to ME", cup_yours_select: "Chalice closer to OPPONENT", alert_no_cup: "Warning: You must choose a chalice!", alert_no_reason: "Warning: Record your intention!", btn_submitted: "SEALED",
+            res_title: "ROUND RESULT:", res_survived: "SURVIVED (+1)", res_died: "DEATH", res_poison_pos: "Poison position:", res_drunk_pos: "Drank from:", res_scroll_p: "Pourer's Record:", res_scroll_d: "Drinker's Record:", cup_mine_res: "Chalice closer to You", cup_yours_res: "Chalice closer to Opponent", chat_you: "You", chat_op: "Opponent", chat_sys: "SYSTEM", sys_agree: "RECORDS ALIGN. Extra point awarded!", sys_disagree: "DISAGREEMENT ON MEANING. Trial without bonus.", vote_next: "Judgment confirmed. Next phase in", status_connected: "SCORE - You: {myScore} | Opponent: {opScore}",
+            end_title: "END OF TRIAL", end_my_score: "Your score:", end_op_score: "Opponent's score:", end_win: "VICTORY", end_lose: "DEFEAT", end_draw: "DRAW",
+
+            lore_h2: "The Mystery of Chalices",
+            lore_p1: "Long ago, in times the stars stay silent about, an ancient race known as Aelwyd traversed the universe in search of truth about consciousness. They created the 'Trial of Chalices' – a brutal yet perfect test meant to separate beings driven by primal instinct from those capable of empathy and foreseeing others' thoughts.",
+            lore_p2: "The rules are simple, but the consequences are absolute. The pourer holds poison and two chalices. They must decide in which to hide the doom. The drinker must choose the vessel from which they will drink. However, it is not blind luck that decides survival, but the 'Card of Intention'.",
+            lore_p3: "Travelers from the furthest reaches of the galaxy meet at digital bonfires to see if they can tune their minds to a stranger. The one who manages to see the world through the eyes of their enemy prevails.",
+
+            masters_h2: "Galactic Masters",
+            table_traveler: "Traveler", table_rank: "Rank", table_score: "Trials Won", masters_note: "The leaderboard refreshes with the solar cycle.",
+
+            profile_name_label: "Ship Identifier:", btn_save: "<i class='fa-solid fa-floppy-disk'></i> SAVE", profile_stats_h3: "Survival Records", stat_played: "MATCHES", stat_won: "VICTORIES", stat_lost: "DEATHS",
+
+            set_lang: "Interface Language", set_music: "Background Music (Bonfire)", set_sfx: "Sound Effects (SFX)", set_anim: "Background Animations"
         }
     };
 
-    const userLang = navigator.language || navigator.userLanguage;
-    const lang = userLang.startsWith('pl') ? 'pl' : 'en';
+    let lang = navigator.language.startsWith('pl') ? 'pl' : 'en';
 
     function t(key, params = {}) {
         let str = dict[lang][key] || key;
@@ -939,193 +693,117 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         document.title = t('page_title');
-        
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            el.innerHTML = t(key);
-        });
-
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-            const key = el.getAttribute('data-i18n-placeholder');
-            el.placeholder = t(key);
-        });
-
-        ui.status.innerText = t('status_ready');
+        document.getElementById('lang-select').value = lang;
+        updateTranslations();
     });
 
+    // --- GAME LOGIC ---
     const SERVER_URL = 'https://stinky-baka-test-server.onrender.com'; 
-    
     let socket;
     let isHost = false;
 
     let state = {
-        round: 1, maxRounds: 5,
-        myScore: 0, opScore: 0,
-        myRole: '',
-        myAction: null, opAction: null,
-        myVote: null, opVote: null,
-        aiMode: false
+        round: 1, maxRounds: 5, myScore: 0, opScore: 0,
+        myRole: '', myAction: null, opAction: null, myVote: null, opVote: null, aiMode: false
     };
 
     let timerInterval, chatTimerInterval;
     let timeLeft = 120, chatTimeLeft = 180;
 
     const ui = {
-        status: document.getElementById('status'), lobby: document.getElementById('lobby-panel'),
-        countdown: document.getElementById('countdown-panel'), game: document.getElementById('game-panel'),
-        vote: document.getElementById('vote-panel'), hostInfo: document.getElementById('host-info'),
-        roomId: document.getElementById('room-id'), startTimer: document.getElementById('start-timer'),
+        status: document.getElementById('status'),
+        countdown: document.getElementById('countdown-panel'), game: document.getElementById('game-panel'), vote: document.getElementById('vote-panel'),
+        hostInfo: document.getElementById('host-info'), roomId: document.getElementById('room-id'), startTimer: document.getElementById('start-timer'),
         roleTitle: document.getElementById('role-title'), roundTimer: document.getElementById('round-timer'),
-        cupOptions: document.getElementById('cup-options'), reasonInput: document.getElementById('reason-input'),
-        submitBtn: document.getElementById('submit-btn'), opStatus: document.getElementById('op-status'),
-        revealArea: document.getElementById('reveal-area'), chatHistory: document.getElementById('chat-history'),
-        chatInput: document.getElementById('chat-input'), voteWait: document.getElementById('vote-wait'),
-        voteYes: document.getElementById('vote-yes'), voteNo: document.getElementById('vote-no'),
-        chatTimer: document.getElementById('chat-timer'), disconnectMsg: document.getElementById('disconnect-msg'),
-        queueStatus: document.getElementById('queue-status'), queueText: document.getElementById('queue-text'),
-        serverStatus: document.getElementById('server-status'), serverMsg: document.getElementById('server-msg'),
-        serverDots: document.getElementById('server-dots')
+        cupOptions: document.getElementById('cup-options'), reasonInput: document.getElementById('reason-input'), submitBtn: document.getElementById('submit-btn'),
+        opStatus: document.getElementById('op-status'), revealArea: document.getElementById('reveal-area'), chatHistory: document.getElementById('chat-history'),
+        chatInput: document.getElementById('chat-input'), voteWait: document.getElementById('vote-wait'), voteYes: document.getElementById('vote-yes'),
+        voteNo: document.getElementById('vote-no'), chatTimer: document.getElementById('chat-timer'), disconnectMsg: document.getElementById('disconnect-msg'),
+        queueStatus: document.getElementById('queue-status'), queueText: document.getElementById('queue-text'), serverStatus: document.getElementById('server-status'),
+        serverMsg: document.getElementById('server-msg'), serverDots: document.getElementById('server-dots')
     };
 
     function connectToServer() {
         socket = io(SERVER_URL);
-
         socket.on('connect', () => {
             ui.serverMsg.innerHTML = `<span style="color:var(--success); font-weight:bold;">${t('server_online')}</span>`;
-            ui.serverDots.style.display = 'none';
-            ui.serverStatus.style.borderLeftColor = 'var(--success)';
-            ui.status.innerText = t('status_ready');
-            ui.status.style.color = "var(--success)";
+            ui.serverDots.style.display = 'none'; ui.serverStatus.style.borderLeftColor = 'var(--success)';
+            ui.status.innerText = t('status_ready'); ui.status.style.color = "var(--success)";
         });
-
         socket.on('connect_error', () => {
             ui.serverMsg.innerHTML = `<span style="color:var(--error); font-weight:bold;">${t('server_offline_error')}</span>`;
-            ui.serverDots.style.display = 'none';
-            ui.serverStatus.style.borderLeftColor = 'var(--error)';
-            ui.status.innerText = t('status_offline');
-            ui.status.style.color = "var(--error)";
+            ui.serverDots.style.display = 'none'; ui.serverStatus.style.borderLeftColor = 'var(--error)';
+            ui.status.innerText = t('status_offline'); ui.status.style.color = "var(--error)";
         });
-
-        socket.on('set_role', (data) => {
-            isHost = data.isHost;
-        });
-
+        socket.on('set_role', (data) => { isHost = data.isHost; });
         socket.on('match_found', () => {
-            ui.queueStatus.classList.add('hidden');
-            ui.hostInfo.classList.add('hidden');
+            ui.queueStatus.classList.add('hidden'); ui.hostInfo.classList.add('hidden');
+            // Automatyczne przeniesienie do zakładki Próby po znalezieniu meczu
+            document.getElementById('nav-trial').click();
             start5SecCountdown();
         });
-
         socket.on('game_action', (data) => {
-            state.opAction = data;
-            ui.opStatus.innerHTML = t('op_status_done');
-            ui.opStatus.style.color = "var(--success)";
+            state.opAction = data; ui.opStatus.innerHTML = t('op_status_done'); ui.opStatus.style.color = "var(--success)";
             checkBothSubmitted();
         });
-
         socket.on('chat_msg', (msg) => appendChat(t('chat_op'), msg, "msg-op"));
-        
-        socket.on('vote_action', (vote) => { 
-            state.opVote = vote; 
-            checkVotes(); 
-        });
-
+        socket.on('vote_action', (vote) => { state.opVote = vote; checkVotes(); });
         socket.on('ai_mode_active', () => {
             state.aiMode = true;
-            let btnAi = document.getElementById('btn-ai');
-            if (btnAi) btnAi.classList.add('hidden');
-            
+            let btnAi = document.getElementById('btn-ai'); if (btnAi) btnAi.classList.add('hidden');
             if (!ui.vote.classList.contains('hidden') && state.myVote === null) {
-                 ui.voteYes.classList.add('hidden');
-                 ui.voteNo.classList.add('hidden');
-                 ui.voteWait.classList.remove('hidden');
-                 ui.voteWait.innerText = t('ai_analyzing');
-                 ui.voteWait.style.color = "#0ff";
-                 
+                 ui.voteYes.classList.add('hidden'); ui.voteNo.classList.add('hidden');
+                 ui.voteWait.classList.remove('hidden'); ui.voteWait.innerText = t('ai_analyzing'); ui.voteWait.style.color = "#0ff";
                  let pAction = state.myRole === 'poisoner' ? state.myAction : state.opAction;
                  let dAction = state.myRole === 'drinker' ? state.myAction : state.opAction;
-                 
-                 if (isHost) {
-                     socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason });
-                 }
+                 if (isHost) { socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason }); }
             }
         });
-
-        socket.on('ai_evaluation_result', (isAgree) => {
-             state.myVote = isAgree;
-             state.opVote = isAgree;
-             checkVotes(); 
-        });
-        
-        socket.on('next_round', () => { 
-            state.round++; 
-            start5SecCountdown(); 
-        });
-        
+        socket.on('ai_evaluation_result', (isAgree) => { state.myVote = isAgree; state.opVote = isAgree; checkVotes(); });
+        socket.on('next_round', () => { state.round++; start5SecCountdown(); });
         socket.on('end_game', () => endGame());
-        
         socket.on('opponent_disconnected', () => handleKick(t('kick_disconnect')));
-        
-        socket.on('error_msg', (msg) => {
-            ui.disconnectMsg.innerHTML = `${t('error_prefix')} ${msg}`;
-            ui.disconnectMsg.classList.remove('hidden');
-        });
+        socket.on('error_msg', (msg) => { ui.disconnectMsg.innerHTML = `${t('error_prefix')} ${msg}`; ui.disconnectMsg.classList.remove('hidden'); });
     }
 
     window.addEventListener('load', connectToServer);
 
     function searchRank(rank) {
-        ui.disconnectMsg.classList.add('hidden');
-        ui.queueStatus.classList.remove('hidden');
+        ui.disconnectMsg.classList.add('hidden'); ui.queueStatus.classList.remove('hidden');
         ui.queueText.innerText = t('search_network', {rank: rank});
         socket.emit('search_rank', rank);
     }
-
-    function cancelSearch() {
-        socket.emit('cancel_search');
-        ui.queueStatus.classList.add('hidden');
-    }
-
+    function cancelSearch() { socket.emit('cancel_search'); ui.queueStatus.classList.add('hidden'); }
     function createRoom() {
         ui.disconnectMsg.classList.add('hidden');
         let pin = Math.floor(1000 + Math.random() * 9000).toString();
-        socket.emit('create_room', pin);
-        ui.hostInfo.classList.remove('hidden');
-        ui.roomId.innerText = pin;
+        socket.emit('create_room', pin); ui.hostInfo.classList.remove('hidden'); ui.roomId.innerText = pin;
     }
-
     function joinRoom() {
         ui.disconnectMsg.classList.add('hidden');
         let pin = document.getElementById('join-id').value.trim();
-        if(!pin) {
-            ui.disconnectMsg.innerHTML = `${t('error_prefix')} ${t('alert_no_code')}`;
-            ui.disconnectMsg.classList.remove('hidden');
-            return;
-        }
+        if(!pin) { ui.disconnectMsg.innerHTML = `${t('error_prefix')} ${t('alert_no_code')}`; ui.disconnectMsg.classList.remove('hidden'); return; }
         socket.emit('join_room', pin);
     }
 
     function kickPlayer(reason) { handleKick(reason); }
-
     function handleKick(reason) {
-        clearInterval(timerInterval); clearInterval(chatTimerInterval); hideAll();
-        ui.lobby.classList.remove('hidden');
-        ui.disconnectMsg.innerHTML = `<strong>${t('error_prefix')}</strong> ${reason}`;
-        ui.disconnectMsg.classList.remove('hidden');
-        ui.status.innerText = t('status_ready');
-        ui.status.style.color = "var(--text-light)";
+        clearInterval(timerInterval); clearInterval(chatTimerInterval); hideGamePanels();
+        document.getElementById('no-trial-msg').classList.remove('hidden');
+        ui.disconnectMsg.innerHTML = `<strong>${t('error_prefix')}</strong> ${reason}`; ui.disconnectMsg.classList.remove('hidden');
+        ui.status.innerText = t('status_ready'); ui.status.style.color = "var(--text-light)";
         state.myScore = 0; state.opScore = 0; state.round = 1; state.aiMode = false;
-        socket.disconnect();
-        socket.connect();
+        socket.disconnect(); socket.connect();
     }
 
-    function hideAll() { 
-        ui.lobby.classList.add('hidden'); ui.countdown.classList.add('hidden'); 
-        ui.game.classList.add('hidden'); ui.vote.classList.add('hidden'); 
+    function hideGamePanels() { 
+        ui.countdown.classList.add('hidden'); ui.game.classList.add('hidden'); ui.vote.classList.add('hidden'); 
     }
 
     function start5SecCountdown() {
-        hideAll(); ui.countdown.classList.remove('hidden');
+        hideGamePanels();
+        document.getElementById('no-trial-msg').classList.add('hidden');
+        ui.countdown.classList.remove('hidden');
         updateStatus();
         let t_sec = 5; ui.startTimer.innerText = t_sec;
         let iv = setInterval(() => {
@@ -1135,44 +813,27 @@
     }
 
     function startPlayingPhase() {
-        hideAll(); ui.game.classList.remove('hidden');
-
-        let hostPoisons = (state.round % 2 !== 0);
-        state.myRole = (isHost === hostPoisons) ? 'poisoner' : 'drinker';
-
+        hideGamePanels(); ui.game.classList.remove('hidden');
+        let hostPoisons = (state.round % 2 !== 0); state.myRole = (isHost === hostPoisons) ? 'poisoner' : 'drinker';
         state.myAction = null; state.opAction = null; state.myVote = null; state.opVote = null;
         ui.reasonInput.value = ''; ui.reasonInput.disabled = false; selectedCup = null;
         ui.submitBtn.disabled = false; ui.submitBtn.innerHTML = t('btn_submit');
         ui.opStatus.innerHTML = t('op_status_typing'); ui.opStatus.style.color = "#555";
-        ui.voteYes.parentElement.classList.remove('hidden'); 
-        ui.voteWait.classList.add('hidden'); 
+        ui.voteYes.parentElement.classList.remove('hidden'); ui.voteWait.classList.add('hidden'); 
 
-        if(state.myRole === 'poisoner') {
-            ui.roleTitle.innerText = t('role_poisoner', {round: state.round});
-            document.getElementById('question-text').innerText = t('question_poisoner');
-        } else {
-            ui.roleTitle.innerText = t('role_drinker', {round: state.round});
-            document.getElementById('question-text').innerText = t('question_drinker');
-        }
+        if(state.myRole === 'poisoner') { ui.roleTitle.innerText = t('role_poisoner', {round: state.round}); document.getElementById('question-text').innerText = t('question_poisoner'); } 
+        else { ui.roleTitle.innerText = t('role_drinker', {round: state.round}); document.getElementById('question-text').innerText = t('question_drinker'); }
 
-        let mySideId = isHost ? 'host_side' : 'guest_side';
-        let opSideId = isHost ? 'guest_side' : 'host_side';
+        let mySideId = isHost ? 'host_side' : 'guest_side'; let opSideId = isHost ? 'guest_side' : 'host_side';
+        ui.cupOptions.innerHTML = `<div class="cup-option" id="cup-${mySideId}" onclick="selectCup('${mySideId}')">${t('cup_mine_select')}</div><div class="cup-option" id="cup-${opSideId}" onclick="selectCup('${opSideId}')">${t('cup_yours_select')}</div>`;
 
-        ui.cupOptions.innerHTML = `
-            <div class="cup-option" id="cup-${mySideId}" onclick="selectCup('${mySideId}')">${t('cup_mine_select')}</div>
-            <div class="cup-option" id="cup-${opSideId}" onclick="selectCup('${opSideId}')">${t('cup_yours_select')}</div>
-        `;
-
-        timeLeft = 120; ui.roundTimer.innerText = timeLeft;
-        clearInterval(timerInterval);
-        
+        timeLeft = 120; ui.roundTimer.innerText = timeLeft; clearInterval(timerInterval);
         timerInterval = setInterval(() => {
             timeLeft--; ui.roundTimer.innerText = timeLeft;
             if(timeLeft <= 0) {
                 clearInterval(timerInterval);
                 if(!state.myAction) {
-                    if(!selectedCup || !ui.reasonInput.value.trim()) kickPlayer(t('kick_timeout'));
-                    else submitAction();
+                    if(!selectedCup || !ui.reasonInput.value.trim()) kickPlayer(t('kick_timeout')); else submitAction();
                 }
             }
         }, 1000);
@@ -1180,47 +841,33 @@
 
     let selectedCup = null;
     function selectCup(cupId) {
-        if(state.myAction) return;
-        selectedCup = cupId;
+        if(state.myAction) return; selectedCup = cupId;
         document.querySelectorAll('.cup-option').forEach(el => el.classList.remove('selected'));
         document.getElementById(`cup-${cupId}`).classList.add('selected');
     }
 
     function submitAction() {
         if(!selectedCup) { alert(t('alert_no_cup')); return; }
-        let reason = ui.reasonInput.value.trim();
-        if(!reason) { alert(t('alert_no_reason')); return; }
-        
+        let reason = ui.reasonInput.value.trim(); if(!reason) { alert(t('alert_no_reason')); return; }
         state.myAction = { cup: selectedCup, reason: reason };
-        ui.submitBtn.disabled = true; ui.submitBtn.innerText = t('btn_submitted');
-        ui.reasonInput.disabled = true;
-
-        socket.emit('game_action', state.myAction);
-        checkBothSubmitted();
+        ui.submitBtn.disabled = true; ui.submitBtn.innerText = t('btn_submitted'); ui.reasonInput.disabled = true;
+        socket.emit('game_action', state.myAction); checkBothSubmitted();
     }
 
     function checkBothSubmitted() {
-        if(state.myAction && state.opAction) {
-            clearInterval(timerInterval); timeLeft = 0;
-            ui.roundTimer.innerText = 0;
-            setTimeout(showRevealPhase, 1000);
-        }
+        if(state.myAction && state.opAction) { clearInterval(timerInterval); timeLeft = 0; ui.roundTimer.innerText = 0; setTimeout(showRevealPhase, 1000); }
     }
 
     function requestAI() {
         if(state.myVote !== null) return;
-        let btnAi = document.getElementById('btn-ai');
-        btnAi.disabled = true;
-        btnAi.innerHTML = t('ai_waiting');
-        socket.emit('request_ai');
+        let btnAi = document.getElementById('btn-ai'); btnAi.disabled = true; btnAi.innerHTML = t('ai_waiting'); socket.emit('request_ai');
     }
 
     function showRevealPhase() {
-        hideAll(); ui.vote.classList.remove('hidden');
+        hideGamePanels(); ui.vote.classList.remove('hidden');
 
         let pAction = state.myRole === 'poisoner' ? state.myAction : state.opAction;
         let dAction = state.myRole === 'drinker' ? state.myAction : state.opAction;
-
         let survived = (pAction.cup !== dAction.cup);
 
         if(survived && state.myRole === 'drinker') state.myScore++;
@@ -1231,126 +878,57 @@
         resHtml += `<p style="margin-bottom:8px; font-size:14px;"><strong style="color:var(--text-light);">${t('res_scroll_p')}</strong> <span style="font-style:italic; color:#888;">"${pAction.reason}"</span></p>`;
         resHtml += `<p style="font-size:14px;"><strong style="color:var(--text-light);">${t('res_scroll_d')}</strong> <span style="font-style:italic; color:#888;">"${dAction.reason}"</span></p>`;
 
-        ui.revealArea.innerHTML = resHtml;
-        updateStatus(); ui.voteWait.innerText = t('vote_wait');
-        ui.voteWait.style.color = "var(--gold)";
+        ui.revealArea.innerHTML = resHtml; updateStatus(); ui.voteWait.innerText = t('vote_wait'); ui.voteWait.style.color = "var(--gold)";
         
         let btnAi = document.getElementById('btn-ai');
-        
         if (state.aiMode) {
-            ui.voteYes.parentElement.classList.add('hidden');
-            btnAi.classList.add('hidden');
-            ui.voteWait.classList.remove('hidden');
-            ui.voteWait.innerText = t('ai_analyzing');
-            ui.voteWait.style.color = "#0ff";
-            
-            if (isHost) {
-                socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason });
-            }
+            ui.voteYes.parentElement.classList.add('hidden'); btnAi.classList.add('hidden'); ui.voteWait.classList.remove('hidden');
+            ui.voteWait.innerText = t('ai_analyzing'); ui.voteWait.style.color = "#0ff";
+            if (isHost) { socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason }); }
         } else {
-            ui.voteYes.parentElement.classList.remove('hidden');
-            ui.voteWait.classList.add('hidden');
-            
-            if (state.round === 1) {
-                btnAi.classList.remove('hidden');
-                btnAi.disabled = false;
-                btnAi.innerHTML = t('btn_ai_request');
-            } else {
-                btnAi.classList.add('hidden');
-            }
+            ui.voteYes.parentElement.classList.remove('hidden'); ui.voteWait.classList.add('hidden');
+            if (state.round === 1) { btnAi.classList.remove('hidden'); btnAi.disabled = false; btnAi.innerHTML = t('btn_ai_request'); } else { btnAi.classList.add('hidden'); }
         }
 
-        chatTimeLeft = 180; ui.chatTimer.innerText = chatTimeLeft;
-        clearInterval(chatTimerInterval);
-        
+        chatTimeLeft = 180; ui.chatTimer.innerText = chatTimeLeft; clearInterval(chatTimerInterval);
         chatTimerInterval = setInterval(() => {
             chatTimeLeft--; ui.chatTimer.innerText = chatTimeLeft;
-            if(chatTimeLeft <= 0) {
-                clearInterval(chatTimerInterval);
-                if(state.myVote === null && !state.aiMode) submitVote(false);
-            }
+            if(chatTimeLeft <= 0) { clearInterval(chatTimerInterval); if(state.myVote === null && !state.aiMode) submitVote(false); }
         }, 1000);
     }
 
-    function getLocalCupName(cupId) { 
-        return cupId === (isHost ? 'host_side' : 'guest_side') ? t('cup_mine_res') : t('cup_yours_res');
-    }
-
-    function sendChat() {
-        let msg = ui.chatInput.value.trim();
-        if(!msg) return;
-        appendChat(t('chat_you'), msg, "msg-me");
-        socket.emit('chat_msg', msg);
-        ui.chatInput.value = '';
-    }
-
-    function appendChat(sender, msg, cssClass) {
-        let p = document.createElement('p'); p.innerHTML = `<span class="${cssClass}">[${sender}]</span>: <span style="color:#ccc;">${msg}</span>`;
-        ui.chatHistory.appendChild(p); ui.chatHistory.scrollTop = ui.chatHistory.scrollHeight;
-    }
-
+    function getLocalCupName(cupId) { return cupId === (isHost ? 'host_side' : 'guest_side') ? t('cup_mine_res') : t('cup_yours_res'); }
+    function sendChat() { let msg = ui.chatInput.value.trim(); if(!msg) return; appendChat(t('chat_you'), msg, "msg-me"); socket.emit('chat_msg', msg); ui.chatInput.value = ''; }
+    function appendChat(sender, msg, cssClass) { let p = document.createElement('p'); p.innerHTML = `<span class="${cssClass}">[${sender}]</span>: <span style="color:#ccc;">${msg}</span>`; ui.chatHistory.appendChild(p); ui.chatHistory.scrollTop = ui.chatHistory.scrollHeight; }
     ui.chatInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendChat(); });
 
-    function submitVote(isYes) {
-        state.myVote = isYes;
-        ui.voteYes.parentElement.classList.add('hidden');
-        document.getElementById('btn-ai').classList.add('hidden');
-        ui.voteWait.classList.remove('hidden');
-        socket.emit('vote_action', isYes);
-        checkVotes();
-    }
-
+    function submitVote(isYes) { state.myVote = isYes; ui.voteYes.parentElement.classList.add('hidden'); document.getElementById('btn-ai').classList.add('hidden'); ui.voteWait.classList.remove('hidden'); socket.emit('vote_action', isYes); checkVotes(); }
+    
     function checkVotes() {
         if(state.myVote !== null && state.opVote !== null) {
             clearInterval(chatTimerInterval); ui.chatTimer.innerText = "0";
-            
-            if(state.myVote === true && state.opVote === true) {
-                appendChat(t('chat_sys'), t('sys_agree'), "msg-sys");
-                if(state.myRole === 'drinker') state.myScore++;
-                else state.opScore++;
-            } else appendChat(t('chat_sys'), t('sys_disagree'), "msg-sys");
-
+            if(state.myVote === true && state.opVote === true) { appendChat(t('chat_sys'), t('sys_agree'), "msg-sys"); if(state.myRole === 'drinker') state.myScore++; else state.opScore++; } else appendChat(t('chat_sys'), t('sys_disagree'), "msg-sys");
             updateStatus();
-
-            let waitTime = 10;
-            ui.voteWait.innerHTML = `${t('vote_next')} <strong id="next-phase-timer" style="color:var(--gold); font-size:1.2em;">${waitTime}</strong>s...`;
-            
+            let waitTime = 10; ui.voteWait.innerHTML = `${t('vote_next')} <strong id="next-phase-timer" style="color:var(--gold); font-size:1.2em;">${waitTime}</strong>s...`;
             let waitIv = setInterval(() => {
-                waitTime--; let el = document.getElementById('next-phase-timer');
-                if(el) el.innerText = waitTime;
-
-                if(waitTime <= 0) {
-                    clearInterval(waitIv);
-                    if(isHost) {
-                        if(state.round < state.maxRounds) {
-                            state.round++; start5SecCountdown(); socket.emit('next_round');
-                        } else { endGame(); socket.emit('end_game'); }
-                    }
-                }
+                waitTime--; let el = document.getElementById('next-phase-timer'); if(el) el.innerText = waitTime;
+                if(waitTime <= 0) { clearInterval(waitIv); if(isHost) { if(state.round < state.maxRounds) { state.round++; start5SecCountdown(); socket.emit('next_round'); } else { endGame(); socket.emit('end_game'); } } }
             }, 1000);
         }
     }
 
-    function updateStatus() { 
-        ui.status.innerText = t('status_connected', {myScore: state.myScore, opScore: state.opScore}); 
-        ui.status.style.color = "var(--gold)";
-    }
+    function updateStatus() { ui.status.innerText = t('status_connected', {myScore: state.myScore, opScore: state.opScore}); ui.status.style.color = "var(--gold)"; }
 
     function endGame() {
-        hideAll(); ui.lobby.classList.remove('hidden');
+        hideGamePanels();
+        document.getElementById('no-trial-msg').classList.remove('hidden');
         let resHtml = `<h2 style="font-size:24px; color:var(--text-light); margin-bottom:15px;">${t('end_title')}</h2><p style="font-size:16px; margin-bottom:5px; color:#aaa;">${t('end_my_score')} <strong style="color:var(--gold);">${state.myScore}</strong></p><p style="font-size:16px; margin-bottom:20px; color:#aaa;">${t('end_op_score')} <strong style="color:var(--gold);">${state.opScore}</strong></p>`;
-        
         if(state.myScore > state.opScore) resHtml += `<h3 style='color:var(--success); font-size:28px; text-shadow:0 0 15px rgba(76,175,80,0.4);'>${t('end_win')}</h3>`;
         else if(state.myScore < state.opScore) resHtml += `<h3 style='color:var(--error); font-size:28px; text-shadow:0 0 15px rgba(212,92,47,0.4);'>${t('end_lose')}</h3>`;
         else resHtml += `<h3 style='color:var(--gold); font-size:28px; text-shadow:0 0 15px rgba(212,163,92,0.4);'>${t('end_draw')}</h3>`;
 
-        ui.disconnectMsg.innerHTML = resHtml;
-        ui.disconnectMsg.classList.remove('hidden');
-        ui.disconnectMsg.style.textAlign = 'center';
-        ui.disconnectMsg.style.padding = '40px';
-        state.aiMode = false;
-        socket.disconnect();
-        socket.connect();
+        ui.disconnectMsg.innerHTML = resHtml; ui.disconnectMsg.classList.remove('hidden'); ui.disconnectMsg.style.textAlign = 'center'; ui.disconnectMsg.style.padding = '40px';
+        state.aiMode = false; socket.disconnect(); socket.connect();
     }
 </script>
 </body>
