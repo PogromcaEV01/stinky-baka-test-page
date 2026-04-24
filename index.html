@@ -869,6 +869,48 @@
         errDiv.style.display = 'block';
     }
 }
+   async function attemptRegister() {
+    const code = document.getElementById('reg-code').value.trim();
+    const user = document.getElementById('reg-user').value.trim();
+    const pass = document.getElementById('reg-pass').value.trim();
+    const msgDiv = document.getElementById('reg-msg');
+
+    if (!code || !user || !pass) {
+        msgDiv.style.color = "#f00";
+        msgDiv.innerText = "> BŁĄD: Wypełnij wszystkie pola.";
+        msgDiv.style.display = 'block';
+        return;
+    }
+
+    try {
+        const response = await fetch(`${SERVER_URL}/api/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: user, password: pass, inviteCode: code })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            msgDiv.style.color = "#0f0";
+            msgDiv.innerText = "> SUKCES: " + result.message;
+            msgDiv.style.display = 'block';
+            
+            // Czyszczenie pól po sukcesie
+            document.getElementById('reg-code').value = '';
+            document.getElementById('reg-user').value = '';
+            document.getElementById('reg-pass').value = '';
+        } else {
+            msgDiv.style.color = "#f00";
+            msgDiv.innerText = "> BŁĄD: " + result.message;
+            msgDiv.style.display = 'block';
+        }
+    } catch (e) {
+        msgDiv.style.color = "#f00";
+        msgDiv.innerText = "> BŁĄD SYSTEMU: Brak połączenia z serwerem.";
+        msgDiv.style.display = 'block';
+    }
+}
 </script>
 </body>
 </html>
