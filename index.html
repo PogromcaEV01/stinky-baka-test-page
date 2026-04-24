@@ -543,16 +543,21 @@
         });
 
         socket.on('ai_evaluation_result', (data) => {
-             // Zaktualizowane przypisanie zmiennych z obiektu 'data'
-             state.myVote = data.isAgree;
-             state.opVote = data.isAgree;
-             
-             // Wyświetlenie uzasadnienia na czacie systemu
-             if (data.reason) {
-                 appendChat(t('chat_sys'), `🤖 Werdykt AI: ${data.reason}`, "msg-sys");
-             }
-             
-             checkVotes(); 
+            console.log("Otrzymane dane od AI:", data); // Zobaczysz to w konsoli przeglądarki (F12)
+            
+            // Zabezpieczenie: jeśli data to obiekt, weź isAgree, jeśli nie - załóż, że to stary boolean
+            let isAgree = typeof data === 'object' ? data.isAgree : data;
+            let reason = typeof data === 'object' ? data.reason : null;
+
+            state.myVote = isAgree;
+            state.opVote = isAgree;
+            
+            // Jeśli jest uzasadnienie, pokaż je na czacie
+            if (reason) {
+                appendChat(t('chat_sys'), `🤖 Werdykt AI: ${reason}`, "msg-sys");
+            }
+            
+            checkVotes(); 
         });
         
         socket.on('next_round', () => { 
