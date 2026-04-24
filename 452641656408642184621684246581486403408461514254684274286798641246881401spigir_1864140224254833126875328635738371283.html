@@ -759,7 +759,17 @@
                  if (isHost) { socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason }); }
             }
         });
-        socket.on('ai_evaluation_result', (isAgree) => { state.myVote = isAgree; state.opVote = isAgree; checkVotes(); });
+        socket.on('ai_evaluation_result', (data) => { 
+            state.myVote = data.isAgree; 
+            state.opVote = data.isAgree; 
+            
+            // Wysłanie wiadomości systemowej z werdyktem i uzasadnieniem
+            if (data.reason) {
+                appendChat(t('chat_sys'), `🤖 Werdykt AI: ${data.reason}`, "msg-sys");
+            }
+            
+            checkVotes(); 
+        });
         socket.on('next_round', () => { state.round++; start5SecCountdown(); });
         socket.on('end_game', () => endGame());
         socket.on('opponent_disconnected', () => handleKick(t('kick_disconnect')));
