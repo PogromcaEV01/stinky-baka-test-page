@@ -542,9 +542,16 @@
             }
         });
 
-        socket.on('ai_evaluation_result', (isAgree) => {
-             state.myVote = isAgree;
-             state.opVote = isAgree;
+        socket.on('ai_evaluation_result', (data) => {
+             // Zaktualizowane przypisanie zmiennych z obiektu 'data'
+             state.myVote = data.isAgree;
+             state.opVote = data.isAgree;
+             
+             // Wyświetlenie uzasadnienia na czacie systemu
+             if (data.reason) {
+                 appendChat(t('chat_sys'), `🤖 Werdykt AI: ${data.reason}`, "msg-sys");
+             }
+             
              checkVotes(); 
         });
         
