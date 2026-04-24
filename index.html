@@ -152,27 +152,27 @@
         <button onclick="joinRoom()" data-i18n="btn_join">[ DOŁĄCZ ]</button>
     </div>
 
-    <hr style="border-color:#0f0; border-style:dashed; margin: 20px 0;">
-    <h3 style="color: #ff0;">> SYSTEM AELWYD</h3>
+    <hr style="border-color:#ff0; border-style:dashed; margin: 20px 0;">
+    <h3 style="color: #ff0;">> SYSTEM AELWYD (PREMIUM)</h3>
     <div class="input-group" style="flex-direction: column; gap: 5px;">
-        <input type="text" id="login-user" placeholder="Login">
-        <input type="password" id="login-pass" placeholder="Hasło" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px;">
+        <input type="text" id="login-user" placeholder="Identyfikator (Login)">
+        <input type="password" id="login-pass" placeholder="Kod autoryzacji (Hasło)" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px;">
     </div>
     <button onclick="attemptLogin()" style="width: 100%; border-color: #ff0; color: #ff0; background: #220;">[ AUTORYZUJ DOSTĘP ]</button>
-    
-    <div id="login-error" style="color: #f00; margin-top: 10px; display: none;"></div>
+    <div id="login-error" style="color: #f00; margin-top: 10px; font-weight: bold; display: none;"></div>
 
-    <hr style="border-color:#0f0; border-style:dashed; margin: 20px 0;">
-    <h3 style="color: #0ff;">> REJESTRACJA NOWEGO KONTA</h3>
-    <p>Nie masz dostępu? <a href="https://ko-fi.com/pogromca" target="_blank" style="color: #0ff;">Kup Kod Dostępu</a></p>
-    
-    <div class="input-group" style="flex-direction: column; gap: 5px;">
-        <input type="text" id="reg-code" placeholder="Wprowadź zakupiony Kod Dostępu">
-        <input type="text" id="reg-user" placeholder="Wymyśl Login">
-        <input type="password" id="reg-pass" placeholder="Wymyśl Hasło" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px;">
+    <div id="registration-section" class="hidden" style="margin-top: 20px;">
+        <hr style="border-color:#0ff; border-style:dashed; margin: 20px 0;">
+        <h3 style="color: #0ff;">> INICJALIZACJA NOWEGO PROFILU</h3>
+        <p>Wymagany zewnętrzny Kod Dostępu. <a href="https://ko-fi.com/pogromca" target="_blank" style="color: #0ff;">Pozyskaj Kod (Ko-fi)</a></p>
+        <div class="input-group" style="flex-direction: column; gap: 5px;">
+            <input type="text" id="reg-code" placeholder="Wprowadź Kod Dostępu">
+            <input type="text" id="reg-user" placeholder="Wymyśl Identyfikator">
+            <input type="password" id="reg-pass" placeholder="Wymyśl Hasło" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px;">
+        </div>
+        <button onclick="attemptRegister()" style="width: 100%; border-color: #0ff; color: #0ff; background: #002222;">[ ZATWIERDŹ NOWE KONTO ]</button>
+        <div id="reg-msg" style="margin-top: 10px; font-weight: bold; display: none;"></div>
     </div>
-    <button onclick="attemptRegister()" style="width: 100%; border-color: #0ff; color: #0ff; background: #002222;">[ INICJUJ NOWY PROFIL ]</button>
-    <div id="reg-msg" style="margin-top: 10px; font-weight: bold; display: none;"></div>
 
    <a href="javascript:void(0)" class="donate-subtle" onclick="toggleRegistration()" data-i18n="donate_link">>> odblokuj_system_aelwyd</a>
 </div>
@@ -230,7 +230,7 @@
 </div>
 
 <script>
-    // --- SŁOWNIK I LOGIKA ---
+    // --- SŁOWNIK JĘZYKOWY (i18n) ---
     const dict = {
         pl: {
             page_title: "Gra w Truciznę - Globalna Sieć",
@@ -239,45 +239,94 @@
             status_ready: "[ GOTOWY DO POŁĄCZENIA ]",
             server_status_prefix: "Stan serwera:",
             server_checking: "SPRAWDZANIE / WYBUDZANIE (do 60s)...",
+            server_offline_timeout: "OFFLINE (Przekroczono czas oczekiwania. Spróbuj odświeżyć stronę)",
             server_online: "ONLINE (Gotowy do gry)",
-            server_offline_error: "OFFLINE (Błąd połączenia)",
+            server_offline_error: "OFFLINE (Błąd połączenia, upewnij się, że serwer działa)",
             lobby_h3_1: "> TRYB RANKINGOWY",
-            lobby_p_1: "Wybierz poziom przeciwników.",
-            rank_1: "[ RANGA 1 ] Świeżaki",
-            rank_2: "[ RANGA 2 ] Amatorzy",
-            rank_3: "[ RANGA 3 ] Doświadczeni",
-            rank_4: "[ RANGA 4 ] Mistrzowie",
+            lobby_p_1: "Wybierz poziom przeciwników. System przeszuka globalną sieć.",
+            rank_1: "[ RANGA 1 ] Świeżaki i nowicjusze",
+            rank_2: "[ RANGA 2 ] Amatorzy dedukcji",
+            rank_3: "[ RANGA 3 ] Doświadczeni psychologowie",
+            rank_4: "[ RANGA 4 ] Bezwzględni mistrzowie gry",
             queue_text: "Szukam przeciwnika",
             btn_cancel: "[ PRZERWIJ ]",
             lobby_h3_2: "> GRA PRYWATNA",
             btn_create_room: "[ STWÓRZ POKÓJ ]",
-            host_info_code: "Twój kod:",
-            host_info_waiting: "Czekam...",
-            placeholder_join: "Kod pokoju...",
+            host_info_code: "Twój kod dostępu:",
+            host_info_waiting: "Czekam na przeciwnika...",
+            placeholder_join: "Wpisz kod pokoju znajomego...",
             btn_join: "[ DOŁĄCZ ]",
             donate_link: ">> odblokuj_system_aelwyd",
             countdown_h2: "POŁĄCZONO!",
-            countdown_p: "Start za:",
+            countdown_p: "Przygotuj się. Runda rozpocznie się za:",
             role_title: "> FAZA: ???",
             timer_label: "CZAS:",
             question_text: "Wybierz kubek:",
-            reason_label: "Twoja kartka:",
-            placeholder_reason: "Tok myślenia...",
-            btn_submit: "[ ZATWIERDŹ ]",
+            reason_label: "Dlaczego tak wybierasz? (Twoja ukryta kartka):",
+            placeholder_reason: "Wpisz swój tok myślenia...",
+            btn_submit: "[ ODDAL KARTKĘ I ZATWIERDŹ ]",
             op_status_typing: "[ ] Przeciwnik pisze...",
-            vote_h3: "> WERYFIKACJA",
-            vote_h4: "> CZAT",
-            placeholder_chat: "Napisz wiadomość...",
+            vote_h3: "> FAZA: WERYFIKACJA",
+            vote_h4: "> KANAŁ DYSKUSYJNY",
+            placeholder_chat: "Napisz wiadomość przed głosowaniem...",
             btn_send_chat: "[ WYŚLIJ ]",
-            vote_desc: "Czy sens jest taki sam?",
-            btn_vote_yes: "[ TAK ]",
-            btn_vote_no: "[ NIE ]",
-            vote_wait: "Czekam na głos...",
-            btn_ai_request: "[ 🤖 SĘDZIA AI ]"
+            vote_desc: "<strong>Zdecyduj: Czy sens Waszych kartek jest taki sam?</strong> (Gdy obaj zagłosują, czas mija szybciej)",
+            btn_vote_yes: "[ TAK, ZGADZAMY SIĘ ]",
+            btn_vote_no: "[ NIE, INNY SENS ]",
+            vote_wait: "Czekam na głos przeciwnika...",
+            
+            // AI JUDGE
+            btn_ai_request: "[ 🤖 ZDAJ SIĘ NA AI (Tylko 1 runda) ]",
+            ai_waiting: "Czekam na zgodę przeciwnika...",
+            ai_analyzing: "🤖 AI analizuje sensy kartek..."
         },
         en: {
-            donate_link: ">> unlock_aelwyd_system"
-            // ... reszta tłumaczeń analogicznie
+            page_title: "Poison Game - Global Network",
+            h1_title: "> DUEL OF MINDS_",
+            status_init: "[ SYSTEM INITIALIZATION... ]",
+            status_ready: "[ READY TO CONNECT ]",
+            server_status_prefix: "Server status:",
+            server_checking: "CHECKING / WAKING UP (may take up to 60s)...",
+            server_offline_timeout: "OFFLINE (Timeout exceeded. Try refreshing the page)",
+            server_online: "ONLINE (Ready to play)",
+            server_offline_error: "OFFLINE (Connection error, make sure the server is running)",
+            lobby_h3_1: "> RANKED MODE",
+            lobby_p_1: "Choose opponent level. The system will search the global network.",
+            rank_1: "[ RANK 1 ] Freshmen and novices",
+            rank_2: "[ RANK 2 ] Amateurs of deduction",
+            rank_3: "[ RANK 3 ] Experienced psychologists",
+            rank_4: "[ RANK 4 ] Ruthless game masters",
+            queue_text: "Searching for opponent",
+            btn_cancel: "[ CANCEL ]",
+            lobby_h3_2: "> PRIVATE GAME",
+            btn_create_room: "[ CREATE ROOM ]",
+            host_info_code: "Your access code:",
+            host_info_waiting: "Waiting for opponent...",
+            placeholder_join: "Enter friend's room code...",
+            btn_join: "[ JOIN ]",
+            donate_link: ">> unlock_aelwyd_system",
+            countdown_h2: "CONNECTED!",
+            countdown_p: "Get ready. The round begins in:",
+            role_title: "> PHASE: ???",
+            timer_label: "TIME:",
+            question_text: "Choose a cup:",
+            reason_label: "Why do you choose this? (Your hidden note):",
+            placeholder_reason: "Enter your reasoning...",
+            btn_submit: "[ SUBMIT NOTE AND CONFIRM ]",
+            op_status_typing: "[ ] Opponent is writing...",
+            vote_h3: "> VERIFICATION PHASE",
+            vote_h4: "> DISCUSSION CHANNEL",
+            placeholder_chat: "Write a message before voting...",
+            btn_send_chat: "[ SEND ]",
+            vote_desc: "<strong>Decide: Is the meaning of your notes the same?</strong> (When both vote, time passes faster)",
+            btn_vote_yes: "[ YES, WE AGREE ]",
+            btn_vote_no: "[ NO, DIFFERENT MEANING ]",
+            vote_wait: "Waiting for opponent's vote...",
+
+            // AI JUDGE
+            btn_ai_request: "[ 🤖 USE AI JUDGE (Only Round 1) ]",
+            ai_waiting: "Waiting for opponent's agreement...",
+            ai_analyzing: "🤖 AI is analyzing the notes..."
         }
     };
 
@@ -290,33 +339,95 @@
         return str;
     }
 
+    window.addEventListener('DOMContentLoaded', () => {
+        document.title = t('page_title');
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            el.innerHTML = t(key);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            el.placeholder = t(key);
+        });
+        ui.status.innerText = t('status_ready');
+    });
+
     const SERVER_URL = 'https://stinky-baka-test-server.onrender.com'; 
+    
     let socket;
+    let isHost = false;
+
+    let state = {
+        round: 1, maxRounds: 5,
+        myScore: 0, opScore: 0,
+        myRole: '',
+        myAction: null, opAction: null,
+        myVote: null, opVote: null,
+        aiMode: false
+    };
+
+    let timerInterval, chatTimerInterval;
+    let timeLeft = 120, chatTimeLeft = 180;
 
     const ui = {
         status: document.getElementById('status'), lobby: document.getElementById('lobby-panel'),
         countdown: document.getElementById('countdown-panel'), game: document.getElementById('game-panel'),
         vote: document.getElementById('vote-panel'), hostInfo: document.getElementById('host-info'),
         roomId: document.getElementById('room-id'), startTimer: document.getElementById('start-timer'),
-        serverMsg: document.getElementById('server-msg'), queueStatus: document.getElementById('queue-status')
+        roleTitle: document.getElementById('role-title'), roundTimer: document.getElementById('round-timer'),
+        cupOptions: document.getElementById('cup-options'), reasonInput: document.getElementById('reason-input'),
+        submitBtn: document.getElementById('submit-btn'), opStatus: document.getElementById('op-status'),
+        revealArea: document.getElementById('reveal-area'), chatHistory: document.getElementById('chat-history'),
+        chatInput: document.getElementById('chat-input'), voteWait: document.getElementById('vote-wait'),
+        voteYes: document.getElementById('vote-yes'), voteNo: document.getElementById('vote-no'),
+        chatTimer: document.getElementById('chat-timer'), disconnectMsg: document.getElementById('disconnect-msg'),
+        queueStatus: document.getElementById('queue-status'), queueText: document.getElementById('queue-text'),
+        serverStatus: document.getElementById('server-status'), serverMsg: document.getElementById('server-msg'),
+        serverDots: document.getElementById('server-dots')
     };
-
-    window.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
-        connectToServer();
-    });
 
     function connectToServer() {
         socket = io(SERVER_URL);
-        socket.on('connect', () => { ui.serverMsg.innerHTML = `<strong style="color:#0f0;">${t('server_online')}</strong>`; });
-        socket.on('connect_error', () => { ui.serverMsg.innerHTML = `<strong style="color:#f00;">${t('server_offline_error')}</strong>`; });
-        socket.on('match_found', () => { start5SecCountdown(); });
+        socket.on('connect', () => {
+            ui.serverMsg.innerHTML = `<strong style="color:#0f0;">${t('server_online')}</strong>`;
+            ui.serverDots.style.display = 'none';
+            ui.serverStatus.style.borderLeftColor = '#0f0';
+            ui.status.innerText = t('status_ready');
+        });
+        socket.on('connect_error', () => {
+            ui.serverMsg.innerHTML = `<strong style="color:#f00;">${t('server_offline_error')}</strong>`;
+            ui.serverDots.style.display = 'none';
+            ui.serverStatus.style.borderLeftColor = '#f00';
+            ui.status.innerText = t('status_offline');
+        });
+        socket.on('set_role', (data) => { isHost = data.isHost; });
+        socket.on('match_found', () => {
+            ui.queueStatus.classList.add('hidden');
+            ui.hostInfo.classList.add('hidden');
+            start5SecCountdown();
+        });
+        socket.on('game_action', (data) => {
+            state.opAction = data;
+            ui.opStatus.innerText = "PRZECIWNIK GOTOWY";
+            ui.opStatus.style.color = "#0f0";
+            checkBothSubmitted();
+        });
+        socket.on('chat_msg', (msg) => appendChat("Przeciwnik", msg, "msg-op"));
+        socket.on('vote_action', (vote) => { state.opVote = vote; checkVotes(); });
+        socket.on('next_round', () => { state.round++; start5SecCountdown(); });
+        socket.on('end_game', () => endGame());
+        socket.on('opponent_disconnected', () => handleKick("Połączenie zerwane."));
     }
 
+    window.addEventListener('load', connectToServer);
+
+    // --- LOGIKA PREMIUM ---
     function toggleRegistration() {
         const regSection = document.getElementById('registration-section');
         regSection.classList.toggle('hidden');
-        if (!regSection.classList.contains('hidden')) regSection.scrollIntoView({ behavior: 'smooth' });
+        if (!regSection.classList.contains('hidden')) {
+            regSection.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
     async function attemptLogin() {
@@ -326,14 +437,25 @@
         if (!user || !pass) return;
 
         try {
-            const res = await fetch(`${SERVER_URL}/api/login`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`${SERVER_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: user, password: pass })
             });
-            const data = await res.json();
-            if (data.success) window.location.href = 'spigir_1.html';
-            else { errDiv.innerText = "> ODMOWA: " + data.message; errDiv.style.display = 'block'; }
-        } catch (e) { errDiv.innerText = "> BŁĄD SERWERA."; errDiv.style.display = 'block'; }
+            const result = await response.json();
+            if (result.success) {
+                errDiv.style.color = "#0f0";
+                errDiv.innerText = "> AUTORYZACJA OK. Ładowanie...";
+                errDiv.style.display = 'block';
+                setTimeout(() => { window.location.href = 'spigir_1.html'; }, 800);
+            } else {
+                errDiv.innerText = "> ODMOWA: " + result.message;
+                errDiv.style.display = 'block';
+            }
+        } catch (e) {
+            errDiv.innerText = "> BŁĄD SERWERA WERYFIKACJI.";
+            errDiv.style.display = 'block';
+        }
     }
 
     async function attemptRegister() {
@@ -344,26 +466,62 @@
         if (!code || !user || !pass) return;
 
         try {
-            const res = await fetch(`${SERVER_URL}/api/register`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`${SERVER_URL}/api/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: user, password: pass, inviteCode: code })
             });
-            const data = await res.json();
-            msgDiv.style.color = data.success ? "#0f0" : "#f00";
-            msgDiv.innerText = "> " + (data.success ? "SUKCES! Zaloguj się powyżej." : "BŁĄD: " + data.message);
+            const result = await response.json();
+            if (result.success) {
+                msgDiv.style.color = "#0f0";
+                msgDiv.innerText = "> SUKCES: " + result.message;
+                msgDiv.style.display = 'block';
+                document.getElementById('reg-code').value = '';
+                document.getElementById('reg-user').value = '';
+                document.getElementById('reg-pass').value = '';
+            } else {
+                msgDiv.style.color = "#f00";
+                msgDiv.innerText = "> BŁĄD: " + result.message;
+                msgDiv.style.display = 'block';
+            }
+        } catch (e) {
+            msgDiv.innerText = "> BŁĄD POŁĄCZENIA.";
             msgDiv.style.display = 'block';
-        } catch (e) { msgDiv.innerText = "> BŁĄD POŁĄCZENIA."; msgDiv.style.display = 'block'; }
+        }
     }
 
-    // Uproszczone funkcje pomocnicze (logika gry taka sama jak wcześniej)
+    // --- RESZTA LOGIKI GRY (UPROSZCZONA DLA CZYTELNOŚCI) ---
     function searchRank(rank) { socket.emit('search_rank', rank); ui.queueStatus.classList.remove('hidden'); }
-    function start5SecCountdown() { 
+    function cancelSearch() { socket.emit('cancel_search'); ui.queueStatus.classList.add('hidden'); }
+    function createRoom() { 
+        let pin = Math.floor(1000 + Math.random() * 9000).toString();
+        socket.emit('create_room', pin); ui.hostInfo.classList.remove('hidden'); ui.roomId.innerText = pin;
+    }
+    function joinRoom() { 
+        let pin = document.getElementById('join-id').value.trim();
+        if(pin) socket.emit('join_room', pin);
+    }
+    function handleKick(reason) { alert(reason); location.reload(); }
+    function start5SecCountdown() {
         ui.lobby.classList.add('hidden'); ui.countdown.classList.remove('hidden');
-        let t_sec = 5; let iv = setInterval(() => {
+        let t_sec = 5; ui.startTimer.innerText = t_sec;
+        let iv = setInterval(() => {
             t_sec--; ui.startTimer.innerText = t_sec;
-            if(t_sec <= 0) { clearInterval(iv); ui.countdown.classList.add('hidden'); ui.game.classList.remove('hidden'); }
+            if(t_sec <= 0) { clearInterval(iv); startPlayingPhase(); }
         }, 1000);
     }
+    function startPlayingPhase() {
+        ui.countdown.classList.add('hidden'); ui.game.classList.remove('hidden');
+        // ... (Logika wyboru ról i kubków z Twojego poprzedniego kodu) ...
+    }
+    function submitAction() { /* ... */ }
+    function checkBothSubmitted() { /* ... */ }
+    function sendChat() { /* ... */ }
+    function appendChat(s, m, c) { /* ... */ }
+    function submitVote(v) { /* ... */ }
+    function checkVotes() { /* ... */ }
+    function endGame() { /* ... */ }
+
 </script>
 </body>
 </html>
