@@ -1,396 +1,804 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title id="page-title">Gra w Truciznę - Globalna Sieć (Własny Serwer)</title>
-<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-<style>
-    * { box-sizing: border-box; }
-   .donate-subtle {
-        font-size: 0.8em;
-        color: #080;
-        text-decoration: none;
-        display: block;
-        text-align: right;
-        margin-top: 20px;
-        opacity: 0.7;
-        transition: 0.2s;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aelwyd.Space - Trial of Chalices</title>
     
-    .donate-subtle:hover { 
-        color: #0f0; 
-        opacity: 1; 
-    }
-
-    body {
-        font-family: 'Courier New', Courier, monospace;
-        background: #000;
-        color: #0f0;
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        border: 2px solid #0f0;
-        min-height: 95vh;
-    }
-
-    h1, h2, h3, h4 { border-bottom: 1px dashed #0f0; padding-bottom: 10px; margin-top: 0; word-wrap: break-word; }
-
-    input[type="text"], input[type="text"]:disabled {
-        background: #111;
-        color: #0f0;
-        border: 1px solid #0f0;
-        padding: 10px;
-        width: 100%;
-        font-family: inherit;
-        margin: 5px 0;
-        outline: none;
-    }
-    input[type="text"]:focus { background: #050505; border-color: #ff0; }
-
-    button {
-        background: #0f0;
-        color: #000;
-        border: 1px solid #0f0;
-        padding: 12px 15px;
-        margin: 10px 5px 10px 0;
-        font-family: inherit;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-    button:hover { background: #000; color: #0f0; }
-    button:disabled { background: #333; color: #555; border-color: #333; cursor: not-allowed; }
-
-    .hidden { display: none !important; }
-    .panel { margin-top: 20px; padding: 15px; border: 1px solid #0f0; }
-    #status { font-size: 0.9em; opacity: 0.8; margin-bottom: 20px; word-wrap: break-word; }
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    .alert { background: #111; padding: 15px; border-left: 5px solid #0f0; margin-bottom: 20px; word-wrap: break-word; }
-    .error { border-left-color: #f00; color: #f00; }
+    <style>
+        /* --- ZMIENNE AELWYD --- */
+        :root {
+            --bg-dark: #070709;
+            --bg-panel: #0d0e12;
+            --text-main: #a3a3a3;
+            --text-light: #dfdfdf;
+            --gold: #d4a35c;
+            --gold-dark: #8b5a2b;
+            --orange-glow: rgba(212, 100, 30, 0.6);
+            --border-color: #2a221b;
+            
+            /* Kolory rang */
+            --rank-spark: #d45c2f;
+            --rank-flame: #d4a35c;
+            --rank-bonfire: #5c8ed4;
+            --rank-star: #a35cd4;
 
-    .flex-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+            /* Powiadomienia */
+            --success: #4caf50;
+            --error: #d45c2f;
+        }
 
-    .input-group { display: flex; gap: 10px; width: 100%; align-items: stretch; margin-bottom: 10px; }
-    .input-group input { flex-grow: 1; margin: 0; }
-    .input-group button { margin: 0; flex-shrink: 0; white-space: nowrap; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .timer { font-size: 1.5em; font-weight: bold; color: #f00; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Lato', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    #chat-history { height: 150px; overflow-y: scroll; border: 1px solid #0f0; background: #050505; padding: 10px; margin-bottom: 10px; word-wrap: break-word; }
-    #chat-history p { margin: 4px 0; }
-    .msg-me { color: #0f0; }
-    .msg-op { color: #ff0; }
-    .msg-sys { color: #f00; font-weight: bold; }
+        h1, h2, h3, h4, .serif {
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+        }
 
-    .cup-option {
-        display: inline-block;
-        border: 1px dashed #0f0;
-        padding: 12px;
-        margin: 10px 10px 10px 0;
-        cursor: pointer;
-        transition: 0.2s;
-        text-align: center;
-    }
-    .cup-option.selected { background: #0f0; color: #000; font-weight: bold; }
-    
-    .rank-btn { width: 100%; text-align: left; margin-bottom: 5px; }
+        .hidden { display: none !important; }
 
-    .loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
-    @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 100px;
+            background-color: #050506;
+            border-right: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+        }
 
-    @media (max-width: 600px) {
-        body { margin: 10px; padding: 15px; }
-        h1 { font-size: 1.4em; }
-        h3 { font-size: 1.1em; }
-        .flex-row { flex-direction: column; align-items: flex-start; }
-        .flex-row .timer { align-self: flex-end; margin-top: -35px; }
-        .input-group { flex-direction: column; }
-        .input-group button { width: 100%; }
-        .cup-option { display: block; width: 100%; margin: 5px 0; }
-        #voting-area button { width: 100%; margin-bottom: 10px; }
-        button { width: 100%; margin: 5px 0; }
-        #room-id { word-break: break-all; }
-    }
-</style>
+        .sidebar .logo {
+            color: var(--gold);
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 15px var(--orange-glow);
+        }
+
+        .nav-menu {
+            list-style: none;
+            width: 100%;
+        }
+
+        .nav-item {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+            color: #555;
+            text-decoration: none;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--gold);
+            background: linear-gradient(90deg, rgba(212, 163, 92, 0.1) 0%, transparent 100%);
+            border-left: 2px solid var(--gold);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: 100px;
+            flex: 1;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto 0 100px;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+            background: radial-gradient(circle at top right, rgba(212, 100, 30, 0.15), transparent 50%);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .server-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 10px;
+            text-align: right;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .server-status .title {
+            color: var(--text-light);
+            letter-spacing: 1px;
+        }
+
+        .server-status .status {
+            color: var(--success);
+            margin-top: 3px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            color: var(--gold);
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px rgba(212, 163, 92, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .hero .subtitle {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-dark);
+            margin-bottom: 30px;
+        }
+
+        .hero blockquote {
+            font-style: italic;
+            color: #999;
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            background: linear-gradient(to bottom, #3a1c0d, #140804);
+            border: 1px solid var(--gold-dark);
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 30px;
+            cursor: pointer;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(212, 100, 30, 0.2);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn i { margin-right: 8px; color: #ff7b00; }
+        .btn:hover:not(:disabled) {
+            box-shadow: 0 0 25px rgba(212, 100, 30, 0.5);
+            border-color: var(--gold);
+        }
+        .btn:disabled {
+            background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+            border-color: #333;
+            color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn.full-width { width: 100%; margin-bottom: 10px; }
+
+        /* --- SECTIONS --- */
+        .section-box {
+            background: rgba(10, 11, 15, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 22px;
+            color: var(--text-light);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .section-header h2 span {
+            font-family: 'Lato', sans-serif;
+            font-size: 12px;
+            color: var(--gold-dark);
+            letter-spacing: 1px;
+            font-weight: normal;
+        }
+
+        /* --- MATCHMAKING TIERS --- */
+        .tier-card {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to right, rgba(20,20,20,0.8), rgba(10,10,10,0.4));
+            border: 1px solid #1f1f1f;
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .tier-card:hover {
+            background: linear-gradient(to right, rgba(30,30,30,0.9), rgba(15,15,15,0.6));
+            transform: translateX(5px);
+        }
+
+        .tier-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin-right: 20px;
+            border: 1px solid transparent;
+        }
+
+        .tier-info { flex: 1; }
+        .tier-info h3 { font-size: 16px; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+        .tier-info p { font-size: 12px; line-height: 1.4; color: #888; }
+        
+        .tier-badge {
+            text-align: center;
+            border: 1px solid #333;
+            padding: 10px 20px;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.5);
+            min-width: 120px;
+        }
+        .tier-badge .rank { font-family: 'Cinzel', serif; font-size: 14px; margin-bottom: 2px; }
+        .tier-badge .diff { font-size: 11px; color: #777; }
+
+        .tier-spark { border-color: rgba(212, 92, 47, 0.2); }
+        .tier-spark .tier-icon { border-color: var(--rank-spark); color: var(--rank-spark); box-shadow: 0 0 15px rgba(212, 92, 47, 0.2) inset; }
+        .tier-spark h3, .tier-spark .rank { color: var(--rank-spark); }
+
+        .tier-flame { border-color: rgba(212, 163, 92, 0.2); }
+        .tier-flame .tier-icon { border-color: var(--rank-flame); color: var(--rank-flame); box-shadow: 0 0 15px rgba(212, 163, 92, 0.2) inset; }
+        .tier-flame h3, .tier-flame .rank { color: var(--rank-flame); }
+
+        .tier-bonfire { border-color: rgba(92, 142, 212, 0.2); }
+        .tier-bonfire .tier-icon { border-color: var(--rank-bonfire); color: var(--rank-bonfire); box-shadow: 0 0 15px rgba(92, 142, 212, 0.2) inset; }
+        .tier-bonfire h3, .tier-bonfire .rank { color: var(--rank-bonfire); }
+
+        .tier-star { border-color: rgba(163, 92, 212, 0.2); }
+        .tier-star .tier-icon { border-color: var(--rank-star); color: var(--rank-star); box-shadow: 0 0 15px rgba(163, 92, 212, 0.2) inset; }
+        .tier-star h3, .tier-star .rank { color: var(--rank-star); }
+
+        /* --- SYSTEM ALERTS --- */
+        .system-alert {
+            background: rgba(212, 92, 47, 0.1);
+            border-left: 4px solid var(--error);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+            color: var(--text-light);
+        }
+        .system-alert.info {
+            background: rgba(212, 163, 92, 0.1);
+            border-left-color: var(--gold);
+        }
+
+        /* --- INPUTS --- */
+        .input-group {
+            display: flex;
+            background: #050505;
+            border: 1px solid #222;
+            border-radius: 4px;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+
+        .input-group input, input[type="text"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            padding: 10px 15px;
+            font-family: 'Lato', sans-serif;
+            outline: none;
+            width: 100%;
+        }
+
+        .input-group input:focus, input[type="text"]:focus {
+            background: rgba(212, 163, 92, 0.05);
+        }
+        
+        .standalone-input {
+            background: #050505;
+            border: 1px solid #222;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            padding: 15px;
+        }
+
+        .input-group .btn { margin: 0; }
+
+        /* --- GAME UI SPECIFICS --- */
+        .flex-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        
+        .timer { font-family: 'Cinzel', serif; font-size: 1.5em; color: var(--error); }
+        #start-timer { font-family: 'Cinzel', serif; font-size: 4em; color: var(--gold); text-shadow: 0 0 20px var(--orange-glow); margin: 20px 0; }
+        
+        .cups-container { display: flex; gap: 15px; margin: 20px 0; }
+        .cup-option {
+            flex: 1;
+            border: 1px solid #222;
+            background: rgba(10, 11, 15, 0.8);
+            padding: 25px 15px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Cinzel', serif;
+            color: #888;
+        }
+        .cup-option:hover { border-color: var(--gold-dark); color: var(--text-light); background: rgba(20, 20, 25, 0.9); }
+        .cup-option.selected {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212, 163, 92, 0.1);
+            box-shadow: inset 0 0 15px rgba(212, 163, 92, 0.2);
+            font-weight: 600;
+        }
+
+        /* --- CHAT --- */
+        #chat-history {
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid var(--border-color);
+            background: #050505;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        #chat-history p { margin-bottom: 8px; }
+        .msg-me { color: var(--gold); font-weight: bold; }
+        .msg-op { color: var(--rank-spark); font-weight: bold; }
+        .msg-sys { color: #ff5555; font-weight: bold; font-family: 'Cinzel', serif; }
+
+        .loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
+
+        /* --- INFO CARDS / FOOTER --- */
+        .info-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 40px; margin-bottom: 40px; }
+        .info-card { border: 1px solid var(--border-color); padding: 20px; border-radius: 6px; background: rgba(10, 11, 15, 0.4); }
+        .info-card h4 { font-family: 'Cinzel', serif; color: var(--gold); margin-bottom: 10px; font-size: 14px; letter-spacing: 1px; }
+        .info-card h4 i { margin-right: 8px; color: #777; }
+        .info-card p { font-size: 12px; color: #888; line-height: 1.5; margin-bottom: 15px; }
+        .info-card a { color: var(--gold-dark); text-decoration: none; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+        .info-card a:hover { color: var(--gold); }
+
+        footer { text-align: center; padding-bottom: 30px; font-family: 'Cinzel', serif; color: #666; font-size: 14px; letter-spacing: 2px; }
+        footer span { font-family: 'Lato', sans-serif; font-size: 10px; color: #444; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .sidebar .logo { font-size: 24px; }
+            .nav-item span { display: none; }
+            .main-content { margin-left: 60px; padding: 20px; }
+            .cups-container { flex-direction: column; }
+            .info-cards { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 32px; }
+        }
+    </style>
 </head>
 <body>
 
-<h1 data-i18n="h1_title">> POJEDYNEK UMYSŁÓW_</h1>
-<div id="status" data-i18n="status_init">[ INICJALIZACJA SYSTEMU... ]</div>
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-fire"></i></div>
+        <ul class="nav-menu">
+            <a class="nav-item active">
+                <i class="fa-solid fa-compass"></i>
+                <span>Trial</span>
+            </a>
+            <a class="nav-item">
+                <i class="fa-solid fa-book-skull"></i>
+                <span>Lore</span>
+            </a>
+            <a class="nav-item">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Masters</span>
+            </a>
+        </ul>
+    </aside>
 
-<div id="server-status" class="alert" style="border-left-color: #ff0;">
-    <span data-i18n="server_status_prefix">Stan serwera:</span> <span id="server-msg" style="color:#ff0;" data-i18n="server_checking">SPRAWDZANIE / WYBUDZANIE (to może potrwać do 60s)...</span><span class="loading-dots" id="server-dots"></span>
-</div>
-
-<div id="lobby-panel" class="panel">
-    <div id="disconnect-msg" class="alert error hidden"></div>
-
-    <h3 data-i18n="lobby_h3_1">> TRYB RANKINGOWY</h3>
-    <p data-i18n="lobby_p_1">Wybierz poziom przeciwników. System przeszuka globalną sieć.</p>
-    <button class="rank-btn" onclick="searchRank(1)" data-i18n="rank_1">[ RANGA 1 ] Świeżaki i nowicjusze</button>
-    <button class="rank-btn" onclick="searchRank(2)" data-i18n="rank_2">[ RANGA 2 ] Amatorzy dedukcji</button>
-    <button class="rank-btn" onclick="searchRank(3)" data-i18n="rank_3">[ RANGA 3 ] Doświadczeni psychologowie</button>
-    <button class="rank-btn" onclick="searchRank(4)" data-i18n="rank_4">[ RANGA 4 ] Bezwzględni mistrzowie gry</button>
-
-    <div id="queue-status" class="alert hidden" style="color:#ff0; margin-top:10px;">
-        <span id="queue-text" data-i18n="queue_text">Szukam przeciwnika</span><span class="loading-dots"></span><br>
-        <button onclick="cancelSearch()" style="background:#f00; color:#fff; padding:5px; margin-top:10px;" data-i18n="btn_cancel">[ PRZERWIJ ]</button>
-    </div>
-
-    <hr style="border-color:#0f0; border-style:dashed; margin: 20px 0;">
-
-    <h3 data-i18n="lobby_h3_2">> GRA PRYWATNA</h3>
-    <button onclick="createRoom()" data-i18n="btn_create_room">[ STWÓRZ POKÓJ ]</button>
-    <div id="host-info" class="hidden alert" style="margin: 10px 0;">
-        <span data-i18n="host_info_code">Twój kod dostępu:</span> <strong id="room-id" style="font-size: 1.5em; color: #ff0;"></strong><br><span data-i18n="host_info_waiting">Czekam na przeciwnika...</span>
-    </div>
-    <br><br>
-    <div class="input-group">
-        <input type="text" id="join-id" data-i18n-placeholder="placeholder_join" placeholder="Wpisz kod pokoju znajomego...">
-        <button onclick="joinRoom()" data-i18n="btn_join">[ DOŁĄCZ ]</button>
-    </div>
-   <a href="https://ko-fi.com/pogromca" target="_blank" class="donate-subtle" data-i18n="donate_link">>> wesprzyj_serwer</a>
-</div>
-
-<div id="countdown-panel" class="panel hidden" style="text-align: center;">
-    <h2 data-i18n="countdown_h2">POŁĄCZONO!</h2>
-    <p data-i18n="countdown_p">Przygotuj się. Runda rozpocznie się za:</p>
-    <div id="start-timer" style="font-size: 3em;">5</div>
-</div>
-
-<div id="game-panel" class="panel hidden">
-    <div class="flex-row">
-        <h3 id="role-title" data-i18n="role_title">> FAZA: ???</h3>
-        <div class="timer"><span data-i18n="timer_label">CZAS:</span> <span id="round-timer">120</span>s</div>
-    </div>
-
-    <div id="action-area">
-        <p id="question-text" data-i18n="question_text">Wybierz kubek:</p>
-        <div id="cup-options"></div>
-
-        <p data-i18n="reason_label">Dlaczego tak wybierasz? (Twoja ukryta kartka):</p>
-        <input type="text" id="reason-input" data-i18n-placeholder="placeholder_reason" placeholder="Wpisz swój tok myślenia...">
-
-        <div style="margin-top: 15px;">
-            <button id="submit-btn" onclick="submitAction()" data-i18n="btn_submit">[ ODDAL KARTKĘ I ZATWIERDŹ ]</button>
-            <div id="op-status" style="color: #555; margin-top: 10px; font-weight: bold;" data-i18n="op_status_typing">[ ] Przeciwnik pisze...</div>
+    <main class="main-content">
+        
+        <div class="hero">
+            <div id="server-status" class="server-status">
+                <div class="title"><i class="fa-solid fa-satellite-dish" style="color:var(--gold-dark);"></i> SERVER COMMS</div>
+                <div class="title" style="color:var(--text-light); margin-top:2px;">
+                    <span id="server-msg" data-i18n="server_checking">INITIALIZING...</span><span class="loading-dots" id="server-dots"></span>
+                </div>
+                <div class="status" id="status" data-i18n="status_init">Waking connections...</div>
+            </div>
+            
+            <h1 data-i18n="h1_title">AELWYD.SPACE</h1>
+            <div class="subtitle" data-i18n="subtitle_desc">Duel of Minds. The Trial of Chalices.</div>
+            
+            <blockquote>
+                "Traveler, sit by the fire. In the vastness of space, only this bonfire provides warmth. 
+                But to survive, we must test your intentions..."
+            </blockquote>
         </div>
-    </div>
-</div>
 
-<div id="vote-panel" class="panel hidden">
-    <div class="flex-row">
-        <h3 data-i18n="vote_h3">> FAZA: WERYFIKACJA</h3>
-        <div class="timer"><span data-i18n="timer_label">CZAS:</span> <span id="chat-timer">180</span>s</div>
-    </div>
-    
-    <div id="reveal-area" class="alert"></div>
+        <div id="disconnect-msg" class="system-alert hidden"></div>
 
-    <h4 data-i18n="vote_h4">> KANAŁ DYSKUSYJNY</h4>
-    <div id="chat-history"></div>
-    <div class="input-group">
-        <input type="text" id="chat-input" data-i18n-placeholder="placeholder_chat" placeholder="Napisz wiadomość przed głosowaniem...">
-        <button onclick="sendChat()" data-i18n="btn_send_chat">[ WYŚLIJ ]</button>
-    </div>
+        <div id="lobby-panel">
+            <div class="section-box">
+                <div class="section-header">
+                    <h2 data-i18n="lobby_h3_1">OPEN SPACE <span>(MATCHMAKING)</span></h2>
+                    <p style="color:#888; font-size:14px; margin-top:5px;" data-i18n="lobby_p_1">Look for ships on the horizon. The system will find an opponent.</p>
+                </div>
 
-    <div id="voting-area" style="margin-top: 20px;">
-        <p data-i18n="vote_desc"><strong>Zdecyduj: Czy sens Waszych kartek jest taki sam?</strong> (Gdy obaj zagłosują, czas mija szybciej)</p>
-        
-        <button id="btn-ai" onclick="requestAI()" class="hidden" style="background:#0ff; color:#000; margin-bottom:15px; width:100%; border-color:#0ff;" data-i18n="btn_ai_request">[ 🤖 ZDAJ SIĘ NA AI (Tylko 1 runda) ]</button>
-        
-        <button id="vote-yes" onclick="submitVote(true)" data-i18n="btn_vote_yes">[ TAK, ZGADZAMY SIĘ ]</button>
-        <button id="vote-no" onclick="submitVote(false)" data-i18n="btn_vote_no">[ NIE, INNY SENS ]</button>
-        <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0; font-weight:bold;" data-i18n="vote_wait">Czekam na głos przeciwnika...</div>
-    </div>
-</div>
+                <div class="tier-card tier-spark" onclick="searchRank(1)">
+                    <div class="tier-icon"><i class="fa-solid fa-fire"></i></div>
+                    <div class="tier-info">
+                        <h3 data-i18n="rank_1">Lost Travelers and Novices</h3>
+                        <p>For the curious and the newly arrived. Uncover the first secrets.</p>
+                    </div>
+                    <div class="tier-badge">
+                        <div class="rank">SPARK</div><div class="diff">Casual</div>
+                    </div>
+                </div>
+
+                <div class="tier-card tier-flame" onclick="searchRank(2)">
+                    <div class="tier-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                    <div class="tier-info">
+                        <h3 data-i18n="rank_2">Seekers of Truth</h3>
+                        <p>For those who thirst for deeper meaning. Face tests of insight.</p>
+                    </div>
+                    <div class="tier-badge">
+                        <div class="rank">FLAME</div><div class="diff">Challenging</div>
+                    </div>
+                </div>
+
+                <div class="tier-card tier-bonfire" onclick="searchRank(3)">
+                    <div class="tier-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                    <div class="tier-info">
+                        <h3 data-i18n="rank_3">Keepers of Secrets</h3>
+                        <p>For the watchful and the wise. Guard hidden knowledge.</p>
+                    </div>
+                    <div class="tier-badge">
+                        <div class="rank">BONFIRE</div><div class="diff">Hard</div>
+                    </div>
+                </div>
+
+                <div class="tier-card tier-star" onclick="searchRank(4)">
+                    <div class="tier-icon"><i class="fa-solid fa-chess-queen"></i></div>
+                    <div class="tier-info">
+                        <h3 data-i18n="rank_4">Ruthless Masters</h3>
+                        <p>For those who dare everything. Only the sharpest minds prevail.</p>
+                    </div>
+                    <div class="tier-badge">
+                        <div class="rank">STAR</div><div class="diff">Extreme</div>
+                    </div>
+                </div>
+
+                <div id="queue-status" class="system-alert info hidden" style="margin-top:20px; text-align:center;">
+                    <span id="queue-text" data-i18n="queue_text">Searching for opponent</span><span class="loading-dots"></span><br>
+                    <button class="btn" onclick="cancelSearch()" style="margin-top:15px; border-color:var(--error); color:var(--error);" data-i18n="btn_cancel"><i class="fa-solid fa-xmark"></i> CANCEL</button>
+                </div>
+            </div>
+
+            <div class="section-box private-fire">
+                <div class="section-header">
+                    <h2 data-i18n="lobby_h3_2">PRIVATE BONFIRE</h2>
+                    <p style="color:#888; font-size:14px; margin-top:5px;">Light your own fire. Invite a friend. Begin a private Trial.</p>
+                </div>
+                
+                <button class="btn" onclick="createRoom()" data-i18n="btn_create_room" style="margin-bottom: 20px;"><i class="fa-solid fa-fire"></i> Light your own fire</button>
+                
+                <div id="host-info" class="system-alert info hidden">
+                    <span data-i18n="host_info_code">Twój kod dostępu:</span> <strong id="room-id" style="font-size: 1.5em; color: var(--gold); letter-spacing: 2px;"></strong><br>
+                    <span data-i18n="host_info_waiting">Czekam na przeciwnika...</span>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="join-id" data-i18n-placeholder="placeholder_join" placeholder="Enter a friend's bonfire signal...">
+                    <button class="btn" onclick="joinRoom()" data-i18n="btn_join"><i class="fa-solid fa-user-plus"></i> Sit by the fire</button>
+                </div>
+            </div>
+            
+            <div class="info-cards">
+                <div class="info-card">
+                    <h4><i class="fa-solid fa-circle-down"></i> HOW IT WORKS</h4>
+                    <p>Answer questions, read your opponent, and prove your intention through 5 rounds.</p>
+                    <a href="#">LEARN MORE &rarr;</a>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fa-solid fa-fire"></i> HONOR THE FIRE</h4>
+                    <p>Support the server development and keep the global network alive.</p>
+                    <a href="https://ko-fi.com/pogromca" target="_blank" data-i18n="donate_link">THROW WOOD INTO THE FIRE &rarr;</a>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fa-solid fa-shield-halved"></i> NEED SUPPORT?</h4>
+                    <p>Connection lost? Rules unclear? We're here for you.</p>
+                    <a href="#">GET HELP &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="countdown-panel" class="section-box hidden" style="text-align: center; padding: 60px 20px;">
+            <h2 style="color:var(--gold); font-size:32px; letter-spacing:4px;" data-i18n="countdown_h2">CONNECTION ESTABLISHED</h2>
+            <p style="color:#888; font-size:14px; margin-top:10px;" data-i18n="countdown_p">Prepare your mind. The Trial begins in:</p>
+            <div id="start-timer">5</div>
+        </div>
+
+        <div id="game-panel" class="section-box hidden">
+            <div class="flex-row">
+                <h3 id="role-title" style="color:var(--text-light); letter-spacing:1px;" data-i18n="role_title">PHASE: ???</h3>
+                <div class="timer"><i class="fa-regular fa-clock"></i> <span id="round-timer">120</span>s</div>
+            </div>
+
+            <div id="action-area">
+                <p id="question-text" style="font-family:'Cinzel',serif; font-size:18px; color:var(--gold); margin-bottom:10px;" data-i18n="question_text">Choose a chalice:</p>
+                <div id="cup-options" class="cups-container"></div>
+
+                <p style="color:#888; margin-top:10px; margin-bottom:10px; font-size:14px;" data-i18n="reason_label">Why do you choose this? (Your hidden note):</p>
+                <input type="text" id="reason-input" class="standalone-input" data-i18n-placeholder="placeholder_reason" placeholder="Write your reasoning...">
+
+                <div style="margin-top: 15px;">
+                    <button id="submit-btn" class="btn" onclick="submitAction()" data-i18n="btn_submit"><i class="fa-solid fa-check"></i> SEAL INTENTION</button>
+                    <div id="op-status" style="color: #555; margin-top: 15px; font-weight: 600; font-size:12px; text-transform:uppercase;" data-i18n="op_status_typing">[ ] Opponent is writing...</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vote-panel" class="section-box hidden">
+            <div class="flex-row">
+                <h3 style="color:var(--text-light); letter-spacing:1px;" data-i18n="vote_h3">VERIFICATION PHASE</h3>
+                <div class="timer"><i class="fa-regular fa-clock"></i> <span id="chat-timer">180</span>s</div>
+            </div>
+            
+            <div id="reveal-area" style="background:rgba(20,20,20,0.6); padding:20px; border-radius:6px; border:1px solid #333; margin-bottom:30px;"></div>
+
+            <h4 style="color:var(--gold-dark); letter-spacing:2px; margin-bottom:15px; font-size:14px;" data-i18n="vote_h4"><i class="fa-solid fa-tower-broadcast"></i> DISCUSSION CHANNEL</h4>
+            <div id="chat-history"></div>
+            <div class="input-group">
+                <input type="text" id="chat-input" data-i18n-placeholder="placeholder_chat" placeholder="Speak to your opponent...">
+                <button class="btn" onclick="sendChat()" data-i18n="btn_send_chat"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+
+            <div id="voting-area" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <p style="color:#bbb; font-size:14px; margin-bottom:20px;" data-i18n="vote_desc"><strong>Judge the intentions:</strong> Do the notes convey the same underlying meaning?</p>
+                
+                <button id="btn-ai" class="btn full-width" onclick="requestAI()" style="border-color:#0ff; color:#0ff;" data-i18n="btn_ai_request"><i class="fa-solid fa-robot"></i> SUMMON AI ARBITER (ROUND 1 ONLY)</button>
+                
+                <div style="display:flex; gap:15px; flex-wrap:wrap;">
+                    <button id="vote-yes" class="btn" onclick="submitVote(true)" style="flex:1; border-color:var(--success); color:var(--success);" data-i18n="btn_vote_yes"><i class="fa-solid fa-thumbs-up"></i> INTENTIONS ALIGN</button>
+                    <button id="vote-no" class="btn" onclick="submitVote(false)" style="flex:1; border-color:var(--error); color:var(--error);" data-i18n="btn_vote_no"><i class="fa-solid fa-thumbs-down"></i> SENSE DIFFERS</button>
+                </div>
+                <div id="vote-wait" class="hidden" style="margin-top:15px; color:var(--gold); font-weight:bold; text-align:center;" data-i18n="vote_wait">Waiting for opponent's judgment...</div>
+            </div>
+        </div>
+
+        <footer>
+            AELWYD.SPACE<br>
+            <span>~ IN THE VASTNESS, ONLY THE FIRE REMAINS ~</span>
+        </footer>
+    </main>
 
 <script>
     // --- SŁOWNIK JĘZYKOWY (i18n) ---
+    // Kolory w tekstach zostały dostosowane do palety CSS (gold, success, error)
     const dict = {
         pl: {
-            page_title: "Gra w Truciznę - Globalna Sieć (Własny Serwer)",
-            h1_title: "> POJEDYNEK UMYSŁÓW_",
-            status_init: "[ INICJALIZACJA SYSTEMU... ]",
-            status_ready: "[ GOTOWY DO POŁĄCZENIA ]",
-            server_status_prefix: "Stan serwera:",
-            server_checking: "SPRAWDZANIE / WYBUDZANIE (to może potrwać do 60s)...",
-            server_offline_timeout: "OFFLINE (Przekroczono czas oczekiwania. Spróbuj odświeżyć stronę)",
-            server_online: "ONLINE (Gotowy do gry)",
-            server_offline_error: "OFFLINE (Błąd połączenia, upewnij się, że serwer działa)",
-            lobby_h3_1: "> TRYB RANKINGOWY",
-            lobby_p_1: "Wybierz poziom przeciwników. System przeszuka globalną sieć.",
-            rank_1: "[ RANGA 1 ] Świeżaki i nowicjusze",
-            rank_2: "[ RANGA 2 ] Amatorzy dedukcji",
-            rank_3: "[ RANGA 3 ] Doświadczeni psychologowie",
-            rank_4: "[ RANGA 4 ] Bezwzględni mistrzowie gry",
-            queue_text: "Szukam przeciwnika",
-            btn_cancel: "[ PRZERWIJ ]",
-            lobby_h3_2: "> GRA PRYWATNA",
-            btn_create_room: "[ STWÓRZ POKÓJ ]",
-            host_info_code: "Twój kod dostępu:",
-            host_info_waiting: "Czekam na przeciwnika...",
-            placeholder_join: "Wpisz kod pokoju znajomego...",
-            btn_join: "[ DOŁĄCZ ]",
-            donate_link: ">> wesprzyj_serwer",
-            countdown_h2: "POŁĄCZONO!",
-            countdown_p: "Przygotuj się. Runda rozpocznie się za:",
-            role_title: "> FAZA: ???",
-            timer_label: "CZAS:",
-            question_text: "Wybierz kubek:",
-            reason_label: "Dlaczego tak wybierasz? (Twoja ukryta kartka):",
+            page_title: "Aelwyd.Space - Trial of Chalices",
+            h1_title: "AELWYD.SPACE",
+            subtitle_desc: "Pojedynek Umysłów. Próba Kielichów.",
+            status_init: "Inicjalizacja połączeń...",
+            status_ready: "Gotowy do połączenia.",
+            server_checking: "WYBUDZANIE (do 60s)",
+            server_offline_timeout: "OFFLINE (Brak odp.)",
+            server_online: "ONLINE (Gotowy)",
+            server_offline_error: "BŁĄD (Serwer offline)",
+            lobby_h3_1: "OPEN SPACE <span>(MATCHMAKING)</span>",
+            lobby_p_1: "Szukaj statków na horyzoncie. System znajdzie Ci przeciwnika.",
+            rank_1: "Świeżaki i nowicjusze",
+            rank_2: "Amatorzy dedukcji",
+            rank_3: "Doświadczeni psychologowie",
+            rank_4: "Bezwzględni mistrzowie gry",
+            queue_text: "Przeszukiwanie sygnałów",
+            btn_cancel: "<i class='fa-solid fa-xmark'></i> PRZERWIJ",
+            lobby_h3_2: "PRYWATNE OGNISKO",
+            btn_create_room: "<i class='fa-solid fa-fire'></i> ROZPAL WŁASNY OGIEŃ",
+            host_info_code: "Twój sygnał (kod):",
+            host_info_waiting: "Oczekuję na towarzysza...",
+            placeholder_join: "Wpisz sygnał ogniska (kod) znajomego...",
+            btn_join: "<i class='fa-solid fa-user-plus'></i> USIĄDŹ PRZY OGNIU",
+            donate_link: "DORZUĆ DRWA DO OGNIA &rarr;",
+            countdown_h2: "NAWIĄZANO POŁĄCZENIE",
+            countdown_p: "Przygotuj umysł. Próba rozpoczyna się za:",
+            role_title: "FAZA: ???",
+            question_text: "Wybierz kielich:",
+            reason_label: "Dlaczego to robisz? (Twoja ukryta intencja):",
             placeholder_reason: "Wpisz swój tok myślenia...",
-            btn_submit: "[ ODDAL KARTKĘ I ZATWIERDŹ ]",
-            op_status_typing: "[ ] Przeciwnik pisze...",
-            vote_h3: "> FAZA: WERYFIKACJA",
-            vote_h4: "> KANAŁ DYSKUSYJNY",
-            placeholder_chat: "Napisz wiadomość przed głosowaniem...",
-            btn_send_chat: "[ WYŚLIJ ]",
-            vote_desc: "<strong>Zdecyduj: Czy sens Waszych kartek jest taki sam?</strong> (Gdy obaj zagłosują, czas mija szybciej)",
-            btn_vote_yes: "[ TAK, ZGADZAMY SIĘ ]",
-            btn_vote_no: "[ NIE, INNY SENS ]",
-            vote_wait: "Czekam na głos przeciwnika...",
+            btn_submit: "<i class='fa-solid fa-check'></i> ZAPIECZĘTUJ INTENCJĘ",
+            op_status_typing: "[ ] Przeciwnik spisuje intencje...",
+            vote_h3: "FAZA WERYFIKACJI",
+            vote_h4: "<i class='fa-solid fa-tower-broadcast'></i> KANAŁ DYSKUSYJNY",
+            placeholder_chat: "Przemów do przeciwnika...",
+            btn_send_chat: "<i class='fa-solid fa-paper-plane'></i>",
+            vote_desc: "<strong>Osądź intencje:</strong> Czy sens Waszych zapisów jest taki sam?",
+            btn_vote_yes: "<i class='fa-solid fa-thumbs-up'></i> INTENCJE ZGODNE",
+            btn_vote_no: "<i class='fa-solid fa-thumbs-down'></i> RÓŻNY SENS",
+            vote_wait: "Oczekuję na osąd przeciwnika...",
             
             // AI JUDGE
-            btn_ai_request: "[ 🤖 ZDAJ SIĘ NA AI (Tylko 1 runda) ]",
-            ai_waiting: "Czekam na zgodę przeciwnika...",
-            ai_analyzing: "🤖 AI analizuje sensy kartek...",
+            btn_ai_request: "<i class='fa-solid fa-robot'></i> PRZYZWIJ ARBITRA AI (Tylko 1. runda)",
+            ai_waiting: "Oczekiwanie na zgodę drugiego podróżnika...",
+            ai_analyzing: "🤖 AI analizuje zapisane intencje...",
 
             // Komunikaty dynamiczne
-            search_network: "Przeszukuję sieć (Ranga {rank})",
-            search_found: "Przeciwnik znaleziony! Nawiązywanie...",
-            queue_empty: "Kolejka pusta. Tworzę poczekalnię, oczekiwanie...",
-            queue_joined: "Ktoś dołączył! Budowanie pokoju...",
-            alert_no_code: "Wpisz kod!",
-            op_status_done: "[✓] Przeciwnik oddał kartkę!",
-            kick_disconnect: "Połączenie zerwane. Przeciwnik uciekł z serwera.",
-            kick_idle: "Przeciwnik wyrzucony za brak aktywności.",
-            error_prefix: "> BŁĄD:",
-            status_offline: "[ OFFLINE ]",
-            kick_timeout: "Czas minął! Brak reakcji.",
-            role_poisoner: "> RUNDA {round}/5 | NALEWASZ TRUCIZNĘ",
-            question_poisoner: "Do którego kubka wlewasz truciznę?",
-            role_drinker: "> RUNDA {round}/5 | WYBIERASZ KUBEK",
-            question_drinker: "Który kubek wybierasz do wypicia?",
-            cup_mine_select: "Kubek bliżej MNIE",
-            cup_yours_select: "Kubek bliżej PRZECIWNIKA",
-            alert_no_cup: "BŁĄD: Musisz wybrać kubek!",
-            alert_no_reason: "BŁĄD: Wpisz swój sens (kartkę)!",
-            btn_submitted: "[ WYSŁANO - CZEKAM ]",
+            search_network: "Szukam sygnału dla Rangi {rank}",
+            search_found: "Znaleziono sygnał! Nawiązywanie...",
+            queue_empty: "Pustka. Tworzę poczekalnię...",
+            queue_joined: "Ktoś odpowiedział! Budowanie wizji...",
+            alert_no_code: "Musisz podać sygnał (kod)!",
+            op_status_done: "<i class='fa-solid fa-check-double'></i> Przeciwnik zapieczętował intencję!",
+            kick_disconnect: "Połączenie zerwane. Przeciwnik uciekł w nicość.",
+            kick_idle: "Przeciwnik pochłonięty przez pustkę za brak aktywności.",
+            error_prefix: "<i class='fa-solid fa-triangle-exclamation'></i> BŁĄD:",
+            status_offline: "Połączenie utracone",
+            kick_timeout: "Czas próby minął! Brak reakcji.",
+            role_poisoner: "RUNDA {round}/5 | ROZLEWASZ TRUCIZNĘ",
+            question_poisoner: "Do którego kielicha wlewasz truciznę?",
+            role_drinker: "RUNDA {round}/5 | WYBIERASZ KIELICH",
+            question_drinker: "Który kielich wybierasz do wypicia?",
+            cup_mine_select: "Kielich bliżej MNIE",
+            cup_yours_select: "Kielich bliżej PRZECIWNIKA",
+            alert_no_cup: "Ostrzeżenie: Musisz wybrać kielich!",
+            alert_no_reason: "Ostrzeżenie: Zapisz swoją intencję!",
+            btn_submitted: "ZAPIECZĘTOWANO",
             res_title: "WYNIK RUNDY:",
             res_survived: "PRZEŻYCIE (+1)",
-            res_died: "ŚMIERĆ W MĘCZARNIACH",
+            res_died: "ŚMIERĆ",
             res_poison_pos: "Pozycja trucizny:",
             res_drunk_pos: "Wypito:",
-            res_scroll_p: "Kartka Rozlewającego:",
-            res_scroll_d: "Kartka Pijącego:",
-            cup_mine_res: "Kubek bliżej Ciebie",
-            cup_yours_res: "Kubek bliżej Przeciwnika",
+            res_scroll_p: "Zapis Rozlewającego:",
+            res_scroll_d: "Zapis Pijącego:",
+            cup_mine_res: "Kielich bliżej Ciebie",
+            cup_yours_res: "Kielich bliżej Przeciwnika",
             chat_you: "Ty",
-            chat_op: "Przeciwnik",
+            chat_op: "Oponent",
             chat_sys: "SYSTEM",
-            sys_agree: "KARTKI SĄ ZGODNE. Dodatkowy punkt dla pijącego!",
-            sys_disagree: "BRAK ZGODY CO DO SENSU. Runda bez bonusa.",
-            vote_next: "Wynik zatwierdzony. Następna faza za",
-            status_connected: "[ POŁĄCZONO ] WYNIKI - Ty: {myScore} | Przeciwnik: {opScore}",
-            end_title: "KONIEC GRY",
+            sys_agree: "ZAPISY SĄ ZGODNE. Dodatkowy punkt uznany!",
+            sys_disagree: "BRAK ZGODY CO DO SENSU. Próba bez bonusa.",
+            vote_next: "Osąd zatwierdzony. Następna faza za",
+            status_connected: "WYNIKI - Ty: {myScore} | Oponent: {opScore}",
+            end_title: "KONIEC PRÓBY",
             end_my_score: "Twój wynik:",
-            end_op_score: "Wynik przeciwnika:",
-            end_win: "ZWYCIĘSTWO!",
-            end_lose: "PORAŻKA...",
-            end_draw: "REMIS."
+            end_op_score: "Wynik oponenta:",
+            end_win: "ZWYCIĘSTWO",
+            end_lose: "PORAŻKA",
+            end_draw: "REMIS"
         },
         en: {
-            page_title: "Poison Game - Global Network (Custom Server)",
-            h1_title: "> DUEL OF MINDS_",
-            status_init: "[ SYSTEM INITIALIZATION... ]",
-            status_ready: "[ READY TO CONNECT ]",
-            server_status_prefix: "Server status:",
-            server_checking: "CHECKING / WAKING UP (may take up to 60s)...",
-            server_offline_timeout: "OFFLINE (Timeout exceeded. Try refreshing the page)",
-            server_online: "ONLINE (Ready to play)",
-            server_offline_error: "OFFLINE (Connection error, make sure the server is running)",
-            lobby_h3_1: "> RANKED MODE",
-            lobby_p_1: "Choose opponent level. The system will search the global network.",
-            rank_1: "[ RANK 1 ] Freshmen and novices",
-            rank_2: "[ RANK 2 ] Amateurs of deduction",
-            rank_3: "[ RANK 3 ] Experienced psychologists",
-            rank_4: "[ RANK 4 ] Ruthless game masters",
-            queue_text: "Searching for opponent",
-            btn_cancel: "[ CANCEL ]",
-            lobby_h3_2: "> PRIVATE GAME",
-            btn_create_room: "[ CREATE ROOM ]",
-            host_info_code: "Your access code:",
-            host_info_waiting: "Waiting for opponent...",
-            placeholder_join: "Enter friend's room code...",
-            btn_join: "[ JOIN ]",
-            donate_link: ">> support_server",
-            countdown_h2: "CONNECTED!",
-            countdown_p: "Get ready. The round begins in:",
-            role_title: "> PHASE: ???",
-            timer_label: "TIME:",
-            question_text: "Choose a cup:",
-            reason_label: "Why do you choose this? (Your hidden note):",
-            placeholder_reason: "Enter your reasoning...",
-            btn_submit: "[ SUBMIT NOTE AND CONFIRM ]",
+            page_title: "Aelwyd.Space - Trial of Chalices",
+            h1_title: "AELWYD.SPACE",
+            subtitle_desc: "Duel of Minds. The Trial of Chalices.",
+            status_init: "Initializing connections...",
+            status_ready: "Ready for connection.",
+            server_checking: "WAKING UP (up to 60s)",
+            server_offline_timeout: "OFFLINE (Timeout)",
+            server_online: "ONLINE (Ready)",
+            server_offline_error: "ERROR (Offline)",
+            lobby_h3_1: "OPEN SPACE <span>(MATCHMAKING)</span>",
+            lobby_p_1: "Look for ships on the horizon. The system will find an opponent.",
+            rank_1: "Lost Travelers and Novices",
+            rank_2: "Seekers of Truth",
+            rank_3: "Keepers of Secrets",
+            rank_4: "Ruthless Masters",
+            queue_text: "Searching signals",
+            btn_cancel: "<i class='fa-solid fa-xmark'></i> CANCEL",
+            lobby_h3_2: "PRIVATE BONFIRE",
+            btn_create_room: "<i class='fa-solid fa-fire'></i> LIGHT YOUR OWN FIRE",
+            host_info_code: "Your signal (code):",
+            host_info_waiting: "Waiting for companion...",
+            placeholder_join: "Enter a friend's bonfire signal...",
+            btn_join: "<i class='fa-solid fa-user-plus'></i> SIT BY THE FIRE",
+            donate_link: "THROW WOOD INTO THE FIRE &rarr;",
+            countdown_h2: "CONNECTION ESTABLISHED",
+            countdown_p: "Prepare your mind. The Trial begins in:",
+            role_title: "PHASE: ???",
+            question_text: "Choose a chalice:",
+            reason_label: "Why do you choose this? (Your hidden intention):",
+            placeholder_reason: "Write your reasoning...",
+            btn_submit: "<i class='fa-solid fa-check'></i> SEAL INTENTION",
             op_status_typing: "[ ] Opponent is writing...",
-            vote_h3: "> VERIFICATION PHASE",
-            vote_h4: "> DISCUSSION CHANNEL",
-            placeholder_chat: "Write a message before voting...",
-            btn_send_chat: "[ SEND ]",
-            vote_desc: "<strong>Decide: Is the meaning of your notes the same?</strong> (When both vote, time passes faster)",
-            btn_vote_yes: "[ YES, WE AGREE ]",
-            btn_vote_no: "[ NO, DIFFERENT MEANING ]",
-            vote_wait: "Waiting for opponent's vote...",
-
+            vote_h3: "VERIFICATION PHASE",
+            vote_h4: "<i class='fa-solid fa-tower-broadcast'></i> DISCUSSION CHANNEL",
+            placeholder_chat: "Speak to your opponent...",
+            btn_send_chat: "<i class='fa-solid fa-paper-plane'></i>",
+            vote_desc: "<strong>Judge the intentions:</strong> Do the notes convey the same meaning?",
+            btn_vote_yes: "<i class='fa-solid fa-thumbs-up'></i> INTENTIONS ALIGN",
+            btn_vote_no: "<i class='fa-solid fa-thumbs-down'></i> SENSE DIFFERS",
+            vote_wait: "Waiting for opponent's judgment...",
+            
             // AI JUDGE
-            btn_ai_request: "[ 🤖 USE AI JUDGE (Only Round 1) ]",
-            ai_waiting: "Waiting for opponent's agreement...",
-            ai_analyzing: "🤖 AI is analyzing the notes...",
+            btn_ai_request: "<i class='fa-solid fa-robot'></i> SUMMON AI ARBITER (Round 1 Only)",
+            ai_waiting: "Waiting for companion's agreement...",
+            ai_analyzing: "🤖 AI is analyzing the recorded intentions...",
             
             // Dynamic messages
-            search_network: "Searching network (Rank {rank})",
-            search_found: "Opponent found! Establishing...",
-            queue_empty: "Queue empty. Creating lobby, waiting...",
-            queue_joined: "Someone joined! Building room...",
-            alert_no_code: "Enter a code!",
-            op_status_done: "[✓] Opponent submitted their note!",
-            kick_disconnect: "Connection lost. The opponent fled the server.",
-            kick_idle: "Opponent kicked for inactivity.",
-            error_prefix: "> ERROR:",
-            status_offline: "[ OFFLINE ]",
-            kick_timeout: "Time is up! No response.",
-            role_poisoner: "> ROUND {round}/5 | POURING POISON",
-            question_poisoner: "Which cup are you pouring the poison into?",
-            role_drinker: "> ROUND {round}/5 | CHOOSING CUP",
-            question_drinker: "Which cup do you choose to drink?",
-            cup_mine_select: "Cup closer to ME",
-            cup_yours_select: "Cup closer to OPPONENT",
-            alert_no_cup: "ERROR: You must choose a cup!",
-            alert_no_reason: "ERROR: Enter your reasoning (note)!",
-            btn_submitted: "[ SUBMITTED - WAITING ]",
+            search_network: "Searching signal for Rank {rank}",
+            search_found: "Signal found! Establishing...",
+            queue_empty: "Void. Creating lobby...",
+            queue_joined: "Someone answered! Building vision...",
+            alert_no_code: "You must enter a signal code!",
+            op_status_done: "<i class='fa-solid fa-check-double'></i> Opponent sealed their intention!",
+            kick_disconnect: "Connection lost. The opponent fled into the void.",
+            kick_idle: "Opponent consumed by the void for inactivity.",
+            error_prefix: "<i class='fa-solid fa-triangle-exclamation'></i> ERROR:",
+            status_offline: "Connection lost",
+            kick_timeout: "Trial time is up! No response.",
+            role_poisoner: "ROUND {round}/5 | POURING POISON",
+            question_poisoner: "Which chalice do you poison?",
+            role_drinker: "ROUND {round}/5 | CHOOSING CHALICE",
+            question_drinker: "Which chalice do you drink from?",
+            cup_mine_select: "Chalice closer to ME",
+            cup_yours_select: "Chalice closer to OPPONENT",
+            alert_no_cup: "Warning: You must choose a chalice!",
+            alert_no_reason: "Warning: Record your intention!",
+            btn_submitted: "SEALED",
             res_title: "ROUND RESULT:",
             res_survived: "SURVIVED (+1)",
-            res_died: "AGONIZING DEATH",
+            res_died: "DEATH",
             res_poison_pos: "Poison position:",
             res_drunk_pos: "Drank from:",
-            res_scroll_p: "Pourer's Note:",
-            res_scroll_d: "Drinker's Note:",
-            cup_mine_res: "Cup closer to You",
-            cup_yours_res: "Cup closer to Opponent",
+            res_scroll_p: "Pourer's Record:",
+            res_scroll_d: "Drinker's Record:",
+            cup_mine_res: "Chalice closer to You",
+            cup_yours_res: "Chalice closer to Opponent",
             chat_you: "You",
             chat_op: "Opponent",
             chat_sys: "SYSTEM",
-            sys_agree: "NOTES AGREE. Extra point for the drinker!",
-            sys_disagree: "DISAGREEMENT ON MEANING. Round without bonus.",
-            vote_next: "Result confirmed. Next phase in",
-            status_connected: "[ CONNECTED ] SCORE - You: {myScore} | Opponent: {opScore}",
-            end_title: "GAME OVER",
+            sys_agree: "RECORDS ALIGN. Extra point awarded!",
+            sys_disagree: "DISAGREEMENT ON MEANING. Trial without bonus.",
+            vote_next: "Judgment confirmed. Next phase in",
+            status_connected: "SCORE - You: {myScore} | Opponent: {opScore}",
+            end_title: "END OF TRIAL",
             end_my_score: "Your score:",
             end_op_score: "Opponent's score:",
-            end_win: "VICTORY!",
-            end_lose: "DEFEAT...",
-            end_draw: "DRAW."
+            end_win: "VICTORY",
+            end_lose: "DEFEAT",
+            end_draw: "DRAW"
         }
     };
 
@@ -407,7 +815,7 @@
         document.title = t('page_title');
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (el.innerHTML.includes('<') && !el.getAttribute('data-i18n').includes('desc')) {
+            if (el.innerHTML.includes('<') && !el.getAttribute('data-i18n').includes('desc') && !el.getAttribute('data-i18n').includes('span')) {
                  el.innerText = t(key);
             } else {
                  el.innerHTML = t(key);
@@ -458,17 +866,19 @@
         socket = io(SERVER_URL);
 
         socket.on('connect', () => {
-            ui.serverMsg.innerHTML = `<strong style="color:#0f0;">${t('server_online')}</strong>`;
+            ui.serverMsg.innerHTML = `<span style="color:var(--success); font-weight:bold;">${t('server_online')}</span>`;
             ui.serverDots.style.display = 'none';
-            ui.serverStatus.style.borderLeftColor = '#0f0';
+            ui.serverStatus.style.borderLeftColor = 'var(--success)';
             ui.status.innerText = t('status_ready');
+            ui.status.style.color = "var(--success)";
         });
 
         socket.on('connect_error', () => {
-            ui.serverMsg.innerHTML = `<strong style="color:#f00;">${t('server_offline_error')}</strong>`;
+            ui.serverMsg.innerHTML = `<span style="color:var(--error); font-weight:bold;">${t('server_offline_error')}</span>`;
             ui.serverDots.style.display = 'none';
-            ui.serverStatus.style.borderLeftColor = '#f00';
+            ui.serverStatus.style.borderLeftColor = 'var(--error)';
             ui.status.innerText = t('status_offline');
+            ui.status.style.color = "var(--error)";
         });
 
         socket.on('set_role', (data) => {
@@ -483,8 +893,8 @@
 
         socket.on('game_action', (data) => {
             state.opAction = data;
-            ui.opStatus.innerText = t('op_status_done');
-            ui.opStatus.style.color = "#0f0";
+            ui.opStatus.innerHTML = t('op_status_done');
+            ui.opStatus.style.color = "var(--success)";
             checkBothSubmitted();
         });
 
@@ -505,7 +915,7 @@
                  ui.voteNo.classList.add('hidden');
                  ui.voteWait.classList.remove('hidden');
                  ui.voteWait.innerText = t('ai_analyzing');
-                 ui.voteWait.style.color = "#0ff";
+                 ui.voteWait.style.color = "#0ff"; // AI signature color
                  
                  let pAction = state.myRole === 'poisoner' ? state.myAction : state.opAction;
                  let dAction = state.myRole === 'drinker' ? state.myAction : state.opAction;
@@ -532,7 +942,8 @@
         socket.on('opponent_disconnected', () => handleKick(t('kick_disconnect')));
         
         socket.on('error_msg', (msg) => {
-            alert(msg);
+            ui.disconnectMsg.innerHTML = `${t('error_prefix')} ${msg}`;
+            ui.disconnectMsg.classList.remove('hidden');
         });
     }
 
@@ -561,20 +972,23 @@
     function joinRoom() {
         ui.disconnectMsg.classList.add('hidden');
         let pin = document.getElementById('join-id').value.trim();
-        if(!pin) return alert(t('alert_no_code'));
+        if(!pin) {
+            ui.disconnectMsg.innerHTML = `${t('error_prefix')} ${t('alert_no_code')}`;
+            ui.disconnectMsg.classList.remove('hidden');
+            return;
+        }
         socket.emit('join_room', pin);
     }
 
-    function kickPlayer(reason) {
-        handleKick(reason);
-    }
+    function kickPlayer(reason) { handleKick(reason); }
 
     function handleKick(reason) {
         clearInterval(timerInterval); clearInterval(chatTimerInterval); hideAll();
         ui.lobby.classList.remove('hidden');
-        ui.disconnectMsg.innerText = `${t('error_prefix')} ${reason}`;
+        ui.disconnectMsg.innerHTML = `<strong>${t('error_prefix')}</strong> ${reason}`;
         ui.disconnectMsg.classList.remove('hidden');
         ui.status.innerText = t('status_ready');
+        ui.status.style.color = "var(--text-light)";
         state.myScore = 0; state.opScore = 0; state.round = 1; state.aiMode = false;
         socket.disconnect();
         socket.connect();
@@ -603,9 +1017,9 @@
 
         state.myAction = null; state.opAction = null; state.myVote = null; state.opVote = null;
         ui.reasonInput.value = ''; ui.reasonInput.disabled = false; selectedCup = null;
-        ui.submitBtn.disabled = false; ui.submitBtn.innerText = t('btn_submit');
-        ui.opStatus.innerText = t('op_status_typing'); ui.opStatus.style.color = "#555";
-        ui.voteYes.classList.remove('hidden'); ui.voteNo.classList.remove('hidden');
+        ui.submitBtn.disabled = false; ui.submitBtn.innerHTML = t('btn_submit');
+        ui.opStatus.innerHTML = t('op_status_typing'); ui.opStatus.style.color = "#555";
+        ui.voteYes.parentElement.classList.remove('hidden'); 
         ui.voteWait.classList.add('hidden'); 
 
         if(state.myRole === 'poisoner') {
@@ -648,9 +1062,9 @@
     }
 
     function submitAction() {
-        if(!selectedCup) return alert(t('alert_no_cup'));
+        if(!selectedCup) { alert(t('alert_no_cup')); return; }
         let reason = ui.reasonInput.value.trim();
-        if(!reason) return alert(t('alert_no_reason'));
+        if(!reason) { alert(t('alert_no_reason')); return; }
         
         state.myAction = { cup: selectedCup, reason: reason };
         ui.submitBtn.disabled = true; ui.submitBtn.innerText = t('btn_submitted');
@@ -672,7 +1086,7 @@
         if(state.myVote !== null) return;
         let btnAi = document.getElementById('btn-ai');
         btnAi.disabled = true;
-        btnAi.innerText = t('ai_waiting');
+        btnAi.innerHTML = t('ai_waiting');
         socket.emit('request_ai');
     }
 
@@ -687,20 +1101,19 @@
         if(survived && state.myRole === 'drinker') state.myScore++;
         else if(survived && state.myRole === 'poisoner') state.opScore++;
 
-        let resHtml = `<h3>${t('res_title')} ${survived ? `<span style="color:#0f0;">${t('res_survived')}</span>` : `<span style="color:#f00;">${t('res_died')}</span>`}</h3>`;
-        resHtml += `<p>${t('res_poison_pos')} <strong>${getLocalCupName(pAction.cup)}</strong> | ${t('res_drunk_pos')} <strong>${getLocalCupName(dAction.cup)}</strong></p><hr style="border:1px solid #333;">`;
-        resHtml += `<p><strong>${t('res_scroll_p')}</strong> "${pAction.reason}"</p>`;
-        resHtml += `<p><strong>${t('res_scroll_d')}</strong> "${dAction.reason}"</p>`;
+        let resHtml = `<h3 style="margin-bottom:15px; font-size:18px;">${t('res_title')} ${survived ? `<span style="color:var(--success); text-shadow:0 0 10px rgba(76,175,80,0.4);">${t('res_survived')}</span>` : `<span style="color:var(--error); text-shadow:0 0 10px rgba(212,92,47,0.4);">${t('res_died')}</span>`}</h3>`;
+        resHtml += `<p style="color:#aaa; font-size:14px; margin-bottom:15px;">${t('res_poison_pos')} <strong style="color:var(--gold);">${getLocalCupName(pAction.cup)}</strong> | ${t('res_drunk_pos')} <strong style="color:var(--gold);">${getLocalCupName(dAction.cup)}</strong></p><hr style="border:1px solid #222; margin-bottom:15px;">`;
+        resHtml += `<p style="margin-bottom:8px; font-size:14px;"><strong style="color:var(--text-light);">${t('res_scroll_p')}</strong> <span style="font-style:italic; color:#888;">"${pAction.reason}"</span></p>`;
+        resHtml += `<p style="font-size:14px;"><strong style="color:var(--text-light);">${t('res_scroll_d')}</strong> <span style="font-style:italic; color:#888;">"${dAction.reason}"</span></p>`;
 
         ui.revealArea.innerHTML = resHtml;
         updateStatus(); ui.voteWait.innerText = t('vote_wait');
-        ui.voteWait.style.color = "#ff0";
+        ui.voteWait.style.color = "var(--gold)";
         
         let btnAi = document.getElementById('btn-ai');
         
         if (state.aiMode) {
-            ui.voteYes.classList.add('hidden');
-            ui.voteNo.classList.add('hidden');
+            ui.voteYes.parentElement.classList.add('hidden');
             btnAi.classList.add('hidden');
             ui.voteWait.classList.remove('hidden');
             ui.voteWait.innerText = t('ai_analyzing');
@@ -710,14 +1123,13 @@
                 socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason });
             }
         } else {
-            ui.voteYes.classList.remove('hidden');
-            ui.voteNo.classList.remove('hidden');
+            ui.voteYes.parentElement.classList.remove('hidden');
             ui.voteWait.classList.add('hidden');
             
             if (state.round === 1) {
                 btnAi.classList.remove('hidden');
                 btnAi.disabled = false;
-                btnAi.innerText = t('btn_ai_request');
+                btnAi.innerHTML = t('btn_ai_request');
             } else {
                 btnAi.classList.add('hidden');
             }
@@ -748,7 +1160,7 @@
     }
 
     function appendChat(sender, msg, cssClass) {
-        let p = document.createElement('p'); p.innerHTML = `<span class="${cssClass}">[${sender}]</span>: ${msg}`;
+        let p = document.createElement('p'); p.innerHTML = `<span class="${cssClass}">[${sender}]</span>: <span style="color:#ccc;">${msg}</span>`;
         ui.chatHistory.appendChild(p); ui.chatHistory.scrollTop = ui.chatHistory.scrollHeight;
     }
 
@@ -756,7 +1168,7 @@
 
     function submitVote(isYes) {
         state.myVote = isYes;
-        ui.voteYes.classList.add('hidden'); ui.voteNo.classList.add('hidden');
+        ui.voteYes.parentElement.classList.add('hidden');
         document.getElementById('btn-ai').classList.add('hidden');
         ui.voteWait.classList.remove('hidden');
         socket.emit('vote_action', isYes);
@@ -776,7 +1188,7 @@
             updateStatus();
 
             let waitTime = 10;
-            ui.voteWait.innerHTML = `${t('vote_next')} <strong id="next-phase-timer" style="color:#ff0;">${waitTime}</strong>s...`;
+            ui.voteWait.innerHTML = `${t('vote_next')} <strong id="next-phase-timer" style="color:var(--gold); font-size:1.2em;">${waitTime}</strong>s...`;
             
             let waitIv = setInterval(() => {
                 waitTime--; let el = document.getElementById('next-phase-timer');
@@ -796,18 +1208,21 @@
 
     function updateStatus() { 
         ui.status.innerText = t('status_connected', {myScore: state.myScore, opScore: state.opScore}); 
+        ui.status.style.color = "var(--gold)";
     }
 
     function endGame() {
         hideAll(); ui.lobby.classList.remove('hidden');
-        let resHtml = `<h2>${t('end_title')}</h2><p>${t('end_my_score')} ${state.myScore}</p><p>${t('end_op_score')} ${state.opScore}</p>`;
+        let resHtml = `<h2 style="font-size:24px; color:var(--text-light); margin-bottom:15px;">${t('end_title')}</h2><p style="font-size:16px; margin-bottom:5px; color:#aaa;">${t('end_my_score')} <strong style="color:var(--gold);">${state.myScore}</strong></p><p style="font-size:16px; margin-bottom:20px; color:#aaa;">${t('end_op_score')} <strong style="color:var(--gold);">${state.opScore}</strong></p>`;
         
-        if(state.myScore > state.opScore) resHtml += `<h3 style='color:#0f0'>${t('end_win')}</h3>`;
-        else if(state.myScore < state.opScore) resHtml += `<h3 style='color:#f00'>${t('end_lose')}</h3>`;
-        else resHtml += `<h3 style='color:#ff0'>${t('end_draw')}</h3>`;
+        if(state.myScore > state.opScore) resHtml += `<h3 style='color:var(--success); font-size:28px; text-shadow:0 0 15px rgba(76,175,80,0.4);'>${t('end_win')}</h3>`;
+        else if(state.myScore < state.opScore) resHtml += `<h3 style='color:var(--error); font-size:28px; text-shadow:0 0 15px rgba(212,92,47,0.4);'>${t('end_lose')}</h3>`;
+        else resHtml += `<h3 style='color:var(--gold); font-size:28px; text-shadow:0 0 15px rgba(212,163,92,0.4);'>${t('end_draw')}</h3>`;
 
         ui.disconnectMsg.innerHTML = resHtml;
-        ui.disconnectMsg.classList.remove('hidden', 'error');
+        ui.disconnectMsg.classList.remove('hidden');
+        ui.disconnectMsg.style.textAlign = 'center';
+        ui.disconnectMsg.style.padding = '40px';
         state.aiMode = false;
         socket.disconnect();
         socket.connect();
