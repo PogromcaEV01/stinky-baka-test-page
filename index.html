@@ -145,6 +145,21 @@
     <div id="host-info" class="hidden alert" style="margin: 10px 0;">
         <span data-i18n="host_info_code">Twój kod dostępu:</span> <strong id="room-id" style="font-size: 1.5em; color: #ff0;"></strong><br><span data-i18n="host_info_waiting">Czekam na przeciwnika...</span>
     </div>
+   <div class="input-group">
+        <input type="text" id="join-id" data-i18n-placeholder="placeholder_join" placeholder="Wpisz kod pokoju znajomego...">
+        <button onclick="joinRoom()" data-i18n="btn_join">[ DOŁĄCZ ]</button>
+    </div>
+
+    <hr style="border-color:#0f0; border-style:dashed; margin: 20px 0;">
+    <h3 style="color: #ff0;">> SYSTEM AELWYD (PREMIUM)</h3>
+    <div class="input-group" style="flex-direction: column; gap: 5px;">
+        <input type="text" id="login-user" placeholder="Login">
+        <input type="password" id="login-pass" placeholder="Hasło" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px;">
+    </div>
+    <button onclick="attemptLogin()" style="width: 100%; border-color: #ff0; color: #ff0; background: #220;">[ AUTORYZUJ ]</button>
+    <div id="login-error" style="color: #f00; margin-top: 10px; display: none;"></div>
+    <a href="https://ko-fi.com/pogromca" target="_blank" class="donate-subtle" data-i18n="donate_link">>> wesprzyj_serwer</a>
+</div>
     <br><br>
     <div class="input-group">
         <input type="text" id="join-id" data-i18n-placeholder="placeholder_join" placeholder="Wpisz kod pokoju znajomego...">
@@ -812,6 +827,41 @@
         socket.disconnect();
         socket.connect();
     }
+   async function attemptLogin() {
+    const user = document.getElementById('login-user').value.trim();
+    const pass = document.getElementById('login-pass').value.trim();
+    const errDiv = document.getElementById('login-error');
+
+    if (!user || !pass) return;
+
+    try {
+        // SERVER_URL to adres Twojego API na Renderze (np. https://serwer.onrender.com)
+        const response = await fetch(`${SERVER_URL}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: user, password: pass })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            errDiv.style.color = "#0f0";
+            errDiv.innerText = "> AUTORYZACJA OK. Ładowanie...";
+            errDiv.style.display = 'block';
+            
+            // Przekierowanie do pliku spigir_1.html w tym samym repozytorium
+            setTimeout(() => {
+                window.location.href = 'spigir_1.html';
+            }, 800);
+        } else {
+            errDiv.innerText = "> ODMOWA: " + result.message;
+            errDiv.style.display = 'block';
+        }
+    } catch (e) {
+        errDiv.innerText = "> BŁĄD POŁĄCZENIA Z SERWEREM.";
+        errDiv.style.display = 'block';
+    }
+}
 </script>
 </body>
 </html>
