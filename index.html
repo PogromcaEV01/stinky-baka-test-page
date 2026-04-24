@@ -161,19 +161,25 @@
     <a href="https://ko-fi.com/pogromca" target="_blank" class="donate-subtle" data-i18n="donate_link">>> wesprzyj_serwer</a>
 </div>
 
-   <div id="login-error" style="color: #f00; margin-top: 10px; display: none;"></div>
-
-    <hr style="border-color:#0f0; border-style:dashed; margin: 20px 0;">
-    <h3 style="color: #0ff;">> REJESTRACJA NOWEGO KONTA</h3>
-    <p>Nie masz dostępu? <a href="TUTAJ_LINK_DO_ZAKUPU" target="_blank" style="color: #0ff;">Kup Kod Dostępu</a></p>
-    
-    <div class="input-group" style="flex-direction: column; gap: 5px;">
-        <input type="text" id="reg-code" placeholder="Wprowadź zakupiony Kod Dostępu">
-        <input type="text" id="reg-user" placeholder="Wymyśl Identyfikator (Login)">
-        <input type="password" id="reg-pass" placeholder="Wymyśl Hasło" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px;">
+   
+   <div id="registration-section" class="hidden" style="margin-top: 20px;">
+        <hr style="border-color:#0ff; border-style:dashed; margin: 20px 0;">
+        <h3 style="color: #0ff;">> INICJACJA NOWEGO PROFILU</h3>
+        <p>Wymagany zewnętrzny Kod Dostępu. <a href="https://ko-fi.com/pogromca" target="_blank" style="color: #0ff;">Pozyskaj Kod (Ko-fi)</a></p>
+        
+        <div class="input-group" style="flex-direction: column; gap: 5px;">
+            <input type="text" id="reg-code" placeholder="Wprowadź Kod Dostępu">
+            <input type="text" id="reg-user" placeholder="Wymyśl Identyfikator">
+            <input type="password" id="reg-pass" placeholder="Wymyśl Hasło" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px; width: 100%; font-family: inherit;">
+        </div>
+        <button onclick="attemptRegister()" style="width: 100%; border-color: #0ff; color: #0ff; background: #002222;">[ AUTORYZUJ DOSTĘP ]</button>
+        <div id="reg-msg" style="margin-top: 10px; font-weight: bold; display: none;"></div>
     </div>
-    <button onclick="attemptRegister()" style="width: 100%; border-color: #0ff; color: #0ff; background: #002222;">[ INICJUJ NOWY PROFIL ]</button>
-    <div id="reg-msg" style="margin-top: 10px; font-weight: bold; display: none;"></div>
+
+    <a href="javascript:void(0)" class="donate-subtle" onclick="toggleRegistration()" data-i18n="donate_link" style="cursor: pointer; display: block; text-decoration: none;">
+        >> odblokuj_system_aelwyd
+    </a>
+
 
 <div id="countdown-panel" class="panel hidden" style="text-align: center;">
     <h2 data-i18n="countdown_h2">POŁĄCZONO!</h2>
@@ -254,7 +260,7 @@
             host_info_waiting: "Czekam na przeciwnika...",
             placeholder_join: "Wpisz kod pokoju znajomego...",
             btn_join: "[ DOŁĄCZ ]",
-            donate_link: ">> wesprzyj_serwer",
+            donate_link: ">> odblokuj_system_aelwyd",
             countdown_h2: "POŁĄCZONO!",
             countdown_p: "Przygotuj się. Runda rozpocznie się za:",
             role_title: "> FAZA: ???",
@@ -346,7 +352,7 @@
             host_info_waiting: "Waiting for opponent...",
             placeholder_join: "Enter friend's room code...",
             btn_join: "[ JOIN ]",
-            donate_link: ">> support_server",
+            donate_link: ">> unlock_aelwyd_system",
             countdown_h2: "CONNECTED!",
             countdown_p: "Get ready. The round begins in:",
             role_title: "> PHASE: ???",
