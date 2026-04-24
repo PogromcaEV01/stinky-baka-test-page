@@ -447,7 +447,7 @@
                 errDiv.style.color = "#0f0";
                 errDiv.innerText = "> AUTORYZACJA OK. Ładowanie...";
                 errDiv.style.display = 'block';
-                setTimeout(() => { window.location.href = '452641656408642184621684246581486403408461514254684274286798641246881401spigir_1864140224254833126875328635738371283.html'; }, 800);
+                setTimeout(() => { window.location.href = 'spigir_1.html'; }, 800);
             } else {
                 errDiv.innerText = "> ODMOWA: " + result.message;
                 errDiv.style.display = 'block';
@@ -490,37 +490,282 @@
         }
     }
 
-    // --- RESZTA LOGIKI GRY (UPROSZCZONA DLA CZYTELNOŚCI) ---
-    function searchRank(rank) { socket.emit('search_rank', rank); ui.queueStatus.classList.remove('hidden'); }
-    function cancelSearch() { socket.emit('cancel_search'); ui.queueStatus.classList.add('hidden'); }
-    function createRoom() { 
+    // --- PEŁNA LOGIKA GRY ---
+
+    function searchRank(rank) {
+        ui.disconnectMsg.classList.add('hidden');
+        ui.queueStatus.classList.remove('hidden');
+        ui.queueText.innerText = t('search_network', {rank: rank});
+        socket.emit('search_rank', rank);
+    }
+
+    function cancelSearch() {
+        socket.emit('cancel_search');
+        ui.queueStatus.classList.add('hidden');
+    }
+
+    function createRoom() {
+        ui.disconnectMsg.classList.add('hidden');
         let pin = Math.floor(1000 + Math.random() * 9000).toString();
-        socket.emit('create_room', pin); ui.hostInfo.classList.remove('hidden'); ui.roomId.innerText = pin;
+        socket.emit('create_room', pin);
+        ui.hostInfo.classList.remove('hidden');
+        ui.roomId.innerText = pin;
     }
-    function joinRoom() { 
+
+    function joinRoom() {
+        ui.disconnectMsg.classList.add('hidden');
         let pin = document.getElementById('join-id').value.trim();
-        if(pin) socket.emit('join_room', pin);
+        if(!pin) return alert(t('alert_no_code'));
+        socket.emit('join_room', pin);
     }
-    function handleKick(reason) { alert(reason); location.reload(); }
+
+    function kickPlayer(reason) {
+        handleKick(reason);
+    }
+
+    function handleKick(reason) {
+        clearInterval(timerInterval); clearInterval(chatTimerInterval); hideAll();
+        ui.lobby.classList.remove('hidden');
+        ui.disconnectMsg.innerText = `${t('error_prefix')} ${reason}`;
+        ui.disconnectMsg.classList.remove('hidden');
+        ui.status.innerText = t('status_ready');
+        state.myScore = 0; state.opScore = 0; state.round = 1; state.aiMode = false;
+        socket.disconnect();
+        socket.connect();
+    }
+
+    function hideAll() { 
+        ui.lobby.classList.add('hidden'); ui.countdown.classList.add('hidden'); 
+        ui.game.classList.add('hidden'); ui.vote.classList.add('hidden'); 
+    }
+
     function start5SecCountdown() {
-        ui.lobby.classList.add('hidden'); ui.countdown.classList.remove('hidden');
+        hideAll(); ui.countdown.classList.remove('hidden');
+        updateStatus();
         let t_sec = 5; ui.startTimer.innerText = t_sec;
         let iv = setInterval(() => {
             t_sec--; ui.startTimer.innerText = t_sec;
             if(t_sec <= 0) { clearInterval(iv); startPlayingPhase(); }
         }, 1000);
     }
+
     function startPlayingPhase() {
-        ui.countdown.classList.add('hidden'); ui.game.classList.remove('hidden');
-        // ... (Logika wyboru ról i kubków z Twojego poprzedniego kodu) ...
+        hideAll(); ui.game.classList.remove('hidden');
+
+        let hostPoisons = (state.round % 2 !== 0);
+        state.myRole = (isHost === hostPoisons) ? 'poisoner' : 'drinker';
+
+        state.myAction = null; state.opAction = null; state.myVote = null; state.opVote = null;
+        ui.reasonInput.value = ''; ui.reasonInput.disabled = false; selectedCup = null;
+        ui.submitBtn.disabled = false; ui.submitBtn.innerText = t('btn_submit');
+        ui.opStatus.innerText = t('op_status_typing'); ui.opStatus.style.color = "#555";
+        ui.voteYes.classList.remove('hidden'); ui.voteNo.classList.remove('hidden');
+        ui.voteWait.classList.add('hidden'); 
+
+        if(state.myRole === 'poisoner') {
+            ui.roleTitle.innerText = t('role_poisoner', {round: state.round});
+            document.getElementById('question-text').innerText = t('question_poisoner');
+        } else {
+            ui.roleTitle.innerText = t('role_drinker', {round: state.round});
+            document.getElementById('question-text').innerText = t('question_drinker');
+        }
+
+        let mySideId = isHost ? 'host_side' : 'guest_side';
+        let opSideId = isHost ? 'guest_side' : 'host_side';
+
+        ui.cupOptions.innerHTML = `
+            <div class="cup-option" id="cup-${mySideId}" onclick="selectCup('${mySideId}')">${t('cup_mine_select')}</div>
+            <div class="cup-option" id="cup-${opSideId}" onclick="selectCup('${opSideId}')">${t('cup_yours_select')}</div>
+        `;
+
+        timeLeft = 120; ui.roundTimer.innerText = timeLeft;
+        clearInterval(timerInterval);
+        
+        timerInterval = setInterval(() => {
+            timeLeft--; ui.roundTimer.innerText = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                if(!state.myAction) {
+                    if(!selectedCup || !ui.reasonInput.value.trim()) kickPlayer(t('kick_timeout'));
+                    else submitAction();
+                }
+            }
+        }, 1000);
     }
-    function submitAction() { /* ... */ }
-    function checkBothSubmitted() { /* ... */ }
-    function sendChat() { /* ... */ }
-    function appendChat(s, m, c) { /* ... */ }
-    function submitVote(v) { /* ... */ }
-    function checkVotes() { /* ... */ }
-    function endGame() { /* ... */ }
+
+    let selectedCup = null;
+    function selectCup(cupId) {
+        if(state.myAction) return;
+        selectedCup = cupId;
+        document.querySelectorAll('.cup-option').forEach(el => el.classList.remove('selected'));
+        document.getElementById(`cup-${cupId}`).classList.add('selected');
+    }
+
+    function submitAction() {
+        if(!selectedCup) return alert(t('alert_no_cup'));
+        let reason = ui.reasonInput.value.trim();
+        if(!reason) return alert(t('alert_no_reason'));
+        
+        state.myAction = { cup: selectedCup, reason: reason };
+        ui.submitBtn.disabled = true; ui.submitBtn.innerText = t('btn_submitted');
+        ui.reasonInput.disabled = true;
+
+        socket.emit('game_action', state.myAction);
+        checkBothSubmitted();
+    }
+
+    function checkBothSubmitted() {
+        if(state.myAction && state.opAction) {
+            clearInterval(timerInterval); timeLeft = 0;
+            ui.roundTimer.innerText = 0;
+            setTimeout(showRevealPhase, 1000);
+        }
+    }
+
+    function requestAI() {
+        if(state.myVote !== null) return;
+        let btnAi = document.getElementById('btn-ai');
+        btnAi.disabled = true;
+        btnAi.innerText = t('ai_waiting');
+        socket.emit('request_ai');
+    }
+
+    function showRevealPhase() {
+        hideAll(); ui.vote.classList.remove('hidden');
+
+        let pAction = state.myRole === 'poisoner' ? state.myAction : state.opAction;
+        let dAction = state.myRole === 'drinker' ? state.myAction : state.opAction;
+
+        let survived = (pAction.cup !== dAction.cup);
+
+        if(survived && state.myRole === 'drinker') state.myScore++;
+        else if(survived && state.myRole === 'poisoner') state.opScore++;
+
+        let resHtml = `<h3>${t('res_title')} ${survived ? `<span style="color:#0f0;">${t('res_survived')}</span>` : `<span style="color:#f00;">${t('res_died')}</span>`}</h3>`;
+        resHtml += `<p>${t('res_poison_pos')} <strong>${getLocalCupName(pAction.cup)}</strong> | ${t('res_drunk_pos')} <strong>${getLocalCupName(dAction.cup)}</strong></p><hr style="border:1px solid #333;">`;
+        resHtml += `<p><strong>${t('res_scroll_p')}</strong> "${pAction.reason}"</p>`;
+        resHtml += `<p><strong>${t('res_scroll_d')}</strong> "${dAction.reason}"</p>`;
+
+        ui.revealArea.innerHTML = resHtml;
+        updateStatus(); ui.voteWait.innerText = t('vote_wait');
+        ui.voteWait.style.color = "#ff0";
+        
+        let btnAi = document.getElementById('btn-ai');
+        
+        if (state.aiMode) {
+            ui.voteYes.classList.add('hidden');
+            ui.voteNo.classList.add('hidden');
+            btnAi.classList.add('hidden');
+            ui.voteWait.classList.remove('hidden');
+            ui.voteWait.innerText = t('ai_analyzing');
+            ui.voteWait.style.color = "#0ff";
+            
+            if (isHost) {
+                socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason });
+            }
+        } else {
+            ui.voteYes.classList.remove('hidden');
+            ui.voteNo.classList.remove('hidden');
+            ui.voteWait.classList.add('hidden');
+            
+            if (state.round === 1) {
+                btnAi.classList.remove('hidden');
+                btnAi.disabled = false;
+                btnAi.innerText = t('btn_ai_request');
+            } else {
+                btnAi.classList.add('hidden');
+            }
+        }
+
+        chatTimeLeft = 180; ui.chatTimer.innerText = chatTimeLeft;
+        clearInterval(chatTimerInterval);
+        
+        chatTimerInterval = setInterval(() => {
+            chatTimeLeft--; ui.chatTimer.innerText = chatTimeLeft;
+            if(chatTimeLeft <= 0) {
+                clearInterval(chatTimerInterval);
+                if(state.myVote === null && !state.aiMode) submitVote(false);
+            }
+        }, 1000);
+    }
+
+    function getLocalCupName(cupId) { 
+        return cupId === (isHost ? 'host_side' : 'guest_side') ? t('cup_mine_res') : t('cup_yours_res');
+    }
+
+    function sendChat() {
+        let msg = ui.chatInput.value.trim();
+        if(!msg) return;
+        appendChat(t('chat_you'), msg, "msg-me");
+        socket.emit('chat_msg', msg);
+        ui.chatInput.value = '';
+    }
+
+    function appendChat(sender, msg, cssClass) {
+        let p = document.createElement('p'); p.innerHTML = `<span class="${cssClass}">[${sender}]</span>: ${msg}`;
+        ui.chatHistory.appendChild(p); ui.chatHistory.scrollTop = ui.chatHistory.scrollHeight;
+    }
+
+    ui.chatInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendChat(); });
+
+    function submitVote(isYes) {
+        state.myVote = isYes;
+        ui.voteYes.classList.add('hidden'); ui.voteNo.classList.add('hidden');
+        document.getElementById('btn-ai').classList.add('hidden');
+        ui.voteWait.classList.remove('hidden');
+        socket.emit('vote_action', isYes);
+        checkVotes();
+    }
+
+    function checkVotes() {
+        if(state.myVote !== null && state.opVote !== null) {
+            clearInterval(chatTimerInterval); ui.chatTimer.innerText = "0";
+            
+            if(state.myVote === true && state.opVote === true) {
+                appendChat(t('chat_sys'), t('sys_agree'), "msg-sys");
+                if(state.myRole === 'drinker') state.myScore++;
+                else state.opScore++;
+            } else appendChat(t('chat_sys'), t('sys_disagree'), "msg-sys");
+
+            updateStatus();
+
+            let waitTime = 10;
+            ui.voteWait.innerHTML = `${t('vote_next')} <strong id="next-phase-timer" style="color:#ff0;">${waitTime}</strong>s...`;
+            
+            let waitIv = setInterval(() => {
+                waitTime--; let el = document.getElementById('next-phase-timer');
+                if(el) el.innerText = waitTime;
+
+                if(waitTime <= 0) {
+                    clearInterval(waitIv);
+                    if(isHost) {
+                        if(state.round < state.maxRounds) {
+                            state.round++; start5SecCountdown(); socket.emit('next_round');
+                        } else { endGame(); socket.emit('end_game'); }
+                    }
+                }
+            }, 1000);
+        }
+    }
+
+    function updateStatus() { 
+        ui.status.innerText = t('status_connected', {myScore: state.myScore, opScore: state.opScore}); 
+    }
+
+    function endGame() {
+        hideAll(); ui.lobby.classList.remove('hidden');
+        let resHtml = `<h2>${t('end_title')}</h2><p>${t('end_my_score')} ${state.myScore}</p><p>${t('end_op_score')} ${state.opScore}</p>`;
+        
+        if(state.myScore > state.opScore) resHtml += `<h3 style='color:#0f0'>${t('end_win')}</h3>`;
+        else if(state.myScore < state.opScore) resHtml += `<h3 style='color:#f00'>${t('end_lose')}</h3>`;
+        else resHtml += `<h3 style='color:#ff0'>${t('end_draw')}</h3>`;
+
+        ui.disconnectMsg.innerHTML = resHtml;
+        ui.disconnectMsg.classList.remove('hidden', 'error');
+        state.aiMode = false;
+        socket.disconnect();
+        socket.connect();
+    }
 
 </script>
 </body>
