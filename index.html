@@ -998,21 +998,16 @@
 
                 if(waitTime <= 0) {
                     clearInterval(waitIv);
-                    
-                    // POPRAWKA: Obaj gracze sprawdzają limit rund lokalnie
-                    if(state.round < state.maxRounds) {
-                        // Przejście do następnej rundy nadal wyzwala tylko Host, żeby nie dublować sygnałów
-                        if(isHost) {
+                    if(isHost) {
+                        if(state.round < state.maxRounds) {
                             state.round++; start5SecCountdown(); socket.emit('next_round');
-                        }
-                    } else {
-                        // Koniec gry wyzwalają u siebie obaj gracze jednocześnie
-                        endGame(); 
+                        } else { endGame(); socket.emit('end_game'); }
                     }
                 }
             }, 1000);
         }
     }
+
     function updateStatus() { 
         ui.status.innerText = t('status_connected', {myScore: state.myScore, opScore: state.opScore}); 
     }
