@@ -37,12 +37,12 @@
 
     body {
         font-family: 'Courier New', Courier, monospace;
-        background: #0a0508; /* Bardzo ciemny fiolet/czerń */
-        color: #ff99cc; /* Pastelowy róż (femboy vibes) */
+        background: #0a0508;
+        color: #ff99cc;
         max-width: 800px;
         margin: 20px auto;
         padding: 20px;
-        border: 2px solid #8b0000; /* Krwista czerwień */
+        border: 2px solid #8b0000;
         box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
         min-height: 95vh;
     }
@@ -117,7 +117,7 @@
     #chat-history { height: 150px; overflow-y: scroll; border: 1px solid #8b0000; background: #0a0205; padding: 10px; margin-bottom: 10px; word-wrap: break-word; }
     #chat-history p { margin: 4px 0; }
     .msg-me { color: #ff99cc; }
-    .msg-op { color: #00ffff; /* Kontrastowy cyjan */ }
+    .msg-op { color: #00ffff; }
     .msg-sys { color: #ff0000; font-weight: bold; text-shadow: 0 0 2px red; }
 
     .cup-option {
@@ -154,7 +154,7 @@
 </head>
 <body>
 
-<h1 data-i18n="h1_title">> HALA GŁÓWNA PYRKONU_ [03:00 AM]</h1>
+<h1 data-i18n="h1_title">> HALA 7_ [03:00 AM]</h1>
 <div id="status" data-i18n="status_init">[ BUDZENIE DEMONÓW... ]</div>
 
 <div id="server-status" class="alert" style="border-left-color: #ff0055;">
@@ -190,24 +190,24 @@
     </div>
 
     <hr style="border-color:#ff0055; border-style:dashed; margin: 20px 0;">
-    <h3 style="color: #00ffff;">> KONSOLA SYSTEMOWA AELWYD (SEKRET)</h3>
+    <h3 style="color: #00ffff;" data-i18n="aelwyd_title">> KONSOLA SYSTEMOWA AELWYD (SEKRET)</h3>
     <div class="input-group" style="flex-direction: column; gap: 5px;">
-        <input type="text" id="login-user" placeholder="Login (Twój identyfikator)">
-        <input type="password" id="login-pass" placeholder="Hasło (Mroczny sekret)" style="background: #1a0a13; color: #ff99cc; border: 1px solid #00ffff; padding: 10px;">
+        <input type="text" id="login-user" data-i18n-placeholder="login_user_ph" placeholder="Login (Twój identyfikator)">
+        <input type="password" id="login-pass" data-i18n-placeholder="login_pass_ph" placeholder="Hasło (Mroczny sekret)" style="background: #1a0a13; color: #ff99cc; border: 1px solid #00ffff; padding: 10px;">
     </div>
-    <button onclick="attemptLogin()" style="width: 100%; border-color: #00ffff; color: #00ffff; background: #001a1a;">[ AUTORYZUJ WEJŚCIE DO BAZY ]</button>
+    <button onclick="attemptLogin()" style="width: 100%; border-color: #00ffff; color: #00ffff; background: #001a1a;" data-i18n="btn_login">[ AUTORYZUJ WEJŚCIE DO BAZY ]</button>
     <div id="login-error" style="color: #ff0000; margin-top: 10px; font-weight: bold; display: none;"></div>
 
     <div id="registration-section" class="hidden" style="margin-top: 20px;">
         <hr style="border-color:#ff99cc; border-style:dashed; margin: 20px 0;">
-        <h3 style="color: #ff99cc;">> INICJALIZACJA NOWEGO KOSZMARU</h3>
-        <p>Wymagany zewnętrzny Kod Dostępu. <a href="https://ko-fi.com/pogromca" target="_blank" style="color: #ff0055;">Kup Mi Monsterka (Ko-fi)</a></p>
+        <h3 style="color: #ff99cc;" data-i18n="reg_title">> INICJALIZACJA tożsamości</h3>
+        <p><span data-i18n="reg_desc">Wymagany zewnętrzny Kod Dostępu.</span> <a href="https://ko-fi.com/pogromca" target="_blank" style="color: #ff0055;" data-i18n="reg_link">uzyskaj kod dostępu</a></p>
         <div class="input-group" style="flex-direction: column; gap: 5px;">
-            <input type="text" id="reg-code" placeholder="Wprowadź Kod Dostępu">
-            <input type="text" id="reg-user" placeholder="Wymyśl Identyfikator">
-            <input type="password" id="reg-pass" placeholder="Wymyśl Hasło" style="background: #1a0a13; color: #ff99cc; border: 1px solid #ff99cc; padding: 10px;">
+            <input type="text" id="reg-code" data-i18n-placeholder="reg_code_ph" placeholder="Wprowadź Kod Dostępu">
+            <input type="text" id="reg-user" data-i18n-placeholder="reg_user_ph" placeholder="Wymyśl Identyfikator">
+            <input type="password" id="reg-pass" data-i18n-placeholder="reg_pass_ph" placeholder="Wymyśl Hasło" style="background: #1a0a13; color: #ff99cc; border: 1px solid #ff99cc; padding: 10px;">
         </div>
-        <button onclick="attemptRegister()" style="width: 100%; border-color: #ff99cc; color: #ff99cc; background: #1a000d;">[ ZATWIERDŹ NOWĄ TOŻSAMOŚĆ ]</button>
+        <button onclick="attemptRegister()" style="width: 100%; border-color: #ff99cc; color: #ff99cc; background: #1a000d;" data-i18n="btn_register">[ ZATWIERDŹ NOWĄ TOŻSAMOŚĆ ]</button>
         <div id="reg-msg" style="margin-top: 10px; font-weight: bold; display: none;"></div>
     </div>
 
@@ -258,8 +258,6 @@
     <div id="voting-area" style="margin-top: 20px;">
         <p data-i18n="vote_desc"><strong>Zdecyduj: Czy Wasze umysły połączyły się w jednym szaleństwie? (Czy sens jest ten sam?)</strong></p>
         
-        <button id="btn-ai" onclick="requestAI()" class="hidden" style="background:#0a0508; color:#00ffff; margin-bottom:15px; width:100%; border-color:#00ffff;" data-i18n="btn_ai_request">[ 🤖 ZAPYTAJ DEMONA Z IT (Raz na grę) ]</button>
-        
         <button id="vote-yes" onclick="submitVote(true)" data-i18n="btn_vote_yes" style="border-color:#ff99cc; color:#ff99cc;">[ TAK, JESTEŚMY TACY SAMI ]</button>
         <button id="vote-no" onclick="submitVote(false)" data-i18n="btn_vote_no" style="border-color:#ff0000; color:#ff0000;">[ NIE, ON KŁAMIE ]</button>
         <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0055; font-weight:bold;" data-i18n="vote_wait">Czekam na jego reakcję...</div>
@@ -271,7 +269,7 @@
     const dict = {
         pl: {
             page_title: "Koszmar na Pyrkonie - Zatruty Monster",
-            h1_title: "> HALA GŁÓWNA PYRKONU_ [03:00 AM]",
+            h1_title: "> HALA 7_ [03:00 AM]",
             status_init: "[ BUDZENIE DEMONÓW... ]",
             status_ready: "[ MOŻESZ WEJŚĆ DO HALI ]",
             server_status_prefix: "Stan mrocznej sieci:",
@@ -312,6 +310,26 @@
             btn_vote_no: "[ NIE, ON KŁAMIE ]",
             vote_wait: "Czekam na jego reakcję...",
             
+            // SYSTEM AELWYD
+            aelwyd_title: "> KONSOLA SYSTEMOWA AELWYD (SEKRET)",
+            login_user_ph: "Login (Twój identyfikator)",
+            login_pass_ph: "Hasło (Mroczny sekret)",
+            btn_login: "[ AUTORYZUJ WEJŚCIE DO BAZY ]",
+            reg_title: "> INICJALIZACJA tożsamości",
+            reg_desc: "Wymagany zewnętrzny Kod Dostępu.",
+            reg_link: "uzyskaj kod dostępu",
+            reg_code_ph: "Wprowadź Kod Dostępu",
+            reg_user_ph: "Wymyśl Identyfikator",
+            reg_pass_ph: "Wymyśl Hasło",
+            btn_register: "[ ZATWIERDŹ NOWĄ TOŻSAMOŚĆ ]",
+            
+            login_success: "> DANE POPRAWNE. Ładowanie piwnicy...",
+            login_denied: "> ODMOWA: ",
+            login_error: "> BŁĄD POŁĄCZENIA Z DEMONEM.",
+            reg_success: "> SUKCES: ",
+            reg_denied: "> BŁĄD: ",
+            reg_error: "> BŁĄD SIECI.",
+
             // AI JUDGE
             btn_ai_request: "[ 🤖 ZAPYTAJ DEMONA Z IT (Raz na grę) ]",
             ai_waiting: "Czekasz na skinienie głowy przeciwnika...",
@@ -363,7 +381,7 @@
         },
         en: {
             page_title: "Nightmare at Pyrkon - Poisoned Energy",
-            h1_title: "> MAIN HALL_ [03:00 AM]",
+            h1_title: "> HALL 7_ [03:00 AM]",
             status_init: "[ WAKING UP THE DEMONS... ]",
             status_ready: "[ YOU CAN ENTER THE HALL ]",
             server_status_prefix: "Dark net status:",
@@ -404,6 +422,26 @@
             btn_vote_no: "[ NO, HE IS LYING ]",
             vote_wait: "Waiting for his reaction...",
             
+            // SYSTEM AELWYD
+            aelwyd_title: "> AELWYD SYSTEM CONSOLE (SECRET)",
+            login_user_ph: "Login (Your identifier)",
+            login_pass_ph: "Password (Dark secret)",
+            btn_login: "[ AUTHORIZE DATABASE ENTRY ]",
+            reg_title: "> IDENTITY INITIALIZATION",
+            reg_desc: "External Access Code required.",
+            reg_link: "get access code",
+            reg_code_ph: "Enter Access Code",
+            reg_user_ph: "Invent Identifier",
+            reg_pass_ph: "Invent Password",
+            btn_register: "[ CONFIRM NEW IDENTITY ]",
+            
+            login_success: "> VALID DATA. Loading the basement...",
+            login_denied: "> DENIED: ",
+            login_error: "> DEMON CONNECTION ERROR.",
+            reg_success: "> SUCCESS: ",
+            reg_denied: "> ERROR: ",
+            reg_error: "> NETWORK ERROR.",
+
             // AI JUDGE
             btn_ai_request: "[ 🤖 ASK THE IT DEMON (Once per game) ]",
             ai_waiting: "Waiting for opponent's nod...",
@@ -469,6 +507,8 @@
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (el.tagName === 'A' && key === 'donate_link') {
+                 el.innerText = t(key);
+            } else if (el.tagName === 'A' && key === 'reg_link') {
                  el.innerText = t(key);
             } else if (el.innerHTML.includes('<') && !el.getAttribute('data-i18n').includes('desc')) {
                  el.innerText = t(key);
@@ -635,15 +675,15 @@
             const result = await response.json();
             if (result.success) {
                 errDiv.style.color = "#00ffff";
-                errDiv.innerText = "> DANE POPRAWNE. Ładowanie piwnicy...";
+                errDiv.innerText = t('login_success');
                 errDiv.style.display = 'block';
                 setTimeout(() => { window.location.href = 'spigir_1.html'; }, 800);
             } else {
-                errDiv.innerText = "> ODMOWA: " + result.message;
+                errDiv.innerText = t('login_denied') + result.message;
                 errDiv.style.display = 'block';
             }
         } catch (e) {
-            errDiv.innerText = "> BŁĄD POŁĄCZENIA Z DEMONEM.";
+            errDiv.innerText = t('login_error');
             errDiv.style.display = 'block';
         }
     }
@@ -664,18 +704,18 @@
             const result = await response.json();
             if (result.success) {
                 msgDiv.style.color = "#ff99cc";
-                msgDiv.innerText = "> SUKCES: " + result.message;
+                msgDiv.innerText = t('reg_success') + result.message;
                 msgDiv.style.display = 'block';
                 document.getElementById('reg-code').value = '';
                 document.getElementById('reg-user').value = '';
                 document.getElementById('reg-pass').value = '';
             } else {
                 msgDiv.style.color = "#ff0000";
-                msgDiv.innerText = "> BŁĄD: " + result.message;
+                msgDiv.innerText = t('reg_denied') + result.message;
                 msgDiv.style.display = 'block';
             }
         } catch (e) {
-            msgDiv.innerText = "> BŁĄD SIECI.";
+            msgDiv.innerText = t('reg_error');
             msgDiv.style.display = 'block';
         }
     }
