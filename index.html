@@ -211,7 +211,7 @@
         <div id="reg-msg" style="margin-top: 10px; font-weight: bold; display: none;"></div>
     </div>
 
-   <a href="javascript:void(0)" class="donate-subtle" onclick="toggleRegistration()" data-i18n="donate_link">>> kup_mi_monsterka</a>
+   <a href="javascript:void(0)" class="donate-subtle" onclick="toggleRegistration()" data-i18n="donate_link">>> uzyskaj_kod_dostępu</a>
 </div>
 
 <div id="countdown-panel" class="panel hidden" style="text-align: center;">
@@ -230,11 +230,11 @@
         <p id="question-text" data-i18n="question_text">Wybierz puszkę:</p>
         <div id="cup-options"></div>
 
-        <p data-i18n="reason_label">Dlaczego tak robisz? (Zapisz na identyfikatorze, nikt nie widzi):</p>
+        <p data-i18n="reason_label">Dlaczego tak robisz? (Zapisz na kartce, nikt nie widzi):</p>
         <input type="text" id="reason-input" data-i18n-placeholder="placeholder_reason" placeholder="Zapisz swój mroczny plan...">
 
         <div style="margin-top: 15px;">
-            <button id="submit-btn" onclick="submitAction()" data-i18n="btn_submit" style="border-color:#ff0055; color:#ff0055;">[ ODKŁADASZ IDENTYFIKATOR ]</button>
+            <button id="submit-btn" onclick="submitAction()" data-i18n="btn_submit" style="border-color:#ff0055; color:#ff0055;">[ ODKŁADASZ KARTKĘ ]</button>
             <div id="op-status" style="color: #8b0000; margin-top: 10px; font-weight: bold;" data-i18n="op_status_typing">[ ] On coś kombinuje...</div>
         </div>
     </div>
@@ -258,9 +258,11 @@
     <div id="voting-area" style="margin-top: 20px;">
         <p data-i18n="vote_desc"><strong>Zdecyduj: Czy Wasze umysły połączyły się w jednym szaleństwie? (Czy sens jest ten sam?)</strong></p>
         
+        <button id="btn-ai" onclick="requestAI()" class="hidden" style="background:#0a0508; color:#00ffff; margin-bottom:15px; width:100%; border-color:#00ffff;" data-i18n="btn_ai_request">[ 🤖 ZAPYTAJ DEMONA Z IT (Raz na grę) ]</button>
+        
         <button id="vote-yes" onclick="submitVote(true)" data-i18n="btn_vote_yes" style="border-color:#ff99cc; color:#ff99cc;">[ TAK, JESTEŚMY TACY SAMI ]</button>
         <button id="vote-no" onclick="submitVote(false)" data-i18n="btn_vote_no" style="border-color:#ff0000; color:#ff0000;">[ NIE, ON KŁAMIE ]</button>
-        <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0055; font-weight:bold;" data-i18n="vote_wait">Czekam na jego reakcję...</div>
+        <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0055; font-weight:bold;"></div>
     </div>
 </div>
 
@@ -291,15 +293,15 @@
             host_info_waiting: "Czekasz w mroku, aż ktoś wejdzie...",
             placeholder_join: "Wpisz kod do śpiwora ofiary...",
             btn_join: "[ WKRADNIJ SIĘ ]",
-            donate_link: ">> kup_mi_monsterka",
+            donate_link: ">> uzyskaj_kod_dostępu",
             countdown_h2: "DRZWI ZATRZAŚNIĘTE!",
             countdown_p: "Nie ma już ucieczki. Gra zacznie się za:",
             role_title: "> FAZA: ???",
             timer_label: "CZAS DO ŚMIERCI:",
             question_text: "Wybierz puszkę:",
-            reason_label: "Dlaczego tak robisz? (Zapisz na identyfikatorze, nikt nie widzi):",
+            reason_label: "Dlaczego tak robisz? (Zapisz na kartce, nikt nie widzi):",
             placeholder_reason: "Zapisz swój mroczny plan...",
-            btn_submit: "[ ODKŁADASZ IDENTYFIKATOR ]",
+            btn_submit: "[ ODKŁADASZ KARTKĘ ]",
             op_status_typing: "[ ] On coś kombinuje...",
             vote_h3: "> FAZA: SPOJRZENIE W OCZY",
             vote_h4: "> KANAŁ SZEPTÓW",
@@ -308,7 +310,7 @@
             vote_desc: "<strong>Zdecyduj: Czy Wasze umysły połączyły się w jednym szaleństwie? (Czy sens jest ten sam?)</strong>",
             btn_vote_yes: "[ TAK, JESTEŚMY TACY SAMI ]",
             btn_vote_no: "[ NIE, ON KŁAMIE ]",
-            vote_wait: "Czekam na jego reakcję...",
+            vote_wait: "Czekam na decyzję przeciwnika...",
             
             // SYSTEM AELWYD
             aelwyd_title: "> KONSOLA SYSTEMOWA AELWYD (SEKRET)",
@@ -361,8 +363,8 @@
             res_died: "ZAPAŚĆ I CIEMNOŚĆ",
             res_poison_pos: "Zatruta puszka:",
             res_drunk_pos: "Wypito:",
-            res_scroll_p: "Identyfikator Nalewającego:",
-            res_scroll_d: "Identyfikator Pijącego:",
+            res_scroll_p: "Kartka Nalewającego:",
+            res_scroll_d: "Kartka Pijącego:",
             cup_mine_res: "Różowy Monster (Twój)",
             cup_yours_res: "Biały Monster (Jego)",
             chat_you: "Ty",
@@ -403,15 +405,15 @@
             host_info_waiting: "Waiting in the dark for someone to enter...",
             placeholder_join: "Enter victim's sleeping bag code...",
             btn_join: "[ SNEAK IN ]",
-            donate_link: ">> buy_me_a_monster",
+            donate_link: ">> get_access_code",
             countdown_h2: "DOORS LOCKED!",
             countdown_p: "No escape now. Game starts in:",
             role_title: "> PHASE: ???",
             timer_label: "TIME TO DIE:",
             question_text: "Choose a can:",
-            reason_label: "Why are you doing this? (Write on your badge, nobody sees):",
+            reason_label: "Why are you doing this? (Write on your note, nobody sees):",
             placeholder_reason: "Write down your dark plan...",
-            btn_submit: "[ PUT DOWN THE BADGE ]",
+            btn_submit: "[ PUT DOWN THE NOTE ]",
             op_status_typing: "[ ] He is scheming something...",
             vote_h3: "> PHASE: LOOK IN THE EYES",
             vote_h4: "> WHISPER CHANNEL",
@@ -420,7 +422,7 @@
             vote_desc: "<strong>Decide: Did your minds connect in the same madness? (Is the meaning the same?)</strong>",
             btn_vote_yes: "[ YES, WE ARE THE SAME ]",
             btn_vote_no: "[ NO, HE IS LYING ]",
-            vote_wait: "Waiting for his reaction...",
+            vote_wait: "Waiting for opponent's decision...",
             
             // SYSTEM AELWYD
             aelwyd_title: "> AELWYD SYSTEM CONSOLE (SECRET)",
@@ -473,8 +475,8 @@
             res_died: "COLLAPSE AND DARKNESS",
             res_poison_pos: "Poisoned can:",
             res_drunk_pos: "Drank from:",
-            res_scroll_p: "Pourer's Badge:",
-            res_scroll_d: "Drinker's Badge:",
+            res_scroll_p: "Pourer's Note:",
+            res_scroll_d: "Drinker's Note:",
             cup_mine_res: "Pink Monster (Yours)",
             cup_yours_res: "White Monster (His)",
             chat_you: "You",
@@ -607,7 +609,7 @@
                  ui.voteYes.classList.add('hidden');
                  ui.voteNo.classList.add('hidden');
                  ui.voteWait.classList.remove('hidden');
-                 ui.voteWait.innerText = t('ai_analyzing');
+                 ui.voteWait.innerHTML = t('ai_analyzing') + '<span class="loading-dots"></span>';
                  ui.voteWait.style.color = "#00ffff";
                  
                  let pAction = state.myRole === 'poisoner' ? state.myAction : state.opAction;
@@ -876,7 +878,7 @@
         resHtml += `<p><strong style="color: #00ffff;">${t('res_scroll_d')}</strong> "${dAction.reason}"</p>`;
 
         ui.revealArea.innerHTML = resHtml;
-        updateStatus(); ui.voteWait.innerText = t('vote_wait');
+        updateStatus(); ui.voteWait.innerHTML = t('vote_wait') + '<span class="loading-dots"></span>';
         ui.voteWait.style.color = "#ff0055";
         
         let btnAi = document.getElementById('btn-ai');
@@ -886,7 +888,7 @@
             ui.voteNo.classList.add('hidden');
             btnAi.classList.add('hidden');
             ui.voteWait.classList.remove('hidden');
-            ui.voteWait.innerText = t('ai_analyzing');
+            ui.voteWait.innerHTML = t('ai_analyzing') + '<span class="loading-dots"></span>';
             ui.voteWait.style.color = "#00ffff";
             
             if (isHost) {
@@ -913,7 +915,16 @@
             chatTimeLeft--; ui.chatTimer.innerText = chatTimeLeft;
             if(chatTimeLeft <= 0) {
                 clearInterval(chatTimerInterval);
-                if(state.myVote === null && !state.aiMode) submitVote(false);
+                
+                // Jeśli my nic nie wybraliśmy, gra założy FALSE (automatyczny brak zgody)
+                if(state.myVote === null && !state.aiMode) {
+                    submitVote(false);
+                } 
+                // Jeśli my zagłosowaliśmy, ale przeciwnik "zasnął", nie blokujemy gry na zawsze
+                else if (state.myVote !== null && state.opVote === null) {
+                    state.opVote = false;
+                    checkVotes();
+                }
             }
         }, 1000);
     }
@@ -941,7 +952,10 @@
         state.myVote = isYes;
         ui.voteYes.classList.add('hidden'); ui.voteNo.classList.add('hidden');
         document.getElementById('btn-ai').classList.add('hidden');
+        
+        ui.voteWait.innerHTML = t('vote_wait') + '<span class="loading-dots"></span>';
         ui.voteWait.classList.remove('hidden');
+        
         socket.emit('vote_action', isYes);
         checkVotes();
     }
