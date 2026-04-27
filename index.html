@@ -201,7 +201,7 @@
     <div id="registration-section" class="hidden" style="margin-top: 20px;">
         <hr style="border-color:#ff99cc; border-style:dashed; margin: 20px 0;">
         <h3 style="color: #ff99cc;" data-i18n="reg_title">> INICJALIZACJA tożsamości</h3>
-        <p><span data-i18n="reg_desc">Wymagany zewnętrzny Kod Dostępu.</span> <a href="https://ko-fi.com/pogromca" target="_blank" style="color: #ff0055;" data-i18n="reg_link">uzyskaj kod dostępu</a></p>
+        <p><span data-i18n="reg_desc">Wymagany zewnętrzny Kod Dostępu.</span> <a href="https://ko-fi.com/pogromca/shop" target="_blank" style="color: #ff0055;" data-i18n="reg_link">uzyskaj kod dostępu</a></p>
         <div class="input-group" style="flex-direction: column; gap: 5px;">
             <input type="text" id="reg-code" data-i18n-placeholder="reg_code_ph" placeholder="Wprowadź Kod Dostępu">
             <input type="text" id="reg-user" data-i18n-placeholder="reg_user_ph" placeholder="Wymyśl Identyfikator">
@@ -211,7 +211,7 @@
         <div id="reg-msg" style="margin-top: 10px; font-weight: bold; display: none;"></div>
     </div>
 
-   <a href="javascript:void(0)" class="donate-subtle" onclick="toggleRegistration()" data-i18n="donate_link">>> uzyskaj_kod_dostępu</a>
+   <a href="javascript:void(0)" class="donate-subtle" onclick="toggleRegistration()" data-i18n="donate_link">>> kup_mi_monsterka</a>
 </div>
 
 <div id="countdown-panel" class="panel hidden" style="text-align: center;">
@@ -258,8 +258,6 @@
     <div id="voting-area" style="margin-top: 20px;">
         <p data-i18n="vote_desc"><strong>Zdecyduj: Czy Wasze umysły połączyły się w jednym szaleństwie? (Czy sens jest ten sam?)</strong></p>
         
-        <button id="btn-ai" onclick="requestAI()" class="hidden" style="background:#0a0508; color:#00ffff; margin-bottom:15px; width:100%; border-color:#00ffff;" data-i18n="btn_ai_request">[ 🤖 ZAPYTAJ DEMONA Z IT (Raz na grę) ]</button>
-        
         <button id="vote-yes" onclick="submitVote(true)" data-i18n="btn_vote_yes" style="border-color:#ff99cc; color:#ff99cc;">[ TAK, JESTEŚMY TACY SAMI ]</button>
         <button id="vote-no" onclick="submitVote(false)" data-i18n="btn_vote_no" style="border-color:#ff0000; color:#ff0000;">[ NIE, ON KŁAMIE ]</button>
         <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0055; font-weight:bold;"></div>
@@ -293,7 +291,7 @@
             host_info_waiting: "Czekasz w mroku, aż ktoś wejdzie...",
             placeholder_join: "Wpisz kod do śpiwora ofiary...",
             btn_join: "[ WKRADNIJ SIĘ ]",
-            donate_link: ">> uzyskaj_kod_dostępu",
+            donate_link: ">> kup_mi_monsterka",
             countdown_h2: "DRZWI ZATRZAŚNIĘTE!",
             countdown_p: "Nie ma już ucieczki. Gra zacznie się za:",
             role_title: "> FAZA: ???",
@@ -405,7 +403,7 @@
             host_info_waiting: "Waiting in the dark for someone to enter...",
             placeholder_join: "Enter victim's sleeping bag code...",
             btn_join: "[ SNEAK IN ]",
-            donate_link: ">> get_access_code",
+            donate_link: ">> buy_me_a_monster",
             countdown_h2: "DOORS LOCKED!",
             countdown_p: "No escape now. Game starts in:",
             role_title: "> PHASE: ???",
