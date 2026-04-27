@@ -998,10 +998,16 @@
 
                 if(waitTime <= 0) {
                     clearInterval(waitIv);
-                    if(isHost) {
-                        if(state.round < state.maxRounds) {
+                    
+                    // ZMIANA: Obydwaj gracze sprawdzają, czy to koniec gry
+                    if(state.round < state.maxRounds) {
+                        if(isHost) {
                             state.round++; start5SecCountdown(); socket.emit('next_round');
-                        } else { endGame(); socket.emit('end_game'); }
+                        }
+                    } else { 
+                        // Ekran końcowy uruchamia się u obu graczy natychmiast
+                        endGame(); 
+                        if(isHost) socket.emit('end_game'); 
                     }
                 }
             }, 1000);
