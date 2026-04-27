@@ -2,560 +2,891 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hala Główna Pyrkonu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="page-title">Femboy z siódmej hali</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <style>
         :root {
-            --bg-base: #050505;
-            --bg-panel: #0a050a;
-            --bg-input: #000000;
             --pink-main: #ff0055;
             --pink-dark: #4a001a;
-            --pink-glow: rgba(255, 0, 85, 0.4);
+            --pink-glow: rgba(255, 0, 85, 0.6);
             --cyan-main: #00d2ff;
             --cyan-dark: #003344;
-            --cyan-glow: rgba(0, 210, 255, 0.4);
+            --cyan-glow: rgba(0, 210, 255, 0.6);
             --text-main: #ffffff;
-            --text-muted: #888888;
-            --risk-low: #00ff00;
+            --text-muted: #aaaaaa;
+            --risk-low: #00ffaa;
             --risk-med: #ffaa00;
             --risk-high: #ff4400;
-            --risk-ext: #ff0000;
+            --risk-ext: #ff0044;
             --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             --font-mono: 'Courier New', Courier, monospace;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-base);
             color: var(--text-main);
             font-family: var(--font-main);
             display: flex;
             min-height: 100vh;
+            background: linear-gradient(-45deg, #0a0205, #1a0510, #02101a, #10001a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
         }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hidden { display: none !important; }
+        
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 var(--pink-main), -2px 0 var(--cyan-main); }
+            20% { text-shadow: -2px 0 var(--pink-main), 2px 0 var(--cyan-main); }
+            40% { text-shadow: 2px 0 var(--pink-main), -2px 0 var(--cyan-main); }
+            60% { text-shadow: -2px 0 var(--pink-main), 2px 0 var(--cyan-main); }
+            80% { text-shadow: 2px 0 var(--pink-main), -2px 0 var(--cyan-main); }
+            100% { text-shadow: -2px 0 var(--pink-main), 2px 0 var(--cyan-main); }
+        }
+
+        .loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
+
+        .flex-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .timer { font-family: var(--font-mono); font-size: 1.2em; font-weight: bold; color: var(--pink-main); text-shadow: 0 0 10px var(--pink-glow); }
 
         /* --- SIDEBAR --- */
         .sidebar {
-            width: 80px;
-            background-color: var(--bg-panel);
-            border-right: 1px solid var(--pink-dark);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
+            width: 90px;
+            background: rgba(5, 2, 5, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 0, 85, 0.3);
+            display: flex; flex-direction: column; align-items: center; padding-top: 20px;
+            box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+            z-index: 100;
         }
-
-        .logo {
-            font-size: 24px;
-            color: var(--text-muted);
-            margin-bottom: 40px;
-        }
-
+        .logo { font-size: 28px; color: var(--text-main); margin-bottom: 40px; text-shadow: 0 0 15px var(--pink-glow); animation: glitch 4s infinite; }
         .nav-item {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px 0;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 10px;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
+            width: 100%; display: flex; flex-direction: column; align-items: center; padding: 15px 0;
+            color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: bold; transition: 0.3s; cursor: pointer;
+            border-left: 3px solid transparent;
         }
-
-        .nav-item i {
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            color: white;
-        }
-
-        .nav-item.active {
-            background-color: var(--pink-dark);
-            border-left: 3px solid var(--pink-main);
-        }
+        .nav-item i { font-size: 22px; margin-bottom: 5px; transition: 0.3s; }
+        .nav-item:hover { color: var(--text-main); background: rgba(255, 0, 85, 0.1); }
+        .nav-item.active { background-color: rgba(255, 0, 85, 0.15); border-left: 3px solid var(--pink-main); color: var(--text-main); }
+        .nav-item.active i { color: var(--pink-main); text-shadow: 0 0 10px var(--pink-glow); }
 
         /* --- MAIN CONTENT --- */
-        .main-content {
-            flex: 1;
-            padding: 30px 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .main-wrapper { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 30px 20px; }
+        .main-content { width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: 20px; position: relative; }
+
+        /* SPA VIEWS */
+        .view-panel { display: none; animation: fadeIn 0.4s ease-out forwards; }
+        .view-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .header-title h1 {
-            font-size: 48px;
-            text-transform: uppercase;
-            color: var(--text-main);
-            text-shadow: 0 0 10px var(--pink-glow);
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
-
-        .header-title p {
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-            font-size: 14px;
-        }
-
-        .time-badge {
-            border: 1px solid var(--pink-main);
-            color: var(--pink-main);
-            padding: 5px 15px;
-            font-family: var(--font-mono);
-            font-size: 14px;
-            box-shadow: 0 0 10px var(--pink-glow);
-        }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .header-title h1 { font-size: 48px; text-transform: uppercase; color: var(--text-main); text-shadow: 0 0 15px var(--pink-glow); letter-spacing: 2px; margin-bottom: 5px; }
+        .header-title p { color: var(--text-muted); font-family: var(--font-mono); font-size: 14px; text-shadow: 0 0 5px rgba(255,255,255,0.2); }
+        .time-badge { border: 1px solid var(--pink-main); color: var(--text-main); background: rgba(255,0,85,0.2); padding: 5px 15px; font-family: var(--font-mono); font-size: 14px; box-shadow: 0 0 15px var(--pink-glow); border-radius: 4px; }
 
         /* Status Bar */
-        .status-bar {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--pink-dark);
-            padding: 15px 20px;
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+        .status-bar { background: rgba(10, 5, 10, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,0,85,0.3); padding: 15px 20px; border-radius: 8px; font-family: var(--font-mono); display: flex; flex-direction: column; gap: 5px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); }
+        #server-msg strong { text-shadow: 0 0 10px currentColor; }
+        .status-sub { color: var(--text-muted); font-size: 12px; margin-top: 5px; }
+        
+        .alert-box { background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); padding: 15px; border-left: 5px solid var(--pink-main); margin-bottom: 20px; word-wrap: break-word; font-family: var(--font-mono); border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .error-box { border-left-color: var(--risk-ext); color: var(--risk-ext); text-shadow: 0 0 8px rgba(255,0,68,0.6); }
 
-        .status-online {
-            color: var(--risk-low);
-            font-weight: bold;
-        }
-
-        .status-online::before {
-            content: '● ';
-            text-shadow: 0 0 5px var(--risk-low);
-        }
-
-        .status-sub {
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-
-        /* Grid Layout for Panels */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .panel {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--pink-dark);
-            border-radius: 4px;
-            padding: 20px;
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--pink-main);
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .panel-header i {
-            font-size: 20px;
-            background-color: var(--pink-dark);
-            padding: 8px;
-            border-radius: 50%;
-        }
-
-        .panel-sub {
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-            font-size: 12px;
-            margin-bottom: 20px;
-        }
+        /* Grid Layout */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .panel { background: rgba(15, 5, 15, 0.65); backdrop-filter: blur(12px); border: 1px solid rgba(255, 0, 85, 0.4); border-radius: 8px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .panel-header { display: flex; align-items: center; gap: 12px; color: var(--text-main); font-weight: bold; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px var(--pink-glow); }
+        .panel-header i { font-size: 20px; background-color: var(--pink-dark); color: var(--pink-main); padding: 10px; border-radius: 50%; box-shadow: 0 0 15px var(--pink-glow); }
+        .panel-sub { color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; margin-bottom: 20px; }
 
         /* Cards List */
-        .card-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .card-list { display: flex; flex-direction: column; gap: 12px; }
+        .card { display: flex; align-items: center; background: rgba(0, 0, 0, 0.5); border: 1px solid #333; padding: 12px; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
+        .card:hover:not(.disabled) { border-color: var(--pink-main); box-shadow: 0 0 15px var(--pink-glow); transform: translateX(5px); background: rgba(255,0,85,0.05); }
+        .card.disabled { opacity: 0.5; cursor: not-allowed; }
+        .card-img { width: 60px; height: 60px; background-color: #111; margin-right: 15px; border-radius: 6px; object-fit: cover; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .card-info { flex: 1; font-family: var(--font-mono); }
+        .card-title { color: var(--text-main); font-size: 14px; margin-bottom: 5px; font-weight: bold; }
+        .card-rank { color: var(--text-muted); }
+        .card-stats { text-align: right; font-family: var(--font-mono); font-size: 12px; }
+        .stat-value { color: var(--pink-main); font-weight: bold; font-size: 14px; margin-bottom: 5px; text-shadow: 0 0 5px var(--pink-glow); }
 
-        .card {
-            display: flex;
-            align-items: center;
-            background-color: var(--bg-input);
-            border: 1px solid #1a1a1a;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            border-color: var(--pink-main);
-            box-shadow: 0 0 10px var(--pink-glow);
-        }
-
-        .card-img {
-            width: 60px;
-            height: 60px;
-            background-color: #222;
-            margin-right: 15px;
-            border-radius: 4px;
-            object-fit: cover;
-        }
-
-        .card-info {
-            flex: 1;
-            font-family: var(--font-mono);
-        }
-
-        .card-title {
-            color: var(--text-main);
-            font-size: 14px;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .card-rank {
-            color: var(--text-muted);
-        }
-
-        .card-stats {
-            text-align: right;
-            font-family: var(--font-mono);
-            font-size: 12px;
-        }
-
-        .stat-value {
-            color: var(--pink-main);
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-
-        .risk-low { color: var(--risk-low); }
-        .risk-med { color: var(--risk-med); }
-        .risk-high { color: var(--risk-high); }
-        .risk-ext { color: var(--risk-ext); }
-
-        /* Sleeproom */
-        .sleeproom-img {
-            width: 100%;
-            height: 150px;
-            background-color: #222;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            object-fit: cover;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: transparent;
-            border: 1px solid var(--pink-dark);
-            color: var(--text-main);
-            font-family: var(--font-mono);
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            transition: 0.3s;
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-
-        .btn:hover {
-            border-color: var(--pink-main);
-            box-shadow: 0 0 10px var(--pink-glow);
-            background-color: rgba(255, 0, 85, 0.1);
-        }
-
+        /* Buttons & Inputs */
+        .btn { width: 100%; padding: 14px; background: rgba(255,0,85,0.05); border: 1px solid var(--pink-main); color: var(--text-main); font-family: var(--font-mono); font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; margin-bottom: 10px; border-radius: 6px; box-shadow: inset 0 0 10px rgba(255,0,85,0.1); }
+        .btn:hover:not(:disabled) { border-color: var(--text-main); box-shadow: 0 0 20px var(--pink-glow); background-color: rgba(255, 0, 85, 0.2); }
+        .btn:disabled { border-color: #444; color: #666; cursor: not-allowed; background: rgba(0,0,0,0.5); box-shadow: none; }
         .btn i { color: var(--pink-main); }
+        .btn-danger { border-color: var(--risk-ext); color: var(--risk-ext); background: rgba(255,0,68,0.05); }
+        .btn-danger:hover:not(:disabled) { background-color: rgba(255, 0, 68, 0.2); box-shadow: 0 0 20px rgba(255,0,68,0.4); border-color: var(--text-main); color: var(--text-main); }
+        .btn-danger i { color: inherit; }
 
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--bg-input);
-            border: 1px solid #333;
-            color: var(--text-main);
-            font-family: var(--font-mono);
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--pink-main);
-        }
-
-        /* Console Panel (Cyan Theme) */
-        .panel-console {
-            border-color: var(--cyan-dark);
-        }
-
-        .panel-console .panel-header, .panel-console .btn i {
-            color: var(--cyan-main);
-        }
-
-        .panel-console .panel-header i {
-            background-color: var(--cyan-dark);
-        }
-
-        .console-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .panel-console .input-field {
-            border-color: var(--cyan-dark);
-            padding-left: 35px;
-            background-repeat: no-repeat;
-            background-position: 10px center;
-        }
+        .input-group { display: flex; gap: 10px; width: 100%; align-items: stretch; margin-bottom: 10px; position: relative; }
+        .input-field { flex-grow: 1; padding: 14px; background: rgba(0,0,0,0.6); border: 1px solid #444; color: var(--text-main); font-family: var(--font-mono); border-radius: 6px; outline: none; transition: 0.3s; }
+        .input-field:focus { border-color: var(--pink-main); box-shadow: 0 0 15px var(--pink-glow); background: rgba(20,0,10,0.8); }
+        .input-field:disabled { opacity: 0.5; }
         
-        .panel-console .input-field:focus {
-            border-color: var(--cyan-main);
-            box-shadow: 0 0 10px var(--cyan-glow);
-        }
+        .sleeproom-img { width: 100%; height: 150px; background-color: #111; border-radius: 6px; margin-bottom: 20px; object-fit: cover; border: 1px solid #333; box-shadow: inset 0 0 20px rgba(0,0,0,1); }
 
-        .input-group {
-            position: relative;
-        }
+        /* Gameplay Elements */
+        .cup-options-container { display: flex; gap: 15px; margin: 20px 0; }
+        .cup-option { flex: 1; border: 1px dashed var(--pink-main); padding: 25px 15px; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(0,0,0,0.5); border-radius: 6px; font-family: var(--font-mono); font-size: 14px; color: var(--text-muted); }
+        .cup-option:hover { border-style: solid; background: rgba(255,0,85,0.1); color: var(--text-main); box-shadow: 0 0 15px var(--pink-glow); }
+        .cup-option.selected { border: 1px solid var(--text-main); background: rgba(255,0,85,0.3); color: var(--text-main); font-weight: bold; box-shadow: inset 0 0 20px var(--pink-glow); }
+        
+        #chat-history { height: 220px; overflow-y: scroll; border: 1px solid var(--cyan-dark); background: rgba(0,0,0,0.7); padding: 15px; margin-bottom: 15px; font-family: var(--font-mono); font-size: 14px; border-radius: 6px; box-shadow: inset 0 0 15px rgba(0,210,255,0.1); }
+        #chat-history p { margin: 8px 0; }
+        .msg-me { color: var(--pink-main); text-shadow: 0 0 5px var(--pink-glow); }
+        .msg-op { color: var(--cyan-main); text-shadow: 0 0 5px var(--cyan-glow); }
+        .msg-sys { color: var(--risk-ext); font-weight: bold; text-shadow: 0 0 8px var(--risk-ext); border-left: 2px solid var(--risk-ext); padding-left: 10px;}
 
-        .input-group i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--cyan-main);
-        }
+        /* Placeholder panels */
+        .placeholder-content { text-align: center; padding: 60px 20px; }
+        .placeholder-content i { font-size: 64px; color: #333; margin-bottom: 20px; text-shadow: 0 0 20px rgba(255,255,255,0.05); }
+        .placeholder-content h2 { color: var(--text-muted); margin-bottom: 10px; font-size: 28px; letter-spacing: 2px; }
+        .placeholder-content p { color: #666; font-family: var(--font-mono); }
 
-        .panel-console .btn {
-            border-color: var(--cyan-dark);
-        }
+        /* Settings Toggle */
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-family: var(--font-mono); }
+        .setting-row:last-child { border-bottom: none; }
+        select { background: rgba(0,0,0,0.8); border: 1px solid var(--pink-main); color: var(--text-main); padding: 8px 15px; border-radius: 4px; font-family: var(--font-mono); outline: none; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: #888; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--pink-dark); }
+        input:checked + .slider:before { transform: translateX(26px); background-color: var(--pink-main); box-shadow: 0 0 10px var(--pink-glow); }
 
-        .panel-console .btn:hover {
-            border-color: var(--cyan-main);
-            box-shadow: 0 0 10px var(--cyan-glow);
-            background-color: rgba(0, 210, 255, 0.1);
-        }
+        footer { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 12px; color: #666; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 30px; }
 
-        .system-logo-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-mono);
+        @media (max-width: 800px) {
+            .grid-container, .cup-options-container { grid-template-columns: 1fr; flex-direction: column; }
+            .sidebar { width: 70px; }
+            .sidebar span { display: none; }
+            .main-wrapper { padding: 15px 10px; }
+            .header { flex-direction: column; gap: 10px; }
+            .header-title h1 { font-size: 32px; }
         }
-
-        .big-a {
-            font-size: 80px;
-            color: var(--cyan-main);
-            text-shadow: 0 0 20px var(--cyan-glow);
-            font-weight: bold;
-            line-height: 1;
-            margin: 10px 0;
-            letter-spacing: -5px;
-        }
-
-        .system-status {
-            color: var(--cyan-main);
-            font-size: 10px;
-            letter-spacing: 1px;
-            margin-top: 10px;
-        }
-
-        /* Footer */
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--text-muted);
-            border-top: 1px solid #333;
-            padding-top: 15px;
-            margin-top: 10px;
-        }
-
-        .footer-pink { color: var(--pink-main); }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
         <div class="logo"><i class="fa-solid fa-skull"></i></div>
-        <a class="nav-item active">
+        <a class="nav-item active" id="nav-hala" onclick="switchNav('panel-hala', this)">
             <i class="fa-solid fa-house"></i>
-            HALA
+            <span data-i18n="nav_hala">HALA</span>
         </a>
-        <a class="nav-item">
-            <i class="fa-solid fa-ghost"></i>
-            DUSZE
+        <a class="nav-item" id="nav-przestrzen" onclick="switchNav('panel-przestrzen', this)">
+            <i class="fa-brands fa-space-awesome"></i>
+            <span data-i18n="nav_przestrzen">PRZESTRZEŃ</span>
         </a>
-        <a class="nav-item">
-            <i class="fa-solid fa-bed"></i>
-            SLEEPROOM
+        <a class="nav-item" id="nav-proba" onclick="switchNav('panel-proba', this)">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span data-i18n="nav_proba">PRÓBA</span>
         </a>
-        <a class="nav-item">
+        <a class="nav-item" id="nav-wiedza" onclick="switchNav('panel-wiedza', this)">
+            <i class="fa-solid fa-book-skull"></i>
+            <span data-i18n="nav_wiedza">WIEDZA</span>
+        </a>
+        <a class="nav-item" id="nav-mistrzowie" onclick="switchNav('panel-mistrzowie', this)">
+            <i class="fa-solid fa-trophy"></i>
+            <span data-i18n="nav_mistrzowie">MISTRZOWIE</span>
+        </a>
+        <a class="nav-item" id="nav-profil" onclick="switchNav('panel-profil', this)">
+            <i class="fa-solid fa-user-astronaut"></i>
+            <span data-i18n="nav_profil">PROFIL</span>
+        </a>
+        <a class="nav-item" id="nav-konsola" onclick="switchNav('panel-konsola', this)">
             <i class="fa-solid fa-terminal"></i>
-            KONSOLA
+            <span data-i18n="nav_konsola">KONSOLA</span>
         </a>
     </aside>
 
-    <main class="main-content">
-        
-        <header class="header">
-            <div class="header-title">
-                <h1>Hala Główna<br>Pyrkonu</h1>
-                <p><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--pink-main)"></i> Witaj w ciemnej sieci. Wybierz, dokąd się udasz.</p>
-            </div>
-            <div class="time-badge">[ 03:00 AM ]</div>
-        </header>
-
-        <div class="status-bar">
-            <div>Stan mrocznej sieci: <span class="status-online">ONLINE</span></div>
-            <div class="status-sub">Demony nasłuchują...</div>
-        </div>
-
-        <div class="grid-container">
+    <div class="main-wrapper">
+        <main class="main-content">
             
-            <div class="panel">
-                <div class="panel-header">
-                    <i class="fa-solid fa-skull"></i>
-                    SZUKAJ ZAGUBIONYCH DUSZ
+            <header class="header">
+                <div class="header-title">
+                    <h1 data-i18n="h1_title">Hala Główna</h1>
+                    <p><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--pink-main)"></i> Witaj w ciemnej sieci. Wybierz, dokąd się udasz.</p>
                 </div>
-                <div class="panel-sub">Wybierz ofiarę lub oprawcę. Przeszukujemy hale targowe.</div>
-                
-                <div class="card-list">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/60/1a1a1a/ff0055?text=Img" alt="Cosplayerzy" class="card-img">
-                        <div class="card-info">
-                            <div class="card-title"><span class="card-rank">[ RANGA 1 ]</span> Przemęczeni<br>Cosplayerzy</div>
+                <div class="time-badge" id="current-time">[ 03:00 AM ]</div>
+            </header>
+
+            <div id="server-status" class="status-bar">
+                <div><span data-i18n="server_status_prefix">Stan mrocznej sieci:</span> <span id="server-msg" style="color:var(--text-muted);" data-i18n="server_checking">NAWIĄZYWANIE POŁĄCZENIA...</span><span class="loading-dots" id="server-dots"></span></div>
+                <div id="status" class="status-sub" data-i18n="status_init">[ BUDZENIE DEMONÓW... ]</div>
+            </div>
+
+            <div id="disconnect-msg" class="alert-box error-box hidden"></div>
+
+            <div id="panel-hala" class="view-panel active">
+                <div class="grid-container">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <i class="fa-solid fa-skull"></i>
+                            <span data-i18n="lobby_h3_1">SZUKAJ ZAGUBIONYCH DUSZ</span>
                         </div>
-                        <div class="card-stats">
-                            <div class="stat-value"><i class="fa-solid fa-ghost"></i> 120</div>
-                            <div style="color: var(--text-muted)">Ryzyko: <span class="risk-low">NISKIE</span></div>
+                        <div class="panel-sub" data-i18n="lobby_p_1">Wybierz ofiarę lub oprawcę. Przeszukujemy sieć.</div>
+                        
+                        <div id="queue-status" class="alert-box hidden" style="border-color: var(--cyan-main); color: var(--cyan-main); background: rgba(0,50,68,0.5);">
+                            <i class="fa-solid fa-radar"></i> <span id="queue-text" data-i18n="queue_text">Węszę w tłumie</span><span class="loading-dots"></span>
+                            <button class="btn btn-danger" onclick="cancelSearch()" style="margin-top: 15px;" data-i18n="btn_cancel"><i class="fa-solid fa-person-running"></i> UCIEKAJ</button>
+                        </div>
+
+                        <div class="card-list" id="rank-cards">
+                            <div class="card" onclick="searchRank(1)">
+                                <img src="https://via.placeholder.com/60/1a1a1a/ff0055?text=R1" class="card-img">
+                                <div class="card-info"><div class="card-title" data-i18n="rank_1">[ RANGA 1 ] Przemęczeni Cosplayerzy</div></div>
+                                <div class="card-stats"><div class="stat-value"><i class="fa-solid fa-ghost"></i> 120</div><div style="color: var(--text-muted)">Ryzyko: <span class="risk-low">NISKIE</span></div></div>
+                            </div>
+                            <div class="card" onclick="searchRank(2)">
+                                <img src="https://via.placeholder.com/60/1a1a1a/ffaa00?text=R2" class="card-img">
+                                <div class="card-info"><div class="card-title" data-i18n="rank_2">[ RANGA 2 ] Nocne Wampiry z Blåhajem</div></div>
+                                <div class="card-stats"><div class="stat-value"><i class="fa-solid fa-ghost"></i> 190</div><div style="color: var(--text-muted)">Ryzyko: <span class="risk-med">ŚREDNIE</span></div></div>
+                            </div>
+                            <div class="card" onclick="searchRank(3)">
+                                <img src="https://via.placeholder.com/60/1a1a1a/ff4400?text=R3" class="card-img">
+                                <div class="card-info"><div class="card-title" data-i18n="rank_3">[ RANGA 3 ] Uzależnieni od Monsterków</div></div>
+                                <div class="card-stats"><div class="stat-value"><i class="fa-solid fa-ghost"></i> 250</div><div style="color: var(--text-muted)">Ryzyko: <span class="risk-high">WYSOKIE</span></div></div>
+                            </div>
+                            <div class="card" onclick="searchRank(4)">
+                                <img src="https://via.placeholder.com/60/1a1a1a/ff0000?text=R4" class="card-img">
+                                <div class="card-info"><div class="card-title" data-i18n="rank_4">[ RANGA 4 ] Mroczne Femboye z IT</div></div>
+                                <div class="card-stats"><div class="stat-value"><i class="fa-solid fa-ghost"></i> 320</div><div style="color: var(--text-muted)">Ryzyko: <span class="risk-ext">EKSTREMALNE</span></div></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="card">
-                        <img src="https://via.placeholder.com/60/1a1a1a/ffaa00?text=Img" alt="Wampiry" class="card-img">
-                        <div class="card-info">
-                            <div class="card-title"><span class="card-rank">[ RANGA 2 ]</span> Nocne Wampiry<br>z Blähajem</div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <i class="fa-solid fa-bed"></i>
+                            <span data-i18n="lobby_h3_2">ODDZIELNY SLEEPROOM</span>
                         </div>
-                        <div class="card-stats">
-                            <div class="stat-value"><i class="fa-solid fa-ghost"></i> 190</div>
-                            <div style="color: var(--text-muted)">Ryzyko: <span class="risk-med">ŚREDNIE</span></div>
+                        <div class="panel-sub">Odpocznij. Zregeneruj siły w mroku.</div>
+                        
+                        <img src="https://via.placeholder.com/400x150/1a1a1a/ff0055?text=Sleeproom" class="sleeproom-img">
+                        
+                        <button class="btn" onclick="createRoom()">
+                            <i class="fa-solid fa-moon"></i> <span data-i18n="btn_create_room">ROZKŁADASZ ŚPIWÓR</span>
+                        </button>
+                        
+                        <div id="host-info" class="alert-box hidden" style="text-align: center;">
+                            <div data-i18n="host_info_code">Twój kod do pokoju:</div>
+                            <strong id="room-id" style="font-size: 2.5em; color: var(--pink-main); letter-spacing: 5px; text-shadow: 0 0 15px var(--pink-glow);"></strong><br>
+                            <span style="font-size: 12px; color: var(--text-muted);" data-i18n="host_info_waiting">Czekasz w mroku, aż ktoś wejdzie...</span>
                         </div>
-                    </div>
-
-                    <div class="card">
-                        <img src="https://via.placeholder.com/60/1a1a1a/ff4400?text=Img" alt="Monsterki" class="card-img">
-                        <div class="card-info">
-                            <div class="card-title"><span class="card-rank">[ RANGA 3 ]</span> Uzależnieni<br>od Monsterków</div>
-                        </div>
-                        <div class="card-stats">
-                            <div class="stat-value"><i class="fa-solid fa-ghost"></i> 250</div>
-                            <div style="color: var(--text-muted)">Ryzyko: <span class="risk-high">WYSOKIE</span></div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <img src="https://via.placeholder.com/60/1a1a1a/ff0000?text=Img" alt="IT" class="card-img">
-                        <div class="card-info">
-                            <div class="card-title"><span class="card-rank">[ RANGA 4 ]</span> Mroczne<br>Femboye z IT</div>
-                        </div>
-                        <div class="card-stats">
-                            <div class="stat-value"><i class="fa-solid fa-ghost"></i> 320</div>
-                            <div style="color: var(--text-muted)">Ryzyko: <span class="risk-ext">EKSTREMALNE</span></div>
+                        
+                        <div class="input-group" style="margin-top: 15px;">
+                            <input type="text" id="join-id" class="input-field" data-i18n-placeholder="placeholder_join" placeholder="Wpisz kod ofiary...">
+                            <button class="btn" style="width: auto; margin-bottom: 0;" onclick="joinRoom()">
+                                <i class="fa-solid fa-lock-open"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel">
-                <div class="panel-header">
-                    <i class="fa-solid fa-bed"></i>
-                    ODDZIELNY SLEEPROOM
+            <div id="panel-przestrzen" class="view-panel">
+                <div class="panel placeholder-content">
+                    <i class="fa-brands fa-space-awesome"></i>
+                    <h2 data-i18n="nav_przestrzen">PRZESTRZEŃ</h2>
+                    <p data-i18n="more_modes">Więcej trybów gry pojawi się tutaj w niedalekiej przyszłości...</p>
                 </div>
-                <div class="panel-sub">Odpocznij. Zregeneruj siły.</div>
-                
-                <img src="https://via.placeholder.com/400x150/1a1a1a/ff0055?text=Sleeproom+Background" alt="Sleeproom" class="sleeproom-img">
-                
-                <button class="btn">
-                    <i class="fa-solid fa-moon"></i> ROZKŁADASZ ŚPIWÓR
-                </button>
-                
-                <input type="text" class="input-field" placeholder="Wpisz kod do śpiwora ofiary...">
-                
-                <button class="btn">
-                    <i class="fa-solid fa-lock-open"></i> WKRADNIJ SIĘ
-                </button>
             </div>
-        </div>
 
-        <div class="panel panel-console">
-            <div class="console-grid">
-                <div>
-                    <div class="panel-header">
-                        <i class="fa-solid fa-terminal"></i>
-                        KONSOLA SYSTEMOWA AELWYD (SEKRET)
-                    </div>
-                    <div class="panel-sub">Tylko dla wtajemniczonych.</div>
-                    
-                    <div class="input-group">
-                        <i class="fa-solid fa-user"></i>
-                        <input type="text" class="input-field" placeholder="Login (Twój identyfikator)">
-                    </div>
-                    <div class="input-group">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" class="input-field" placeholder="Hasło (Mroczny sekret)">
-                    </div>
-                    
-                    <button class="btn">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i> AUTORYZUJ WEJŚCIE DO BAZY
+            <div id="panel-proba" class="view-panel">
+                
+                <div id="no-trial-msg" class="panel placeholder-content">
+                    <i class="fa-solid fa-ghost"></i>
+                    <h2 data-i18n="no_trial_h2">Brak Aktywnej Próby</h2>
+                    <p data-i18n="no_trial_p">Udaj się do Hali, aby znaleźć przeciwnika lub rozłożyć śpiwór.</p>
+                    <button class="btn" style="max-width: 300px; margin: 30px auto 0;" onclick="document.getElementById('nav-hala').click();">
+                        <i class="fa-solid fa-house"></i> POWRÓT DO HALI
                     </button>
                 </div>
-                
-                <div class="system-logo-area">
-                    <div style="color: var(--cyan-main); font-size: 12px; letter-spacing: 1px;">SYSTEM AELWYD v2.7</div>
-                    <div class="big-a">A</div>
-                    <div class="system-status">STATUS: OCZEKIWANIE NA AUTORYZACJĘ</div>
+
+                <div id="countdown-panel" class="panel hidden" style="text-align: center; padding: 60px 20px; border-color: var(--risk-ext); box-shadow: 0 0 30px rgba(255,0,68,0.2);">
+                    <i class="fa-solid fa-door-closed" style="font-size: 48px; color: var(--risk-ext); margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(255,0,0,0.5));"></i>
+                    <h2 data-i18n="countdown_h2" style="color: var(--text-main); font-size: 32px; margin-bottom: 10px; text-shadow: 0 0 15px var(--risk-ext);">DRZWI ZATRZAŚNIĘTE!</h2>
+                    <p data-i18n="countdown_p" style="color: var(--text-muted); font-family: var(--font-mono);">Nie ma już ucieczki. Gra zacznie się za:</p>
+                    <div id="start-timer" style="font-size: 5em; color: var(--pink-main); font-weight: bold; margin-top: 20px; text-shadow: 0 0 25px var(--pink-glow);">5</div>
+                </div>
+
+                <div id="game-panel" class="panel hidden">
+                    <div class="flex-row" style="border-bottom: 1px solid rgba(255,0,85,0.3); padding-bottom: 15px; margin-bottom: 20px;">
+                        <div class="panel-header" style="margin-bottom: 0;">
+                            <i class="fa-solid fa-flask-vial"></i>
+                            <span id="role-title" data-i18n="role_title">FAZA: ???</span>
+                        </div>
+                        <div class="timer"><i class="fa-regular fa-clock"></i> <span id="round-timer">120</span>s</div>
+                    </div>
+
+                    <div id="action-area">
+                        <p id="question-text" data-i18n="question_text" style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: var(--pink-main); text-shadow: 0 0 10px var(--pink-glow);">Wybierz puszkę:</p>
+                        
+                        <div class="cup-options-container" id="cup-options"></div>
+
+                        <p data-i18n="reason_label" style="color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 10px;">Dlaczego tak robisz? (Zapisz na kartce):</p>
+                        <input type="text" id="reason-input" class="input-field" data-i18n-placeholder="placeholder_reason" placeholder="Zapisz swój mroczny plan..." style="margin-bottom: 20px;">
+
+                        <button id="submit-btn" class="btn" onclick="submitAction()">
+                            <i class="fa-solid fa-pen-nib"></i> <span data-i18n="btn_submit">ODKŁADASZ KARTKĘ</span>
+                        </button>
+                        
+                        <div id="op-status" style="color: var(--risk-med); margin-top: 15px; font-family: var(--font-mono); font-size: 12px; text-align: center; text-transform: uppercase;" data-i18n="op_status_typing">[ ] On coś kombinuje...</div>
+                    </div>
+                </div>
+
+                <div id="vote-panel" class="panel hidden" style="border-color: var(--cyan-dark); box-shadow: 0 0 30px rgba(0,210,255,0.1);">
+                    <div class="flex-row" style="border-bottom: 1px solid rgba(0,210,255,0.3); padding-bottom: 15px; margin-bottom: 20px;">
+                        <div class="panel-header" style="margin-bottom: 0; color: var(--cyan-main); text-shadow: 0 0 10px var(--cyan-glow);">
+                            <i class="fa-solid fa-eye" style="background-color: var(--cyan-dark); color: var(--cyan-main); box-shadow: 0 0 15px var(--cyan-glow);"></i>
+                            <span data-i18n="vote_h3">FAZA: SPOJRZENIE W OCZY</span>
+                        </div>
+                        <div class="timer" style="color: var(--cyan-main); text-shadow: 0 0 10px var(--cyan-glow);"><i class="fa-regular fa-clock"></i> <span id="chat-timer">180</span>s</div>
+                    </div>
+                    
+                    <div id="reveal-area" class="alert-box" style="background: rgba(0,0,0,0.6); border-color: var(--pink-main);"></div>
+
+                    <div class="panel-header" style="color: var(--cyan-main); font-size: 14px; margin-top: 20px; text-shadow: none;">
+                        <i class="fa-solid fa-comment-dots" style="background-color: var(--cyan-dark); color: var(--cyan-main); padding: 8px; font-size: 14px; box-shadow: none;"></i>
+                        <span data-i18n="vote_h4">KANAŁ SZEPTÓW</span>
+                    </div>
+                    
+                    <div id="chat-history"></div>
+                    
+                    <div class="input-group">
+                        <input type="text" id="chat-input" class="input-field" style="border-color: rgba(0,210,255,0.3);" data-i18n-placeholder="placeholder_chat" placeholder="Powiedz coś...">
+                        <button class="btn" onclick="sendChat()" style="width: auto; margin-bottom: 0; border-color: var(--cyan-main); color: var(--cyan-main); background: rgba(0,210,255,0.1);">
+                            <i class="fa-solid fa-paper-plane" style="color: inherit;"></i>
+                        </button>
+                    </div>
+
+                    <div id="voting-area" style="margin-top: 30px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 20px;">
+                        <p data-i18n="vote_desc" style="text-align: center; margin-bottom: 20px; font-family: var(--font-mono); color: var(--text-muted);"><strong>Zdecyduj: Czy Wasze umysły połączyły się w jednym szaleństwie?</strong></p>
+                        
+                        <div class="flex-row">
+                            <button id="vote-yes" class="btn" onclick="submitVote(true)" style="border-color: var(--risk-low); color: var(--risk-low); background: rgba(0,255,170,0.05);">
+                                <i class="fa-solid fa-handshake-angle" style="color: inherit;"></i> <span data-i18n="btn_vote_yes">TAK, JESTEŚMY TACY SAMI</span>
+                            </button>
+                            <button id="vote-no" class="btn btn-danger" onclick="submitVote(false)">
+                                <i class="fa-solid fa-skull-crossbones"></i> <span data-i18n="btn_vote_no">NIE, ON KŁAMIE</span>
+                            </button>
+                        </div>
+                        
+                        <button id="btn-ai" class="btn hidden" onclick="requestAI()" style="border-color: var(--cyan-main); color: var(--cyan-main); margin-top: 10px; background: rgba(0,210,255,0.05);">
+                            <i class="fa-solid fa-robot" style="color: inherit;"></i> <span data-i18n="btn_ai_request">ZAPYTAJ DEMONA Z IT</span>
+                        </button>
+
+                        <div id="vote-wait" class="hidden alert-box" style="text-align: center; border-color: var(--cyan-main); color: var(--cyan-main); background: rgba(0,210,255,0.1); margin-top: 15px; padding: 10px;"></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <footer class="footer">
-            <div><span class="footer-pink">>> kup_mi_monsterka</span></div>
-            <div>Nie ufaj nikomu. Zwierzaj się tylko kodowi.</div>
-            <div>v2.7.0 • PYRKONU DARKNET</div>
-        </footer>
+            <div id="panel-wiedza" class="view-panel">
+                <div class="panel placeholder-content">
+                    <i class="fa-solid fa-book-skull"></i>
+                    <h2 data-i18n="nav_wiedza">WIEDZA</h2>
+                    <p data-i18n="coming_soon">Funkcja dostępna wkrótce...</p>
+                </div>
+            </div>
 
-    </main>
+            <div id="panel-mistrzowie" class="view-panel">
+                <div class="panel placeholder-content">
+                    <i class="fa-solid fa-trophy"></i>
+                    <h2 data-i18n="nav_mistrzowie">MISTRZOWIE</h2>
+                    <p data-i18n="coming_soon">Funkcja dostępna wkrótce...</p>
+                </div>
+            </div>
 
+            <div id="panel-profil" class="view-panel">
+                <div class="panel placeholder-content">
+                    <i class="fa-solid fa-user-astronaut"></i>
+                    <h2 data-i18n="nav_profil">PROFIL</h2>
+                    <p data-i18n="coming_soon">Funkcja dostępna wkrótce...</p>
+                </div>
+            </div>
+
+            <div id="panel-konsola" class="view-panel">
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-gear"></i>
+                        <span data-i18n="nav_konsola">KONSOLA SYSTEMOWA</span>
+                    </div>
+                    
+                    <div class="setting-row">
+                        <div data-i18n="set_lang">Język Interfejsu (Language)</div>
+                        <div>
+                            <select id="lang-select" onchange="changeLanguage(this.value)">
+                                <option value="pl">Polski</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-row">
+                        <div data-i18n="set_sfx">Efekty Wizualne</div>
+                        <div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div>Nie ufaj nikomu. Zwierzaj się tylko kodowi.</div>
+                <div data-i18n="footer_text">v2.7.0 • DARKNET</div>
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        // --- ZEGAR ---
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('current-time').innerText = `[ ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')} ]`;
+        }, 1000);
+
+        // --- SŁOWNIK JĘZYKOWY (i18n) ---
+        const dict = {
+            pl: {
+                page_title: "Mroczna Sieć - Femboy z siódmej hali",
+                h1_title: "HALA GŁÓWNA",
+                status_init: "[ BUDZENIE DEMONÓW... ]",
+                status_ready: "[ MOŻESZ WEJŚĆ DO HALI ]",
+                server_status_prefix: "Stan sieci:",
+                server_checking: "ŁĄCZENIE Z PIWNICĄ...",
+                server_offline_timeout: "OFFLINE (Zostałeś sam w ciemności)",
+                server_online: "ONLINE",
+                server_offline_error: "OFFLINE (Serwer krwawi)",
+                
+                nav_hala: "HALA",
+                nav_przestrzen: "PRZESTRZEŃ",
+                nav_proba: "PRÓBA",
+                nav_wiedza: "WIEDZA",
+                nav_mistrzowie: "MISTRZOWIE",
+                nav_profil: "PROFIL",
+                nav_konsola: "KONSOLA",
+                coming_soon: "Funkcja dostępna wkrótce...",
+                more_modes: "Więcej trybów gry pojawi się tutaj w niedalekiej przyszłości...",
+
+                lobby_h3_1: "SZUKAJ DUSZ",
+                lobby_p_1: "Wybierz ofiarę lub oprawcę. Przeszukujemy sieć.",
+                rank_1: "[ RANGA 1 ] Cosplayerzy",
+                rank_2: "[ RANGA 2 ] Nocne Wampiry",
+                rank_3: "[ RANGA 3 ] Fani Monsterków",
+                rank_4: "[ RANGA 4 ] Femboye z IT",
+                queue_text: "Węszę w tłumie",
+                btn_cancel: "UCIEKAJ",
+                lobby_h3_2: "SLEEPROOM",
+                btn_create_room: "ROZKŁADASZ ŚPIWÓR",
+                host_info_code: "Twój kod do pokoju:",
+                host_info_waiting: "Czekasz w mroku, aż ktoś wejdzie...",
+                placeholder_join: "Wpisz kod śpiwora...",
+                btn_join: "WKRADNIJ SIĘ",
+                countdown_h2: "DRZWI ZATRZAŚNIĘTE!",
+                countdown_p: "Nie ma już ucieczki. Zaczynamy za:",
+                role_title: "FAZA: ???",
+                question_text: "Wybierz puszkę:",
+                reason_label: "Dlaczego to robisz? (Zapisz to):",
+                placeholder_reason: "Twój mroczny plan...",
+                btn_submit: "ODKŁADASZ KARTKĘ",
+                op_status_typing: "[ ] On coś kombinuje...",
+                vote_h3: "SPOJRZENIE W OCZY",
+                vote_h4: "KANAŁ SZEPTÓW",
+                placeholder_chat: "Napisz wiadomość...",
+                btn_send_chat: "WYŚLIJ",
+                vote_desc: "Czy Wasze umysły połączyły się w jednym szaleństwie?",
+                btn_vote_yes: "TAK, ZGADZAM SIĘ",
+                btn_vote_no: "NIE, ON KŁAMIE",
+                vote_wait: "Czekam na decyzję...",
+                
+                btn_ai_request: "ZAPYTAJ DEMONA",
+                ai_waiting: "Czekam...",
+                ai_analyzing: "Analiza umysłów...",
+
+                search_network: "Szukam na hali (Ranga {rank})",
+                alert_no_code: "Podaj kod!",
+                alert_own_code: "BŁĄD: To Twój śpiwór!",
+                op_status_done: "[✓] Przeciwnik podjął decyzję!",
+                kick_disconnect: "Przeciwnik uciekł.",
+                kick_idle: "Zasnął z wycieńczenia. Wyrzucony.",
+                error_prefix: "> BŁĄD:",
+                status_offline: "[ OFFLINE ]",
+                kick_timeout: "Czas minął!",
+                role_poisoner: "RUNDA {round}/5 | DOSYPUJESZ ŚRODEK",
+                question_poisoner: "Do której puszki wrzucasz tabletkę?",
+                role_drinker: "RUNDA {round}/5 | WYBIERASZ NAPÓJ",
+                question_drinker: "Którą puszkę wybierasz?",
+                cup_mine_select: "<i class='fa-solid fa-bottle-droplet' style='font-size:24px; color:var(--pink-main); margin-bottom:10px; display:block;'></i> Różowy Monster<br><small>(bliżej MNIE)</small>",
+                cup_yours_select: "<i class='fa-solid fa-bottle-droplet' style='font-size:24px; color:#fff; margin-bottom:10px; display:block;'></i> Biały Monster<br><small>(bliżej NIEGO)</small>",
+                alert_no_cup: "Wybierz puszkę!",
+                alert_no_reason: "Zapisz plan!",
+                btn_submitted: "ZAPISANO",
+                res_title: "EFEKT:",
+                res_survived: "PRZETRWANIE (+1)",
+                res_died: "ZAPAŚĆ",
+                res_poison_pos: "Zatruta:",
+                res_drunk_pos: "Wypito:",
+                res_scroll_p: "Kartka Nalewającego:",
+                res_scroll_d: "Kartka Pijącego:",
+                cup_mine_res: "Różowy Monster",
+                cup_yours_res: "Biały Monster",
+                chat_you: "Ty",
+                chat_op: "On",
+                chat_sys: "SYSTEM",
+                sys_agree: "ZGODNOŚĆ. Dodatkowy punkt!",
+                sys_disagree: "BRAK ZGODY.",
+                vote_next: "Następny koszmar za",
+                status_connected: "Ty: {myScore} | On: {opScore}",
+                end_title: "KONIEC GRY",
+                end_my_score: "Twój wynik:",
+                end_op_score: "Jego wynik:",
+                end_win: "ZWYCIĘSTWO!",
+                end_lose: "PORAŻKA...",
+                end_draw: "REMIS.",
+                
+                no_trial_h2: "Brak Aktywnej Próby",
+                no_trial_p: "Udaj się do Hali, aby znaleźć przeciwnika lub rozłożyć śpiwór.",
+                set_lang: "Język Interfejsu (Language)",
+                set_sfx: "Efekty Wizualne",
+                footer_text: "v2.7.0 • DARKNET"
+            },
+            en: {
+                page_title: "Darknet - Hall 7 Femboy", h1_title: "MAIN HALL", status_init: "[ WAKING UP DEMONS... ]", status_ready: "[ YOU CAN ENTER ]",
+                server_status_prefix: "Network status:", server_checking: "CONNECTING...", server_offline_timeout: "OFFLINE", server_online: "ONLINE", server_offline_error: "OFFLINE (Server bleeds)",
+                
+                nav_hala: "HALL", nav_przestrzen: "SPACE", nav_proba: "TRIAL", nav_wiedza: "LORE", nav_mistrzowie: "MASTERS", nav_profil: "PROFILE", nav_konsola: "CONSOLE",
+                coming_soon: "Feature coming soon...", more_modes: "More game modes will appear here in the near future...",
+
+                lobby_h3_1: "SEARCH SOULS", lobby_p_1: "Choose victim or executioner.", rank_1: "[ RANK 1 ] Cosplayers", rank_2: "[ RANK 2 ] Night Vampires", rank_3: "[ RANK 3 ] Monster Addicts", rank_4: "[ RANK 4 ] IT Femboys",
+                queue_text: "Sniffing crowd", btn_cancel: "RUN AWAY", lobby_h3_2: "SLEEPROOM", btn_create_room: "ROLL OUT SLEEPING BAG", host_info_code: "Your room code:", host_info_waiting: "Waiting in the dark...", placeholder_join: "Enter victim's code...", btn_join: "SNEAK IN",
+                countdown_h2: "DOORS LOCKED!", countdown_p: "Game starts in:", role_title: "PHASE: ???", question_text: "Choose a can:", reason_label: "Why are you doing this?:", placeholder_reason: "Your dark plan...", btn_submit: "PUT DOWN NOTE", op_status_typing: "[ ] Scheming...",
+                vote_h3: "LOOK IN THE EYES", vote_h4: "WHISPER CHANNEL", placeholder_chat: "Say something...", btn_send_chat: "SEND", vote_desc: "Did your minds connect?", btn_vote_yes: "YES, WE AGREE", btn_vote_no: "NO, LIES", vote_wait: "Waiting for decision...",
+                
+                btn_ai_request: "ASK THE DEMON", ai_waiting: "Waiting...", ai_analyzing: "Analyzing...",
+                search_network: "Searching (Rank {rank})", alert_no_code: "Provide code!", alert_own_code: "ERROR: Your own bag!", op_status_done: "[✓] Decision made!", kick_disconnect: "Opponent fled.", kick_idle: "Fell asleep. Kicked.", error_prefix: "> ERROR:", status_offline: "[ OFFLINE ]", kick_timeout: "Time's up!",
+                role_poisoner: "ROUND {round}/5 | POURING", question_poisoner: "Which can to poison?", role_drinker: "ROUND {round}/5 | CHOOSING", question_drinker: "Which can?", cup_mine_select: "<i class='fa-solid fa-bottle-droplet' style='font-size:24px; color:var(--pink-main); margin-bottom:10px; display:block;'></i> Pink Monster<br><small>(ME)</small>", cup_yours_select: "<i class='fa-solid fa-bottle-droplet' style='font-size:24px; color:#fff; margin-bottom:10px; display:block;'></i> White Monster<br><small>(HIM)</small>",
+                alert_no_cup: "Choose can!", alert_no_reason: "Write plan!", btn_submitted: "SAVED", res_title: "RESULT:", res_survived: "SURVIVED (+1)", res_died: "COLLAPSE", res_poison_pos: "Poisoned:", res_drunk_pos: "Drank:", res_scroll_p: "Pourer's Note:", res_scroll_d: "Drinker's Note:", cup_mine_res: "Pink Monster", cup_yours_res: "White Monster", chat_you: "You", chat_op: "Him", chat_sys: "SYSTEM", sys_agree: "MATCH. Extra point!", sys_disagree: "MISMATCH.", vote_next: "Next nightmare in", status_connected: "You: {myScore} | Him: {opScore}", end_title: "GAME OVER", end_my_score: "Your score:", end_op_score: "His score:", end_win: "VICTORY!", end_lose: "DEFEAT...", end_draw: "DRAW.",
+                no_trial_h2: "No Active Trial", no_trial_p: "Go to Hall to find opponent.", set_lang: "Interface Language", set_sfx: "Visual Effects", footer_text: "v2.7.0 • DARKNET"
+            }
+        };
+
+        let lang = 'pl';
+
+        function t(key, params = {}) {
+            let str = dict[lang][key] || key;
+            for (let p in params) str = str.replace(`{${p}}`, params[p]);
+            return str;
+        }
+
+        function changeLanguage(newLang) {
+            lang = newLang;
+            updateTranslations();
+        }
+
+        function updateTranslations() {
+            document.title = t('page_title');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (el.innerHTML.includes('<i')) {
+                    let iconHTML = el.innerHTML.match(/<i.*?<\/i>/);
+                    el.innerHTML = (iconHTML ? iconHTML[0] + ' ' : '') + t(key);
+                } else {
+                    el.innerHTML = t(key);
+                }
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = t(key);
+            });
+            if(socket && socket.connected) ui.status.innerText = t('status_ready');
+        }
+
+        // --- SKRYPT NA ZAKŁADKI (SPA Routing) ---
+        function switchNav(targetPanelId, navElement) {
+            if(navElement) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                navElement.classList.add('active');
+            }
+            document.querySelectorAll('.view-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(targetPanelId).classList.add('active');
+            
+            if(targetPanelId !== 'panel-proba' && targetPanelId !== 'panel-hala') {
+                document.getElementById('disconnect-msg').classList.add('hidden');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateTranslations();
+            document.getElementById('lang-select').value = lang;
+        });
+
+        // --- GAME LOGIC ---
+        const SERVER_URL = 'https://stinky-baka-test-server.onrender.com'; 
+        let socket;
+        let isHost = false;
+
+        let state = {
+            round: 1, maxRounds: 5, myScore: 0, opScore: 0,
+            myRole: '', myAction: null, opAction: null, myVote: null, opVote: null, aiMode: false
+        };
+
+        let timerInterval, chatTimerInterval;
+        let timeLeft = 120, chatTimeLeft = 180;
+
+        const ui = {
+            status: document.getElementById('status'),
+            countdown: document.getElementById('countdown-panel'), game: document.getElementById('game-panel'), vote: document.getElementById('vote-panel'),
+            hostInfo: document.getElementById('host-info'), roomId: document.getElementById('room-id'), startTimer: document.getElementById('start-timer'),
+            roleTitle: document.getElementById('role-title'), roundTimer: document.getElementById('round-timer'),
+            cupOptions: document.getElementById('cup-options'), reasonInput: document.getElementById('reason-input'), submitBtn: document.getElementById('submit-btn'),
+            opStatus: document.getElementById('op-status'), revealArea: document.getElementById('reveal-area'), chatHistory: document.getElementById('chat-history'),
+            chatInput: document.getElementById('chat-input'), voteWait: document.getElementById('vote-wait'), voteYes: document.getElementById('vote-yes'),
+            voteNo: document.getElementById('vote-no'), chatTimer: document.getElementById('chat-timer'), disconnectMsg: document.getElementById('disconnect-msg'),
+            queueStatus: document.getElementById('queue-status'), queueText: document.getElementById('queue-text'), serverStatus: document.getElementById('server-status'),
+            serverMsg: document.getElementById('server-msg'), serverDots: document.getElementById('server-dots'), cards: document.querySelectorAll('.card')
+        };
+
+        function setCardsDisabled(disabled) {
+            ui.cards.forEach(card => {
+                if(disabled) card.classList.add('disabled');
+                else card.classList.remove('disabled');
+            });
+        }
+
+        function connectToServer() {
+            socket = io(SERVER_URL);
+            socket.on('connect', () => {
+                ui.serverMsg.innerHTML = `<span style="color:var(--risk-low); font-weight:bold;">${t('server_online')}</span>`;
+                ui.serverDots.style.display = 'none'; ui.serverStatus.style.borderLeftColor = 'var(--risk-low)';
+                ui.status.innerText = t('status_ready'); ui.status.style.color = "var(--text-muted)";
+            });
+            socket.on('connect_error', () => {
+                ui.serverMsg.innerHTML = `<span style="color:var(--risk-ext); font-weight:bold;">${t('server_offline_error')}</span>`;
+                ui.serverDots.style.display = 'none'; ui.serverStatus.style.borderLeftColor = 'var(--risk-ext)';
+                ui.status.innerText = t('status_offline'); ui.status.style.color = "var(--risk-ext)";
+            });
+            socket.on('set_role', (data) => { isHost = data.isHost; });
+            socket.on('match_found', () => {
+                ui.queueStatus.classList.add('hidden'); ui.hostInfo.classList.add('hidden');
+                document.getElementById('nav-proba').click();
+                start5SecCountdown();
+            });
+            socket.on('game_action', (data) => {
+                state.opAction = data; ui.opStatus.innerHTML = `<i class="fa-solid fa-check"></i> ${t('op_status_done')}`; ui.opStatus.style.color = "var(--risk-low)";
+                checkBothSubmitted();
+            });
+            socket.on('chat_msg', (msg) => appendChat(t('chat_op'), msg, "msg-op"));
+            socket.on('vote_action', (vote) => { state.opVote = vote; checkVotes(); });
+            socket.on('ai_mode_active', () => {
+                state.aiMode = true;
+                let btnAi = document.getElementById('btn-ai'); if (btnAi) btnAi.classList.add('hidden');
+                if (!ui.vote.classList.contains('hidden') && state.myVote === null) {
+                     ui.voteYes.parentElement.classList.add('hidden');
+                     ui.voteWait.classList.remove('hidden'); ui.voteWait.innerHTML = `<i class="fa-solid fa-robot"></i> ${t('ai_analyzing')}<span class="loading-dots"></span>`;
+                     let pAction = state.myRole === 'poisoner' ? state.myAction : state.opAction;
+                     let dAction = state.myRole === 'drinker' ? state.myAction : state.opAction;
+                     if (isHost) { socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason }); }
+                }
+            });
+            socket.on('ai_evaluation_result', (data) => {
+                let isAgree = typeof data === 'object' ? data.isAgree : data;
+                let reason = typeof data === 'object' ? data.reason : null;
+                state.myVote = isAgree; state.opVote = isAgree;
+                if (reason) appendChat(t('chat_sys'), `WERDYKT AI: ${reason}`, "msg-sys");
+                checkVotes(); 
+            });
+            socket.on('next_round', () => { state.round++; start5SecCountdown(); });
+            socket.on('end_game', () => endGame());
+            socket.on('opponent_disconnected', () => handleKick(t('kick_disconnect')));
+            socket.on('error_msg', (msg) => { ui.disconnectMsg.innerHTML = `${t('error_prefix')} ${msg}`; ui.disconnectMsg.classList.remove('hidden'); });
+        }
+
+        window.addEventListener('load', connectToServer);
+
+        function searchRank(rank) {
+            if (!ui.queueStatus.classList.contains('hidden')) return;
+            setCardsDisabled(true);
+            ui.disconnectMsg.classList.add('hidden'); ui.queueStatus.classList.remove('hidden');
+            ui.queueText.innerText = t('search_network', {rank: rank});
+            socket.emit('search_rank', rank);
+        }
+        function cancelSearch() { socket.emit('cancel_search'); ui.queueStatus.classList.add('hidden'); setCardsDisabled(false); }
+        function createRoom() {
+            ui.disconnectMsg.classList.add('hidden');
+            let pin = Math.floor(1000 + Math.random() * 9000).toString();
+            socket.emit('create_room', pin); ui.hostInfo.classList.remove('hidden'); ui.roomId.innerText = pin;
+        }
+        function joinRoom() {
+            ui.disconnectMsg.classList.add('hidden');
+            let pin = document.getElementById('join-id').value.trim();
+            if(!pin) { ui.disconnectMsg.innerHTML = `${t('error_prefix')} ${t('alert_no_code')}`; ui.disconnectMsg.classList.remove('hidden'); return; }
+            socket.emit('join_room', pin);
+        }
+
+        function handleKick(reason) {
+            clearInterval(timerInterval); clearInterval(chatTimerInterval); hideGamePanels();
+            document.getElementById('no-trial-msg').classList.remove('hidden');
+            ui.disconnectMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong>${t('error_prefix')}</strong> ${reason}`; ui.disconnectMsg.classList.remove('hidden');
+            ui.status.innerText = t('status_ready');
+            state.myScore = 0; state.opScore = 0; state.round = 1; state.aiMode = false;
+            setCardsDisabled(false);
+            socket.disconnect(); socket.connect();
+        }
+
+        function hideGamePanels() { 
+            ui.countdown.classList.add('hidden'); ui.game.classList.add('hidden'); ui.vote.classList.add('hidden'); 
+        }
+
+        function start5SecCountdown() {
+            hideGamePanels();
+            document.getElementById('no-trial-msg').classList.add('hidden');
+            ui.countdown.classList.remove('hidden');
+            updateStatus();
+            let t_sec = 5; ui.startTimer.innerText = t_sec;
+            let iv = setInterval(() => {
+                t_sec--; ui.startTimer.innerText = t_sec;
+                if(t_sec <= 0) { clearInterval(iv); startPlayingPhase(); }
+            }, 1000);
+        }
+
+        function startPlayingPhase() {
+            hideGamePanels(); ui.game.classList.remove('hidden');
+            let hostPoisons = (state.round % 2 !== 0); state.myRole = (isHost === hostPoisons) ? 'poisoner' : 'drinker';
+            state.myAction = null; state.opAction = null; state.myVote = null; state.opVote = null;
+            ui.reasonInput.value = ''; ui.reasonInput.disabled = false; selectedCup = null;
+            ui.submitBtn.disabled = false; ui.submitBtn.innerHTML = `<i class="fa-solid fa-pen-nib"></i> ${t('btn_submit')}`;
+            ui.opStatus.innerHTML = t('op_status_typing'); ui.opStatus.style.color = "var(--risk-med)";
+            ui.voteYes.parentElement.classList.remove('hidden'); ui.voteWait.classList.add('hidden'); 
+
+            if(state.myRole === 'poisoner') { ui.roleTitle.innerText = t('role_poisoner', {round: state.round}); document.getElementById('question-text').innerText = t('question_poisoner'); } 
+            else { ui.roleTitle.innerText = t('role_drinker', {round: state.round}); document.getElementById('question-text').innerText = t('question_drinker'); }
+
+            let mySideId = isHost ? 'host_side' : 'guest_side'; let opSideId = isHost ? 'guest_side' : 'host_side';
+            ui.cupOptions.innerHTML = `<div class="cup-option" id="cup-${mySideId}" onclick="selectCup('${mySideId}')">${t('cup_mine_select')}</div><div class="cup-option" id="cup-${opSideId}" onclick="selectCup('${opSideId}')">${t('cup_yours_select')}</div>`;
+
+            timeLeft = 120; ui.roundTimer.innerText = timeLeft; clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--; ui.roundTimer.innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if(!state.myAction) {
+                        if(!selectedCup || !ui.reasonInput.value.trim()) handleKick(t('kick_timeout')); else submitAction();
+                    }
+                }
+            }, 1000);
+        }
+
+        let selectedCup = null;
+        function selectCup(cupId) {
+            if(state.myAction) return; selectedCup = cupId;
+            document.querySelectorAll('.cup-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`cup-${cupId}`).classList.add('selected');
+        }
+
+        function submitAction() {
+            if(!selectedCup) { alert(t('alert_no_cup')); return; }
+            let reason = ui.reasonInput.value.trim(); if(!reason) { alert(t('alert_no_reason')); return; }
+            state.myAction = { cup: selectedCup, reason: reason };
+            ui.submitBtn.disabled = true; ui.submitBtn.innerHTML = `<i class="fa-solid fa-lock"></i> ${t('btn_submitted')}`; ui.reasonInput.disabled = true;
+            socket.emit('game_action', state.myAction); checkBothSubmitted();
+        }
+
+        function checkBothSubmitted() {
+            if(state.myAction && state.opAction) { clearInterval(timerInterval); timeLeft = 0; ui.roundTimer.innerText = 0; setTimeout(showRevealPhase, 1000); }
+        }
+
+        function requestAI() {
+            if(state.myVote !== null) return;
+            let btnAi = document.getElementById('btn-ai'); btnAi.disabled = true; btnAi.innerHTML = `<i class="fa-solid fa-hourglass"></i> ${t('ai_waiting')}`; socket.emit('request_ai');
+        }
+
+        function showRevealPhase() {
+            hideGamePanels(); ui.vote.classList.remove('hidden');
+
+            let pAction = state.myRole === 'poisoner' ? state.myAction : state.opAction;
+            let dAction = state.myRole === 'drinker' ? state.myAction : state.opAction;
+            let survived = (pAction.cup !== dAction.cup);
+
+            if(survived && state.myRole === 'drinker') state.myScore++;
+            else if(survived && state.myRole === 'poisoner') state.opScore++;
+
+            let resHtml = `<h3 style="margin-bottom:15px; font-size:18px; color: var(--text-main);">${t('res_title')} ${survived ? `<span style="color:var(--pink-main); text-shadow:0 0 10px var(--pink-glow);">${t('res_survived')}</span>` : `<span style="color:var(--risk-ext); text-shadow:0 0 10px rgba(255,0,68,0.4);">${t('res_died')}</span>`}</h3>`;
+            resHtml += `<p style="color:var(--text-muted); font-size:14px; margin-bottom:15px; font-family: var(--font-mono);">${t('res_poison_pos')} <strong style="color:var(--pink-main);">${getLocalCupName(pAction.cup)}</strong> | ${t('res_drunk_pos')} <strong style="color:var(--pink-main);">${getLocalCupName(dAction.cup)}</strong></p><hr style="border:1px dashed rgba(255,0,85,0.3); margin-bottom:15px;">`;
+            resHtml += `<p style="margin-bottom:8px; font-size:14px; background: rgba(0,0,0,0.5); padding: 10px; border-left: 3px solid var(--pink-main);"><strong style="color:var(--text-muted);">${t('res_scroll_p')}</strong> <span style="font-style:italic; color:var(--text-main);">"${pAction.reason}"</span></p>`;
+            resHtml += `<p style="font-size:14px; background: rgba(0,0,0,0.5); padding: 10px; border-left: 3px solid #fff;"><strong style="color:var(--text-muted);">${t('res_scroll_d')}</strong> <span style="font-style:italic; color:var(--text-main);">"${dAction.reason}"</span></p>`;
+
+            ui.revealArea.innerHTML = resHtml; updateStatus(); ui.voteWait.innerHTML = `${t('vote_wait')}<span class="loading-dots"></span>`;
+            
+            let btnAi = document.getElementById('btn-ai');
+            if (state.aiMode) {
+                ui.voteYes.parentElement.classList.add('hidden'); btnAi.classList.add('hidden'); ui.voteWait.classList.remove('hidden');
+                ui.voteWait.innerHTML = `<i class="fa-solid fa-robot"></i> ${t('ai_analyzing')}<span class="loading-dots"></span>`;
+                if (isHost) { socket.emit('evaluate_ai', { r1: pAction.reason, r2: dAction.reason }); }
+            } else {
+                ui.voteYes.parentElement.classList.remove('hidden'); ui.voteWait.classList.add('hidden');
+                if (state.round === 1) { btnAi.classList.remove('hidden'); btnAi.disabled = false; btnAi.innerHTML = `<i class="fa-solid fa-robot"></i> ${t('btn_ai_request')}`; } else { btnAi.classList.add('hidden'); }
+            }
+
+            chatTimeLeft = 180; ui.chatTimer.innerText = chatTimeLeft; clearInterval(chatTimerInterval);
+            chatTimerInterval = setInterval(() => {
+                chatTimeLeft--; ui.chatTimer.innerText = chatTimeLeft;
+                if(chatTimeLeft <= 0) { clearInterval(chatTimerInterval); if(state.myVote === null && !state.aiMode) submitVote(false); }
+            }, 1000);
+        }
+
+        function getLocalCupName(cupId) { return cupId === (isHost ? 'host_side' : 'guest_side') ? t('cup_mine_res') : t('cup_yours_res'); }
+        function sendChat() { let msg = ui.chatInput.value.trim(); if(!msg) return; appendChat(t('chat_you'), msg, "msg-me"); socket.emit('chat_msg', msg); ui.chatInput.value = ''; }
+        function appendChat(sender, msg, cssClass) { let p = document.createElement('p'); p.innerHTML = `<span class="${cssClass}">[${sender}]</span>: <span style="color:var(--text-main);">${msg}</span>`; ui.chatHistory.appendChild(p); ui.chatHistory.scrollTop = ui.chatHistory.scrollHeight; }
+        ui.chatInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendChat(); });
+
+        function submitVote(isYes) { state.myVote = isYes; ui.voteYes.parentElement.classList.add('hidden'); document.getElementById('btn-ai').classList.add('hidden'); ui.voteWait.classList.remove('hidden'); socket.emit('vote_action', isYes); checkVotes(); }
+        
+        function checkVotes() {
+            if(state.myVote !== null && state.opVote !== null) {
+                clearInterval(chatTimerInterval); ui.chatTimer.innerText = "0";
+                if(state.myVote === true && state.opVote === true) { appendChat(t('chat_sys'), t('sys_agree'), "msg-sys"); if(state.myRole === 'drinker') state.myScore++; else state.opScore++; } else appendChat(t('chat_sys'), t('sys_disagree'), "msg-sys");
+                updateStatus();
+                let waitTime = 10; ui.voteWait.innerHTML = `${t('vote_next')} <strong id="next-phase-timer" style="color:var(--pink-main); font-size:1.2em;">${waitTime}</strong>s...`;
+                let waitIv = setInterval(() => {
+                    waitTime--; let el = document.getElementById('next-phase-timer'); if(el) el.innerText = waitTime;
+                    if(waitTime <= 0) { clearInterval(waitIv); if(isHost) { if(state.round < state.maxRounds) { state.round++; start5SecCountdown(); socket.emit('next_round'); } else { endGame(); socket.emit('end_game'); } } }
+                }, 1000);
+            }
+        }
+
+        function updateStatus() { ui.status.innerText = `[ MROCZNA SIEĆ ] ` + t('status_connected', {myScore: state.myScore, opScore: state.opScore}); }
+
+        function endGame() {
+            hideGamePanels();
+            document.getElementById('no-trial-msg').classList.remove('hidden');
+            let resHtml = `<h2 style="font-size:24px; color:var(--text-main); margin-bottom:15px; text-transform: uppercase;"><i class="fa-solid fa-flag-checkered"></i> ${t('end_title')}</h2><p style="font-size:16px; margin-bottom:5px; color:var(--text-muted); font-family: var(--font-mono);">${t('end_my_score')} <strong style="color:var(--pink-main);">${state.myScore}</strong></p><p style="font-size:16px; margin-bottom:20px; color:var(--text-muted); font-family: var(--font-mono);">${t('end_op_score')} <strong style="color:var(--pink-main);">${state.opScore}</strong></p>`;
+            if(state.myScore > state.opScore) resHtml += `<h3 style='color:var(--pink-main); font-size:28px; text-shadow:0 0 15px var(--pink-glow);'>${t('end_win')}</h3>`;
+            else if(state.myScore < state.opScore) resHtml += `<h3 style='color:var(--risk-ext); font-size:28px; text-shadow:0 0 15px rgba(255,0,68,0.4);'>${t('end_lose')}</h3>`;
+            else resHtml += `<h3 style='color:var(--text-main); font-size:28px; text-shadow:0 0 15px rgba(255,255,255,0.4);'>${t('end_draw')}</h3>`;
+
+            ui.disconnectMsg.innerHTML = resHtml; ui.disconnectMsg.classList.remove('hidden'); ui.disconnectMsg.style.textAlign = 'center'; ui.disconnectMsg.style.padding = '40px';
+            state.aiMode = false; setCardsDisabled(false); socket.disconnect(); socket.connect();
+        }
+    </script>
 </body>
 </html>
