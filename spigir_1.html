@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hala Główna Pyrkonu</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #050505;
+            --bg-panel: #0a050a;
+            --bg-input: #000000;
+            --pink-main: #ff0055;
+            --pink-dark: #4a001a;
+            --pink-glow: rgba(255, 0, 85, 0.4);
+            --cyan-main: #00d2ff;
+            --cyan-dark: #003344;
+            --cyan-glow: rgba(0, 210, 255, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --risk-low: #00ff00;
+            --risk-med: #ffaa00;
+            --risk-high: #ff4400;
+            --risk-ext: #ff0000;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 80px;
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--pink-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .nav-item {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: white;
+        }
+
+        .nav-item.active {
+            background-color: var(--pink-dark);
+            border-left: 3px solid var(--pink-main);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .header-title h1 {
+            font-size: 48px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            text-shadow: 0 0 10px var(--pink-glow);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 14px;
+        }
+
+        .time-badge {
+            border: 1px solid var(--pink-main);
+            color: var(--pink-main);
+            padding: 5px 15px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            box-shadow: 0 0 10px var(--pink-glow);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--pink-dark);
+            padding: 15px 20px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .status-online {
+            color: var(--risk-low);
+            font-weight: bold;
+        }
+
+        .status-online::before {
+            content: '● ';
+            text-shadow: 0 0 5px var(--risk-low);
+        }
+
+        .status-sub {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Grid Layout for Panels */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--pink-dark);
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--pink-main);
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .panel-header i {
+            font-size: 20px;
+            background-color: var(--pink-dark);
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .panel-sub {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* Cards List */
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-input);
+            border: 1px solid #1a1a1a;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--pink-main);
+            box-shadow: 0 0 10px var(--pink-glow);
+        }
+
+        .card-img {
+            width: 60px;
+            height: 60px;
+            background-color: #222;
+            margin-right: 15px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .card-info {
+            flex: 1;
+            font-family: var(--font-mono);
+        }
+
+        .card-title {
+            color: var(--text-main);
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .card-rank {
+            color: var(--text-muted);
+        }
+
+        .card-stats {
+            text-align: right;
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        .stat-value {
+            color: var(--pink-main);
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .risk-low { color: var(--risk-low); }
+        .risk-med { color: var(--risk-med); }
+        .risk-high { color: var(--risk-high); }
+        .risk-ext { color: var(--risk-ext); }
+
+        /* Sleeproom */
+        .sleeproom-img {
+            width: 100%;
+            height: 150px;
+            background-color: #222;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: transparent;
+            border: 1px solid var(--pink-dark);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            border-color: var(--pink-main);
+            box-shadow: 0 0 10px var(--pink-glow);
+            background-color: rgba(255, 0, 85, 0.1);
+        }
+
+        .btn i { color: var(--pink-main); }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-input);
+            border: 1px solid #333;
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--pink-main);
+        }
+
+        /* Console Panel (Cyan Theme) */
+        .panel-console {
+            border-color: var(--cyan-dark);
+        }
+
+        .panel-console .panel-header, .panel-console .btn i {
+            color: var(--cyan-main);
+        }
+
+        .panel-console .panel-header i {
+            background-color: var(--cyan-dark);
+        }
+
+        .console-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel-console .input-field {
+            border-color: var(--cyan-dark);
+            padding-left: 35px;
+            background-repeat: no-repeat;
+            background-position: 10px center;
+        }
+        
+        .panel-console .input-field:focus {
+            border-color: var(--cyan-main);
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cyan-main);
+        }
+
+        .panel-console .btn {
+            border-color: var(--cyan-dark);
+        }
+
+        .panel-console .btn:hover {
+            border-color: var(--cyan-main);
+            box-shadow: 0 0 10px var(--cyan-glow);
+            background-color: rgba(0, 210, 255, 0.1);
+        }
+
+        .system-logo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+        }
+
+        .big-a {
+            font-size: 80px;
+            color: var(--cyan-main);
+            text-shadow: 0 0 20px var(--cyan-glow);
+            font-weight: bold;
+            line-height: 1;
+            margin: 10px 0;
+            letter-spacing: -5px;
+        }
+
+        .system-status {
+            color: var(--cyan-main);
+            font-size: 10px;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        .footer-pink { color: var(--pink-main); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-skull"></i></div>
+        <a class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            HALA
+        </a>
+        <a class="nav-item">
+            <i class="fa-solid fa-ghost"></i>
+            DUSZE
+        </a>
+        <a class="nav-item">
+            <i class="fa-solid fa-bed"></i>
+            SLEEPROOM
+        </a>
+        <a class="nav-item">
+            <i class="fa-solid fa-terminal"></i>
+            KONSOLA
+        </a>
+    </aside>
+
+    <main class="main-content">
+        
+        <header class="header">
+            <div class="header-title">
+                <h1>Hala Główna<br>Pyrkonu</h1>
+                <p><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--pink-main)"></i> Witaj w ciemnej sieci. Wybierz, dokąd się udasz.</p>
+            </div>
+            <div class="time-badge">[ 03:00 AM ]</div>
+        </header>
+
+        <div class="status-bar">
+            <div>Stan mrocznej sieci: <span class="status-online">ONLINE</span></div>
+            <div class="status-sub">Demony nasłuchują...</div>
+        </div>
+
+        <div class="grid-container">
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fa-solid fa-skull"></i>
+                    SZUKAJ ZAGUBIONYCH DUSZ
+                </div>
+                <div class="panel-sub">Wybierz ofiarę lub oprawcę. Przeszukujemy hale targowe.</div>
+                
+                <div class="card-list">
+                    <div class="card">
+                        <img src="https://via.placeholder.com/60/1a1a1a/ff0055?text=Img" alt="Cosplayerzy" class="card-img">
+                        <div class="card-info">
+                            <div class="card-title"><span class="card-rank">[ RANGA 1 ]</span> Przemęczeni<br>Cosplayerzy</div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat-value"><i class="fa-solid fa-ghost"></i> 120</div>
+                            <div style="color: var(--text-muted)">Ryzyko: <span class="risk-low">NISKIE</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <img src="https://via.placeholder.com/60/1a1a1a/ffaa00?text=Img" alt="Wampiry" class="card-img">
+                        <div class="card-info">
+                            <div class="card-title"><span class="card-rank">[ RANGA 2 ]</span> Nocne Wampiry<br>z Blähajem</div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat-value"><i class="fa-solid fa-ghost"></i> 190</div>
+                            <div style="color: var(--text-muted)">Ryzyko: <span class="risk-med">ŚREDNIE</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <img src="https://via.placeholder.com/60/1a1a1a/ff4400?text=Img" alt="Monsterki" class="card-img">
+                        <div class="card-info">
+                            <div class="card-title"><span class="card-rank">[ RANGA 3 ]</span> Uzależnieni<br>od Monsterków</div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat-value"><i class="fa-solid fa-ghost"></i> 250</div>
+                            <div style="color: var(--text-muted)">Ryzyko: <span class="risk-high">WYSOKIE</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <img src="https://via.placeholder.com/60/1a1a1a/ff0000?text=Img" alt="IT" class="card-img">
+                        <div class="card-info">
+                            <div class="card-title"><span class="card-rank">[ RANGA 4 ]</span> Mroczne<br>Femboye z IT</div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat-value"><i class="fa-solid fa-ghost"></i> 320</div>
+                            <div style="color: var(--text-muted)">Ryzyko: <span class="risk-ext">EKSTREMALNE</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fa-solid fa-bed"></i>
+                    ODDZIELNY SLEEPROOM
+                </div>
+                <div class="panel-sub">Odpocznij. Zregeneruj siły.</div>
+                
+                <img src="https://via.placeholder.com/400x150/1a1a1a/ff0055?text=Sleeproom+Background" alt="Sleeproom" class="sleeproom-img">
+                
+                <button class="btn">
+                    <i class="fa-solid fa-moon"></i> ROZKŁADASZ ŚPIWÓR
+                </button>
+                
+                <input type="text" class="input-field" placeholder="Wpisz kod do śpiwora ofiary...">
+                
+                <button class="btn">
+                    <i class="fa-solid fa-lock-open"></i> WKRADNIJ SIĘ
+                </button>
+            </div>
+        </div>
+
+        <div class="panel panel-console">
+            <div class="console-grid">
+                <div>
+                    <div class="panel-header">
+                        <i class="fa-solid fa-terminal"></i>
+                        KONSOLA SYSTEMOWA AELWYD (SEKRET)
+                    </div>
+                    <div class="panel-sub">Tylko dla wtajemniczonych.</div>
+                    
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" class="input-field" placeholder="Login (Twój identyfikator)">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" class="input-field" placeholder="Hasło (Mroczny sekret)">
+                    </div>
+                    
+                    <button class="btn">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> AUTORYZUJ WEJŚCIE DO BAZY
+                    </button>
+                </div>
+                
+                <div class="system-logo-area">
+                    <div style="color: var(--cyan-main); font-size: 12px; letter-spacing: 1px;">SYSTEM AELWYD v2.7</div>
+                    <div class="big-a">A</div>
+                    <div class="system-status">STATUS: OCZEKIWANIE NA AUTORYZACJĘ</div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div><span class="footer-pink">>> kup_mi_monsterka</span></div>
+            <div>Nie ufaj nikomu. Zwierzaj się tylko kodowi.</div>
+            <div>v2.7.0 • PYRKONU DARKNET</div>
+        </footer>
+
+    </main>
+
+</body>
+</html>
