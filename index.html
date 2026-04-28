@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title id="page-title">Femboy z siódmej hali</title>
+<title id="page-title">Hala 7</title>
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 <style>
     * { box-sizing: border-box; }
@@ -154,112 +154,112 @@
 </head>
 <body>
 
-<h1 data-i18n="h1_title">> HALA 7_ [03:00 AM]</h1>
-<div id="status" data-i18n="status_init">[ BUDZENIE DEMONÓW... ]</div>
+<h1 data-i18n="h1_title">> HALA 7</h1>
+<div id="status" data-i18n="status_init">[ ŁADOWANIE... ]</div>
 
 <div id="server-status" class="alert" style="border-left-color: #ff0055;">
-    <span data-i18n="server_status_prefix">Stan mrocznej sieci:</span> <span id="server-msg" style="color:#ff99cc;" data-i18n="server_checking">NAWIĄZYWANIE POŁĄCZENIA Z PIWNICĄ (do 60s)...</span><span class="loading-dots" id="server-dots"></span>
+    <span data-i18n="server_status_prefix">Sieć:</span> <span id="server-msg" style="color:#ff99cc;" data-i18n="server_checking">ŁĄCZENIE Z SERWEREM (do 60s)...</span><span class="loading-dots" id="server-dots"></span>
 </div>
 
 <div id="lobby-panel" class="panel">
     <div id="disconnect-msg" class="alert error hidden"></div>
 
-    <h3 data-i18n="lobby_h3_1" style="color: #ff0055;">> SZUKAJ ZAGUBIONYCH DUSZ</h3>
-    <p data-i18n="lobby_p_1">Wybierz ofiarę lub oprawcę. Przeszukujemy hale targowe.</p>
-    <button class="rank-btn" onclick="searchRank(1)" data-i18n="rank_1">[ RANGA 1 ] Przemęczeni Cosplayerzy</button>
-    <button class="rank-btn" onclick="searchRank(2)" data-i18n="rank_2">[ RANGA 2 ] Nocne Wampiry z Blåhajem</button>
-    <button class="rank-btn" onclick="searchRank(3)" data-i18n="rank_3">[ RANGA 3 ] Uzależnieni od Monsterków</button>
-    <button class="rank-btn" onclick="searchRank(4)" data-i18n="rank_4">[ RANGA 4 ] Mroczne Femboye z IT</button>
+    <h3 data-i18n="lobby_h3_1" style="color: #ff0055;">> SZUKAJ GRACZA</h3>
+    <p data-i18n="lobby_p_1">Wybierz rangę przeciwnika.</p>
+    <button class="rank-btn" onclick="searchRank(1)" data-i18n="rank_1">[ 1 ] Cosplayerzy</button>
+    <button class="rank-btn" onclick="searchRank(2)" data-i18n="rank_2">[ 2 ] Wampiry</button>
+    <button class="rank-btn" onclick="searchRank(3)" data-i18n="rank_3">[ 3 ] Fani Monsterków</button>
+    <button class="rank-btn" onclick="searchRank(4)" data-i18n="rank_4">[ 4 ] Femboye z IT</button>
 
     <div id="queue-status" class="alert hidden" style="color:#ff99cc; margin-top:10px;">
-        <span id="queue-text" data-i18n="queue_text">Węszę w tłumie konwentowiczów</span><span class="loading-dots"></span><br>
-        <button onclick="cancelSearch()" style="background:#8b0000; color:#fff; border-color:#ff0000; padding:5px; margin-top:10px;" data-i18n="btn_cancel">[ UCIEKAJ ]</button>
+        <span id="queue-text" data-i18n="queue_text">Szukam gracza</span><span class="loading-dots"></span><br>
+        <button onclick="cancelSearch()" style="background:#8b0000; color:#fff; border-color:#ff0000; padding:5px; margin-top:10px;" data-i18n="btn_cancel">[ ANULUJ ]</button>
     </div>
 
     <hr style="border-color:#8b0000; border-style:dashed; margin: 20px 0;">
 
-    <h3 data-i18n="lobby_h3_2" style="color: #ff0055;">> ODDZIELNY SLEEPROOM</h3>
-    <button onclick="createRoom()" data-i18n="btn_create_room">[ ROZKŁADASZ ŚPIWÓR ]</button>
+    <h3 data-i18n="lobby_h3_2" style="color: #ff0055;">> PRYWATNY POKÓJ</h3>
+    <button onclick="createRoom()" data-i18n="btn_create_room">[ STWÓRZ POKÓJ ]</button>
     <div id="host-info" class="hidden alert" style="margin: 10px 0;">
-        <span data-i18n="host_info_code">Twój kod do pokoju:</span> <strong id="room-id" style="font-size: 1.5em; color: #ff0055; text-shadow: 0 0 5px #ff0055;"></strong><br><span data-i18n="host_info_waiting">Czekasz w mroku, aż ktoś wejdzie...</span>
+        <span data-i18n="host_info_code">Kod pokoju:</span> <strong id="room-id" style="font-size: 1.5em; color: #ff0055; text-shadow: 0 0 5px #ff0055;"></strong><br><span data-i18n="host_info_waiting">Czekanie na gracza...</span>
     </div>
     <br><br>
     <div class="input-group">
-        <input type="text" id="join-id" data-i18n-placeholder="placeholder_join" placeholder="Wpisz kod do śpiwora ofiary...">
-        <button onclick="joinRoom()" data-i18n="btn_join">[ WKRADNIJ SIĘ ]</button>
+        <input type="text" id="join-id" data-i18n-placeholder="placeholder_join" placeholder="Wpisz kod pokoju...">
+        <button onclick="joinRoom()" data-i18n="btn_join">[ DOŁĄCZ ]</button>
     </div>
 
     <hr style="border-color:#ff0055; border-style:dashed; margin: 20px 0;">
-    <h3 style="color: #00ffff;" data-i18n="aelwyd_title">> KONSOLA SYSTEMOWA AELWYD (SEKRET)</h3>
+    <h3 style="color: #00ffff;" data-i18n="aelwyd_title">> SYSTEM AELWYD (Konto)</h3>
     <div class="input-group" style="flex-direction: column; gap: 5px;">
-        <input type="text" id="login-user" data-i18n-placeholder="login_user_ph" placeholder="Login (Twój identyfikator)">
-        <input type="password" id="login-pass" data-i18n-placeholder="login_pass_ph" placeholder="Hasło (Mroczny sekret)" style="background: #1a0a13; color: #ff99cc; border: 1px solid #00ffff; padding: 10px;">
+        <input type="text" id="login-user" data-i18n-placeholder="login_user_ph" placeholder="Login">
+        <input type="password" id="login-pass" data-i18n-placeholder="login_pass_ph" placeholder="Hasło" style="background: #1a0a13; color: #ff99cc; border: 1px solid #00ffff; padding: 10px;">
     </div>
-    <button onclick="attemptLogin()" style="width: 100%; border-color: #00ffff; color: #00ffff; background: #001a1a;" data-i18n="btn_login">[ AUTORYZUJ WEJŚCIE DO BAZY ]</button>
+    <button onclick="attemptLogin()" style="width: 100%; border-color: #00ffff; color: #00ffff; background: #001a1a;" data-i18n="btn_login">[ ZALOGUJ ]</button>
     <div id="login-error" style="color: #ff0000; margin-top: 10px; font-weight: bold; display: none;"></div>
 
     <div id="registration-section" class="hidden" style="margin-top: 20px;">
         <hr style="border-color:#ff99cc; border-style:dashed; margin: 20px 0;">
-        <h3 style="color: #ff99cc;" data-i18n="reg_title">> INICJALIZACJA TOŻSAMOŚCI</h3>
-        <p><span data-i18n="reg_desc">Wymagany zewnętrzny Kod Dostępu.</span> <a href="https://ko-fi.com/pogromca/tiers" target="_blank" style="color: #ff0055;" data-i18n="reg_link">uzyskaj kod dostępu</a></p>
+        <h3 style="color: #ff99cc;" data-i18n="reg_title">> REJESTRACJA</h3>
+        <p><span data-i18n="reg_desc">Wymagany Kod Dostępu.</span> <a href="https://ko-fi.com/pogromca/tiers" target="_blank" style="color: #ff0055;" data-i18n="reg_link">[Uzyskaj kod]</a></p>
         <div class="input-group" style="flex-direction: column; gap: 5px;">
-            <input type="text" id="reg-code" data-i18n-placeholder="reg_code_ph" placeholder="Wprowadź Kod Dostępu">
-            <input type="text" id="reg-user" data-i18n-placeholder="reg_user_ph" placeholder="Wymyśl Identyfikator">
-            <input type="password" id="reg-pass" data-i18n-placeholder="reg_pass_ph" placeholder="Wymyśl Hasło" style="background: #1a0a13; color: #ff99cc; border: 1px solid #ff99cc; padding: 10px;">
+            <input type="text" id="reg-code" data-i18n-placeholder="reg_code_ph" placeholder="Kod">
+            <input type="text" id="reg-user" data-i18n-placeholder="reg_user_ph" placeholder="Login">
+            <input type="password" id="reg-pass" data-i18n-placeholder="reg_pass_ph" placeholder="Hasło" style="background: #1a0a13; color: #ff99cc; border: 1px solid #ff99cc; padding: 10px;">
         </div>
-        <button onclick="attemptRegister()" style="width: 100%; border-color: #ff99cc; color: #ff99cc; background: #1a000d;" data-i18n="btn_register">[ ZATWIERDŹ NOWĄ TOŻSAMOŚĆ ]</button>
+        <button onclick="attemptRegister()" style="width: 100%; border-color: #ff99cc; color: #ff99cc; background: #1a000d;" data-i18n="btn_register">[ ZAREJESTRUJ ]</button>
         <div id="reg-msg" style="margin-top: 10px; font-weight: bold; display: none;"></div>
     </div>
 
-   <a href="javascript:void(0)" class="donate-subtle" onclick="toggleRegistration()" data-i18n="donate_link">>> kup_mi_monsterka</a>
+   <a href="javascript:void(0)" class="donate-subtle" onclick="toggleRegistration()" data-i18n="donate_link">> Wesprzyj</a>
 </div>
 
 <div id="countdown-panel" class="panel hidden" style="text-align: center;">
-    <h2 data-i18n="countdown_h2" style="color: #ff0000; animation: glitch 2s infinite;">DRZWI ZATRZAŚNIĘTE!</h2>
-    <p data-i18n="countdown_p">Nie ma już ucieczki. Gra zacznie się za:</p>
+    <h2 data-i18n="countdown_h2" style="color: #ff0000; animation: glitch 2s infinite;">START!</h2>
+    <p data-i18n="countdown_p">Gra zacznie się za:</p>
     <div id="start-timer" style="font-size: 3em; color: #ff0055;">5</div>
 </div>
 
 <div id="game-panel" class="panel hidden">
     <div class="flex-row">
         <h3 id="role-title" data-i18n="role_title" style="color: #ff99cc;">> FAZA: ???</h3>
-        <div class="timer"><span data-i18n="timer_label">CZAS DO ŚMIERCI:</span> <span id="round-timer">120</span>s</div>
+        <div class="timer"><span data-i18n="timer_label">CZAS:</span> <span id="round-timer">120</span>s</div>
     </div>
 
     <div id="action-area">
-        <p id="question-text" data-i18n="question_text">Wybierz puszkę:</p>
+        <p id="question-text" data-i18n="question_text">Wybór puszki:</p>
         <div id="cup-options"></div>
 
-        <p data-i18n="reason_label">Dlaczego tak robisz? (Zapisz na kartce, nikt nie widzi):</p>
-        <input type="text" id="reason-input" data-i18n-placeholder="placeholder_reason" placeholder="Zapisz swój mroczny plan...">
+        <p data-i18n="reason_label">Twój plan (ukryty):</p>
+        <input type="text" id="reason-input" data-i18n-placeholder="placeholder_reason" placeholder="Krótki powód...">
 
         <div style="margin-top: 15px;">
-            <button id="submit-btn" onclick="submitAction()" data-i18n="btn_submit" style="border-color:#ff0055; color:#ff0055;">[ ODKŁADASZ KARTKĘ ]</button>
-            <div id="op-status" style="color: #8b0000; margin-top: 10px; font-weight: bold;" data-i18n="op_status_typing">[ ] On coś kombinuje...</div>
+            <button id="submit-btn" onclick="submitAction()" data-i18n="btn_submit" style="border-color:#ff0055; color:#ff0055;">[ ZATWIERDŹ ]</button>
+            <div id="op-status" style="color: #8b0000; margin-top: 10px; font-weight: bold;" data-i18n="op_status_typing">[ ] Przeciwnik myśli...</div>
         </div>
     </div>
 </div>
 
 <div id="vote-panel" class="panel hidden">
     <div class="flex-row">
-        <h3 data-i18n="vote_h3" style="color: #ff0055;">> FAZA: SPOJRZENIE W OCZY</h3>
+        <h3 data-i18n="vote_h3" style="color: #ff0055;">> GŁOSOWANIE</h3>
         <div class="timer"><span data-i18n="timer_label">CZAS:</span> <span id="chat-timer">180</span>s</div>
     </div>
     
     <div id="reveal-area" class="alert"></div>
 
-    <h4 data-i18n="vote_h4" style="color: #00ffff;">> KANAŁ SZEPTÓW</h4>
+    <h4 data-i18n="vote_h4" style="color: #00ffff;">> CZAT</h4>
     <div id="chat-history"></div>
     <div class="input-group">
-        <input type="text" id="chat-input" data-i18n-placeholder="placeholder_chat" placeholder="Powiedz coś, zanim zapadnie wyrok...">
-        <button onclick="sendChat()" data-i18n="btn_send_chat" style="border-color: #00ffff; color: #00ffff;">[ SZEPNIJ ]</button>
+        <input type="text" id="chat-input" data-i18n-placeholder="placeholder_chat" placeholder="Napisz coś...">
+        <button onclick="sendChat()" data-i18n="btn_send_chat" style="border-color: #00ffff; color: #00ffff;">[ WYŚLIJ ]</button>
     </div>
 
     <div id="voting-area" style="margin-top: 20px;">
-        <p data-i18n="vote_desc"><strong>Zdecyduj: Czy Wasze umysły połączyły się w jednym szaleństwie? (Czy sens jest ten sam?)</strong></p>
+        <p data-i18n="vote_desc"><strong>Czy wasze plany są spójne?</strong></p>
         
-        <button id="vote-yes" onclick="submitVote(true)" data-i18n="btn_vote_yes" style="border-color:#ff99cc; color:#ff99cc;">[ TAK, JESTEŚMY TACY SAMI ]</button>
-        <button id="vote-no" onclick="submitVote(false)" data-i18n="btn_vote_no" style="border-color:#ff0000; color:#ff0000;">[ NIE, ON KŁAMIE ]</button>
+        <button id="vote-yes" onclick="submitVote(true)" data-i18n="btn_vote_yes" style="border-color:#ff99cc; color:#ff99cc;">[ TAK ]</button>
+        <button id="vote-no" onclick="submitVote(false)" data-i18n="btn_vote_no" style="border-color:#ff0000; color:#ff0000;">[ NIE ]</button>
         <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0055; font-weight:bold;"></div>
     </div>
 </div>
@@ -268,230 +268,224 @@
     // --- SŁOWNIK JĘZYKOWY (i18n) ---
     const dict = {
         pl: {
-            page_title: "Femboj z siódmej hali",
-            h1_title: "> HALA 7_ [03:00 AM]",
-            status_init: "[ BUDZENIE DEMONÓW... ]",
-            status_ready: "[ MOŻESZ WEJŚĆ DO HALI ]",
-            server_status_prefix: "Stan mrocznej sieci:",
-            server_checking: "NAWIĄZYWANIE POŁĄCZENIA Z PIWNICĄ (do 60s)...",
-            server_offline_timeout: "OFFLINE (Czas minął. Zostałeś sam w ciemności. Odśwież.)",
-            server_online: "ONLINE (Demony nasłuchują)",
-            server_offline_error: "OFFLINE (Błąd połączenia, serwer krwawi)",
-            lobby_h3_1: "> SZUKAJ ZAGUBIONYCH DUSZ",
-            lobby_p_1: "Wybierz ofiarę lub oprawcę. Przeszukujemy hale targowe.",
-            rank_1: "[ RANGA 1 ] Przemęczeni Cosplayerzy",
-            rank_2: "[ RANGA 2 ] Nocne Wampiry z Blåhajem",
-            rank_3: "[ RANGA 3 ] Uzależnieni od Monsterków",
-            rank_4: "[ RANGA 4 ] Mroczne Femboye z IT",
-            queue_text: "Węszę w tłumie konwentowiczów",
-            btn_cancel: "[ UCIEKAJ ]",
-            lobby_h3_2: "> ODDZIELNY SLEEPROOM",
-            btn_create_room: "[ ROZKŁADASZ ŚPIWÓR ]",
-            host_info_code: "Twój kod do pokoju:",
-            host_info_waiting: "Czekasz w mroku, aż ktoś wejdzie...",
-            placeholder_join: "Wpisz kod do śpiwora ofiary...",
-            btn_join: "[ WKRADNIJ SIĘ ]",
-            donate_link: ">> kup_mi_monsterka",
-            countdown_h2: "DRZWI ZATRZAŚNIĘTE!",
-            countdown_p: "Nie ma już ucieczki. Gra zacznie się za:",
+            page_title: "Hala 7",
+            h1_title: "> HALA 7",
+            status_init: "[ ŁADOWANIE... ]",
+            status_ready: "[ GOTOWE ]",
+            server_status_prefix: "Sieć:",
+            server_checking: "ŁĄCZENIE Z SERWEREM (do 60s)...",
+            server_offline_timeout: "OFFLINE (Brak odp. Odśwież.)",
+            server_online: "ONLINE",
+            server_offline_error: "OFFLINE (Błąd połączenia)",
+            lobby_h3_1: "> SZUKAJ GRACZA",
+            lobby_p_1: "Wybierz rangę przeciwnika.",
+            rank_1: "[ 1 ] Cosplayerzy",
+            rank_2: "[ 2 ] Wampiry",
+            rank_3: "[ 3 ] Fani Monsterków",
+            rank_4: "[ 4 ] Femboye z IT",
+            queue_text: "Szukam gracza",
+            btn_cancel: "[ ANULUJ ]",
+            lobby_h3_2: "> PRYWATNY POKÓJ",
+            btn_create_room: "[ STWÓRZ POKÓJ ]",
+            host_info_code: "Kod pokoju:",
+            host_info_waiting: "Czekanie na gracza...",
+            placeholder_join: "Wpisz kod pokoju...",
+            btn_join: "[ DOŁĄCZ ]",
+            donate_link: "> Wesprzyj",
+            countdown_h2: "START!",
+            countdown_p: "Gra zacznie się za:",
             role_title: "> FAZA: ???",
-            timer_label: "CZAS NA WYBÓR:",
-            question_text: "Wybierz puszkę:",
-            reason_label: "Dlaczego tak robisz? (Zapisz na kartce, nikt nie widzi):",
-            placeholder_reason: "Zapisz swój mroczny plan...",
-            btn_submit: "[ ODKŁADASZ KARTKĘ ]",
-            op_status_typing: "[ ] On coś kombinuje...",
-            vote_h3: "> FAZA: SPOJRZENIE W OCZY",
-            vote_h4: "> KANAŁ SZEPTÓW",
-            placeholder_chat: "Powiedz coś, zanim zapadnie wyrok...",
-            btn_send_chat: "[ SZEPNIJ ]",
-            vote_desc: "<strong>Zdecyduj: Czy Wasze umysły połączyły się w jednym szaleństwie? (Czy sens jest ten sam?)</strong>",
-            btn_vote_yes: "[ TAK, JESTEŚMY TACY SAMI ]",
-            btn_vote_no: "[ NIE, ON KŁAMIE ]",
-            vote_wait: "Czekam na decyzję przeciwnika...",
+            timer_label: "CZAS:",
+            question_text: "Wybór puszki:",
+            reason_label: "Twój plan (ukryty):",
+            placeholder_reason: "Krótki powód...",
+            btn_submit: "[ ZATWIERDŹ ]",
+            op_status_typing: "[ ] Przeciwnik myśli...",
+            vote_h3: "> GŁOSOWANIE",
+            vote_h4: "> CZAT",
+            placeholder_chat: "Napisz coś...",
+            btn_send_chat: "[ WYŚLIJ ]",
+            vote_desc: "<strong>Czy wasze plany są spójne?</strong>",
+            btn_vote_yes: "[ TAK ]",
+            btn_vote_no: "[ NIE ]",
+            vote_wait: "Czekam na przeciwnika...",
             
-            // SYSTEM AELWYD
-            aelwyd_title: "> KONSOLA SYSTEMOWA AELWYD (SEKRET)",
-            login_user_ph: "Login (Twój identyfikator)",
-            login_pass_ph: "Hasło (Mroczny sekret)",
-            btn_login: "[ AUTORYZUJ WEJŚCIE DO BAZY ]",
-            reg_title: "> INICJALIZACJA TOŻSAMOŚCI",
-            reg_desc: "Wymagany zewnętrzny Kod Dostępu.",
-            reg_link: "uzyskaj kod dostępu",
-            reg_code_ph: "Wprowadź Kod Dostępu",
-            reg_user_ph: "Wymyśl Identyfikator",
-            reg_pass_ph: "Wymyśl Hasło",
-            btn_register: "[ ZATWIERDŹ NOWĄ TOŻSAMOŚĆ ]",
+            aelwyd_title: "> SYSTEM AELWYD",
+            login_user_ph: "Login",
+            login_pass_ph: "Hasło",
+            btn_login: "[ ZALOGUJ ]",
+            reg_title: "> REJESTRACJA",
+            reg_desc: "Wymagany kod.",
+            reg_link: "[Zdobądź kod]",
+            reg_code_ph: "Kod",
+            reg_user_ph: "Login",
+            reg_pass_ph: "Hasło",
+            btn_register: "[ ZAREJESTRUJ ]",
             
-            login_success: "> DANE POPRAWNE. Ładowanie piwnicy...",
+            login_success: "> ZALOGOWANO.",
             login_denied: "> ODMOWA: ",
-            login_error: "> BŁĄD POŁĄCZENIA Z DEMONEM.",
+            login_error: "> BŁĄD POŁĄCZENIA.",
             reg_success: "> SUKCES: ",
             reg_denied: "> BŁĄD: ",
             reg_error: "> BŁĄD SIECI.",
 
-            // AI JUDGE
-            btn_ai_request: "[ 🤖 ZAPYTAJ DEMONA Z IT (Raz na grę) ]",
-            ai_waiting: "Czekasz na skinienie głowy przeciwnika...",
-            ai_analyzing: "🤖 Algorytmy analizują Wasze chore umysły...",
+            btn_ai_request: "[ 🤖 ZAPYTAJ AI (1x na grę) ]",
+            ai_waiting: "Oczekiwanie...",
+            ai_analyzing: "🤖 Analiza...",
 
-            // Komunikaty dynamiczne
-            search_network: "Szukam na hali targowej (Ranga {rank})",
-            search_found: "Znalazłem kogoś w mroku! Zbliżam was...",
-            queue_empty: "Pusto tutaj. Rozkładam namiot w sleeproomie, czekaj...",
-            queue_joined: "Ktoś rozsunął suwak w namiocie! Gramy...",
-            alert_no_code: "Musisz podać jakiś kod!",
-            alert_own_code: "BŁĄD: Nie możesz wejść do własnego śpiwora!",
-            op_status_done: "[✓] Przeciwnik podjął chorą decyzję!",
-            kick_disconnect: "Połączenie zerwane. Przeciwnik uciekł w tłum cosplayerów.",
-            kick_idle: "Przeciwnik zasnął z wycieńczenia. Wyrzucony.",
-            error_prefix: "> SYSTEM KRWAWI:",
+            search_network: "Szukanie (Ranga {rank})",
+            search_found: "Znaleziono gracza!",
+            queue_empty: "Pusto. Tworzenie pokoju...",
+            queue_joined: "Dołączono do gry!",
+            alert_no_code: "Podaj kod!",
+            alert_own_code: "BŁĄD: To Twój pokój!",
+            op_status_done: "[✓] Przeciwnik wybrał!",
+            kick_disconnect: "Gracz się rozłączył.",
+            kick_idle: "Gracz wyrzucony (AFK).",
+            error_prefix: "> BŁĄD:",
             status_offline: "[ OFFLINE ]",
-            kick_timeout: "Czas minął! Zbyt dużo strachu, brak reakcji.",
-            role_poisoner: "> RUNDA {round}/5 | DOSYPUJESZ ŚRODEK NASENNY",
-            question_poisoner: "Do której puszki Monsterka wrzucasz tabletkę?",
-            role_drinker: "> RUNDA {round}/5 | WYBIERASZ NAPÓJ",
-            question_drinker: "Którą puszkę wybierasz, by przetrwać tę noc?",
-            cup_mine_select: "Różowy Monster (bliżej MNIE)",
-            cup_yours_select: "Biały Monster (bliżej NIEGO)",
-            alert_no_cup: "BŁĄD: Wybierz puszkę, nie ma odwrotu!",
-            alert_no_reason: "BŁĄD: Zapisz swój plan zbrodni!",
-            btn_submitted: "[ ZAPISANO - CZEKAJ W NAPIĘCIU ]",
-            res_title: "EFEKT DEGUSTACJI:",
+            kick_timeout: "Czas minął!",
+            role_poisoner: "> RUNDA {round}/5 | TRUCICIEL",
+            question_poisoner: "Którą puszkę zatruwasz?",
+            role_drinker: "> RUNDA {round}/5 | PIJĄCY",
+            question_drinker: "Którą puszkę wybierasz?",
+            cup_mine_select: "Różowa (Bliżej MNIE)",
+            cup_yours_select: "Biała (Bliżej NIEGO)",
+            alert_no_cup: "Wybierz puszkę!",
+            alert_no_reason: "Podaj powód!",
+            btn_submitted: "[ ZATWIERDZONO ]",
+            res_title: "WYNIK:",
             res_survived: "PRZETRWANIE (+1)",
-            res_died: "ZAPAŚĆ I CIEMNOŚĆ",
-            res_poison_pos: "Zatruta puszka:",
+            res_died: "ŚMIERĆ",
+            res_poison_pos: "Zatruta:",
             res_drunk_pos: "Wypito:",
-            res_scroll_p: "Kartka Nalewającego:",
-            res_scroll_d: "Kartka Pijącego:",
-            cup_mine_res: "Różowy Monster (Twój)",
-            cup_yours_res: "Biały Monster (Jego)",
+            res_scroll_p: "Notatka Truciciela:",
+            res_scroll_d: "Notatka Pijącego:",
+            cup_mine_res: "Różowa (Twoja)",
+            cup_yours_res: "Biała (Jego)",
             chat_you: "Ty",
             chat_op: "Oponent",
-            chat_sys: "DEMON SYSTEMU",
-            sys_agree: "WASZE UMYSŁY SĄ ZGODNE. Dodatkowy punkt za szaleństwo!",
-            sys_disagree: "BRAK ZGODY. Ktoś tu jest żałosnym kłamcą.",
-            vote_next: "Krew wsiąkła w podłogę. Następny koszmar za",
-            status_connected: "[ ZAMKNIĘCI W HALI ] Ty: {myScore} | On: {opScore}",
-            end_title: "KONWENT DOBIEGŁ KOŃCA",
-            end_my_score: "Twój wskaźnik przeżycia:",
-            end_op_score: "Jego wskaźnik przeżycia:",
-            end_win: "ZWYCIĘSTWO! (Wychodzisz z festiwalu o własnych siłach)",
-            end_lose: "PORAŻKA... (Budzisz się w czyjejś piwnicy uwięziony w pluszaku)",
-            end_draw: "REMIS. (Zostajecie tu na zawsze.)"
+            chat_sys: "SYSTEM",
+            sys_agree: "Zgodność! +1 pkt.",
+            sys_disagree: "Brak zgody.",
+            vote_next: "Następna runda za",
+            status_connected: "Ty: {myScore} | Oponent: {opScore}",
+            end_title: "KONIEC GRY",
+            end_my_score: "Twój wynik:",
+            end_op_score: "Wynik przeciwnika:",
+            end_win: "ZWYCIĘSTWO!",
+            end_lose: "PORAŻKA...",
+            end_draw: "REMIS."
         },
         en: {
-            page_title: "Femboy from Hall 7",
-            h1_title: "> HALL 7_ [03:00 AM]",
-            status_init: "[ WAKING UP THE DEMONS... ]",
-            status_ready: "[ YOU CAN ENTER THE HALL ]",
-            server_status_prefix: "Dark net status:",
-            server_checking: "CONNECTING TO THE BASEMENT (up to 60s)...",
-            server_offline_timeout: "OFFLINE (Timeout. You are alone in the dark. Refresh.)",
-            server_online: "ONLINE (Demons are listening)",
-            server_offline_error: "OFFLINE (Connection error, server is bleeding)",
-            lobby_h3_1: "> SEARCH FOR LOST SOULS",
-            lobby_p_1: "Choose victim or executioner. Searching the halls.",
-            rank_1: "[ RANK 1 ] Exhausted Cosplayers",
-            rank_2: "[ RANK 2 ] Night Vampires with Blåhaj",
-            rank_3: "[ RANK 3 ] Monster Energy Addicts",
-            rank_4: "[ RANK 4 ] Dark IT Femboys",
-            queue_text: "Sniffing through the crowd",
-            btn_cancel: "[ RUN AWAY ]",
-            lobby_h3_2: "> PRIVATE SLEEPROOM",
-            btn_create_room: "[ ROLL OUT SLEEPING BAG ]",
-            host_info_code: "Your room code:",
-            host_info_waiting: "Waiting in the dark for someone to enter...",
-            placeholder_join: "Enter victim's sleeping bag code...",
-            btn_join: "[ SNEAK IN ]",
-            donate_link: ">> buy_me_a_monster",
-            countdown_h2: "DOORS LOCKED!",
-            countdown_p: "No escape now. Game starts in:",
+            page_title: "Hall 7",
+            h1_title: "> HALL 7",
+            status_init: "[ LOADING... ]",
+            status_ready: "[ READY ]",
+            server_status_prefix: "Network:",
+            server_checking: "CONNECTING (up to 60s)...",
+            server_offline_timeout: "OFFLINE (Timeout. Refresh.)",
+            server_online: "ONLINE",
+            server_offline_error: "OFFLINE (Error)",
+            lobby_h3_1: "> SEARCH GAME",
+            lobby_p_1: "Choose opponent rank.",
+            rank_1: "[ 1 ] Cosplayers",
+            rank_2: "[ 2 ] Vampires",
+            rank_3: "[ 3 ] Monster Fans",
+            rank_4: "[ 4 ] IT Femboys",
+            queue_text: "Searching",
+            btn_cancel: "[ CANCEL ]",
+            lobby_h3_2: "> PRIVATE ROOM",
+            btn_create_room: "[ CREATE ROOM ]",
+            host_info_code: "Room code:",
+            host_info_waiting: "Waiting for player...",
+            placeholder_join: "Enter room code...",
+            btn_join: "[ JOIN ]",
+            donate_link: "> Support",
+            countdown_h2: "START!",
+            countdown_p: "Game starts in:",
             role_title: "> PHASE: ???",
-            timer_label: "TIME TO CHOOSE:",
-            question_text: "Choose a can:",
-            reason_label: "Why are you doing this? (Write on your note, nobody sees):",
-            placeholder_reason: "Write down your dark plan...",
-            btn_submit: "[ PUT DOWN THE NOTE ]",
-            op_status_typing: "[ ] He is scheming something...",
-            vote_h3: "> PHASE: LOOK IN THE EYES",
-            vote_h4: "> WHISPER CHANNEL",
-            placeholder_chat: "Say something before the verdict falls...",
-            btn_send_chat: "[ WHISPER ]",
-            vote_desc: "<strong>Decide: Did your minds connect in the same madness? (Is the meaning the same?)</strong>",
-            btn_vote_yes: "[ YES, WE ARE THE SAME ]",
-            btn_vote_no: "[ NO, HE IS LYING ]",
-            vote_wait: "Waiting for opponent's decision...",
+            timer_label: "TIME:",
+            question_text: "Choose can:",
+            reason_label: "Your plan (hidden):",
+            placeholder_reason: "Short reason...",
+            btn_submit: "[ SUBMIT ]",
+            op_status_typing: "[ ] Opponent thinking...",
+            vote_h3: "> VOTING",
+            vote_h4: "> CHAT",
+            placeholder_chat: "Type something...",
+            btn_send_chat: "[ SEND ]",
+            vote_desc: "<strong>Are your plans aligned?</strong>",
+            btn_vote_yes: "[ YES ]",
+            btn_vote_no: "[ NO ]",
+            vote_wait: "Waiting for opponent...",
             
-            // SYSTEM AELWYD
-            aelwyd_title: "> AELWYD SYSTEM CONSOLE (SECRET)",
-            login_user_ph: "Login (Your identifier)",
-            login_pass_ph: "Password (Dark secret)",
-            btn_login: "[ AUTHORIZE DATABASE ENTRY ]",
-            reg_title: "> IDENTITY INITIALIZATION",
-            reg_desc: "External Access Code required.",
-            reg_link: "get access code",
-            reg_code_ph: "Enter Access Code",
-            reg_user_ph: "Invent Identifier",
-            reg_pass_ph: "Invent Password",
-            btn_register: "[ CONFIRM NEW IDENTITY ]",
+            aelwyd_title: "> AELWYD SYSTEM",
+            login_user_ph: "Login",
+            login_pass_ph: "Password",
+            btn_login: "[ LOGIN ]",
+            reg_title: "> REGISTER",
+            reg_desc: "Code required.",
+            reg_link: "[Get Code]",
+            reg_code_ph: "Code",
+            reg_user_ph: "Login",
+            reg_pass_ph: "Password",
+            btn_register: "[ REGISTER ]",
             
-            login_success: "> VALID DATA. Loading the basement...",
+            login_success: "> LOGGED IN.",
             login_denied: "> DENIED: ",
-            login_error: "> DEMON CONNECTION ERROR.",
+            login_error: "> CONNECTION ERROR.",
             reg_success: "> SUCCESS: ",
             reg_denied: "> ERROR: ",
             reg_error: "> NETWORK ERROR.",
 
-            // AI JUDGE
-            btn_ai_request: "[ 🤖 ASK THE IT DEMON (Once per game) ]",
-            ai_waiting: "Waiting for opponent's nod...",
-            ai_analyzing: "🤖 Algorithms are analyzing your sick minds...",
+            btn_ai_request: "[ 🤖 ASK AI (1x per game) ]",
+            ai_waiting: "Waiting...",
+            ai_analyzing: "🤖 Analyzing...",
             
-            // Dynamic messages
-            search_network: "Searching the hall (Rank {rank})",
-            search_found: "Found someone in the dark! Bringing you closer...",
-            queue_empty: "Empty here. Setting up tent in sleeproom, wait...",
-            queue_joined: "Someone unzipped the tent! We're playing...",
-            alert_no_code: "You must provide a code!",
-            alert_own_code: "ERROR: You cannot join your own sleeping bag!",
-            op_status_done: "[✓] Opponent made a sick decision!",
-            kick_disconnect: "Connection lost. Opponent fled into the cosplayer crowd.",
-            kick_idle: "Opponent fell asleep from exhaustion. Kicked.",
-            error_prefix: "> SYSTEM BLEEDING:",
+            search_network: "Searching (Rank {rank})",
+            search_found: "Player found!",
+            queue_empty: "Empty. Creating room...",
+            queue_joined: "Joined game!",
+            alert_no_code: "Enter a code!",
+            alert_own_code: "ERROR: Your own room!",
+            op_status_done: "[✓] Opponent ready!",
+            kick_disconnect: "Player disconnected.",
+            kick_idle: "Player kicked (AFK).",
+            error_prefix: "> ERROR:",
             status_offline: "[ OFFLINE ]",
-            kick_timeout: "Time's up! Too much fear, no reaction.",
-            role_poisoner: "> ROUND {round}/5 | POURING SLEEPING PILLS",
-            question_poisoner: "Which Monster can are you putting the pill in?",
-            role_drinker: "> ROUND {round}/5 | CHOOSING DRINK",
-            question_drinker: "Which can do you choose to survive the night?",
-            cup_mine_select: "Pink Monster (closer to ME)",
-            cup_yours_select: "White Monster (closer to HIM)",
-            alert_no_cup: "ERROR: Choose a can, there's no turning back!",
-            alert_no_reason: "ERROR: Write down your murder plan!",
-            btn_submitted: "[ SAVED - WAIT IN SUSPENSE ]",
-            res_title: "TASTING RESULT:",
-            res_survived: "SURVIVAL (+1)",
-            res_died: "COLLAPSE AND DARKNESS",
-            res_poison_pos: "Poisoned can:",
-            res_drunk_pos: "Drank from:",
-            res_scroll_p: "Pourer's Note:",
-            res_scroll_d: "Drinker's Note:",
-            cup_mine_res: "Pink Monster (Yours)",
-            cup_yours_res: "White Monster (His)",
+            kick_timeout: "Time's up!",
+            role_poisoner: "> ROUND {round}/5 | POISONER",
+            question_poisoner: "Which can to poison?",
+            role_drinker: "> ROUND {round}/5 | DRINKER",
+            question_drinker: "Which can to drink?",
+            cup_mine_select: "Pink (Closer to ME)",
+            cup_yours_select: "White (Closer to HIM)",
+            alert_no_cup: "Select a can!",
+            alert_no_reason: "Enter a reason!",
+            btn_submitted: "[ SUBMITTED ]",
+            res_title: "RESULT:",
+            res_survived: "SURVIVED (+1)",
+            res_died: "DIED",
+            res_poison_pos: "Poisoned:",
+            res_drunk_pos: "Drank:",
+            res_scroll_p: "Poisoner's note:",
+            res_scroll_d: "Drinker's note:",
+            cup_mine_res: "Pink (Yours)",
+            cup_yours_res: "White (His)",
             chat_you: "You",
             chat_op: "Opponent",
-            chat_sys: "SYSTEM DEMON",
-            sys_agree: "YOUR MINDS AGREE. Extra point for madness!",
-            sys_disagree: "DISAGREEMENT. Someone is a pathetic liar.",
-            vote_next: "Blood soaked into the floor. Next nightmare in",
-            status_connected: "[ LOCKED IN THE HALL ] You: {myScore} | Him: {opScore}",
-            end_title: "CONVENTION IS OVER",
-            end_my_score: "Your survival rate:",
-            end_op_score: "His survival rate:",
-            end_win: "VICTORY! (You leave the festival on your own feet)",
-            end_lose: "DEFEAT... (You wake up in someone's basement trapped in a plushie)",
-            end_draw: "DRAW. (You stay here forever.)"
+            chat_sys: "SYSTEM",
+            sys_agree: "Match! +1 pt.",
+            sys_disagree: "Mismatch.",
+            vote_next: "Next round in",
+            status_connected: "You: {myScore} | Opponent: {opScore}",
+            end_title: "GAME OVER",
+            end_my_score: "Your score:",
+            end_op_score: "Opponent score:",
+            end_win: "VICTORY!",
+            end_lose: "DEFEAT...",
+            end_draw: "DRAW."
         }
     };
 
@@ -631,7 +625,7 @@
             state.opVote = isAgree;
             
             if (reason) {
-                appendChat(t('chat_sys'), `🤖 Werdykt AI: ${reason}`, "msg-sys");
+                appendChat(t('chat_sys'), `🤖 AI: ${reason}`, "msg-sys");
             }
             
             checkVotes(); 
